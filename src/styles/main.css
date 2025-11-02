@@ -2097,7 +2097,7 @@ section {
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
-  --bs-body-bg-rgb: 255, 255, 255;
+  --bs-body-bg-rgb: 0, 0, 0;
   --bs-font-sans-serif:
     system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans,
     sans-serif, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
@@ -2117,7 +2117,7 @@ section {
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.7;
   --bs-body-color: #212529;
-  --bs-body-bg: #fff;
+  --bs-body-bg: #000;
   --bs-border-width: 1px;
   --bs-border-style: solid;
   --bs-border-color: #dee2e6;
@@ -2154,7 +2154,7 @@ section {
 body {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background-color: #fff;
+  background-color: #000;
   background-color: var(--bs-body-bg);
   color: #212529;
   color: var(--bs-body-color);
