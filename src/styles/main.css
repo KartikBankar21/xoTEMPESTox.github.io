@@ -1517,7 +1517,7 @@ section {
   height: 100%;
   left: 0;
   transform-origin: left center;
-  transition: width 0.85s ease;
+  transition: width 1.5s ease 0.2s;
   width: 0;
   position: absolute;
   top: 0;

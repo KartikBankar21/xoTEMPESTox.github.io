@@ -208,32 +208,32 @@ function initSkillBarAnimations() {
     items.forEach(({ bar }) => {
         bar.style.width = "0";
     });
-    let hasAnimated = false;
     const schedule = typeof window.requestAnimationFrame === "function"
         ? window.requestAnimationFrame.bind(window)
         : (callback) => window.setTimeout(callback, 0);
     const animate = () => {
-        if (hasAnimated) {
-            return;
-        }
-        hasAnimated = true;
         schedule(() => {
             items.forEach(({ bar, rate }) => {
                 bar.style.width = `${rate}%`;
             });
         });
     };
-    if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver((entries) => {
-            if (entries.some((entry) => entry.isIntersecting)) {
-                animate();
-                observer.disconnect();
-            }
-        }, { threshold: 0.35 });
-        observer.observe(skillsSection);
-    }
-    else {
-        animate();
+    const resetBars = () => {
+        items.forEach(({ bar }) => {
+            bar.style.transition = "none";
+            bar.style.width = "0";
+        });
+        void skillsSection.offsetWidth;
+        items.forEach(({ bar }) => {
+            bar.style.transition = "";
+        });
+    };
+    const skillsNavItem = document.getElementById("item-skills");
+    if (skillsNavItem) {
+        skillsNavItem.addEventListener("click", () => {
+            resetBars();
+            animate();
+        });
     }
 }
 function changeBackgroundAfterWhile() {
