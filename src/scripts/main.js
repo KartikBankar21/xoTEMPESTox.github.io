@@ -33,6 +33,37 @@ else {
     changeBackgroundAfterWhile();
     initSkillBarAnimations();
 }
+
+function triggerAboutInfoIntro() {
+    if (typeof document === "undefined" || typeof window === "undefined") {
+        return;
+    }
+    const aboutSection = document.getElementById("about");
+    if (!aboutSection) {
+        return;
+    }
+    const infoBoxes = aboutSection.querySelectorAll(".about__info");
+    if (!infoBoxes.length) {
+        return;
+    }
+    const prefersReducedMotion = typeof window.matchMedia === "function" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    infoBoxes.forEach((box) => {
+        box.classList.remove("about__info--intro");
+        box.style.removeProperty("--about-info-delay");
+    });
+    if (prefersReducedMotion) {
+        return;
+    }
+    const baseDelayMs = 400;
+    const staggerMs = 120;
+    infoBoxes.forEach((box, index) => {
+        const delaySeconds = (baseDelayMs + staggerMs * index) / 1000;
+        box.style.setProperty("--about-info-delay", `${delaySeconds}s`);
+        void box.offsetWidth;
+        box.classList.add("about__info--intro");
+    });
+}
 function changeListItems() {
     let home = document.getElementById("home");
     let about = document.getElementById("about");
@@ -84,6 +115,7 @@ function changeListItems() {
             }
             else if (li.getAttribute("id") === "item-about") {
                 about.classList.add("full-screen-right");
+                triggerAboutInfoIntro();
             }
             else if (li.getAttribute("id") === "item-journey") {
                 journey.classList.add("full-screen-left");

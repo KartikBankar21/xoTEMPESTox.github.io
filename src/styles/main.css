@@ -955,11 +955,38 @@ section {
   border-radius: 12px;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(6px);
+  filter: none;
   margin: 0;
   padding: clamp(1rem, 2.5vw, 1.75rem);
   line-height: 1.4;
   width: min(100%, clamp(18rem, 32vw, 25rem));
   overflow-wrap: anywhere;
+}
+
+.about__info--intro {
+  filter: blur(12px);
+  opacity: 0;
+  animation: about-info-focus 0.85s ease forwards;
+  animation-delay: var(--about-info-delay, 0s);
+}
+
+@keyframes about-info-focus {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__info--intro {
+    animation: none;
+    filter: none;
+    opacity: 1;
+  }
 }
 
 .about__stack--left .about__info {
