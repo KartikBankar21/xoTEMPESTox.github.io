@@ -117,7 +117,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Links
 - [Production](priyanshusah.com) - Github Pages
-- [Test](priyanshusah.pages.dev) - Cloudflare Pages
+- [Test](dev.priyanshusah.com) - Cloudflare Pages
 
 ## Credits
 
