@@ -116,8 +116,8 @@ vite.config.js                 # Vite configuration (default)
 Feel free to adapt the content, color palette, or assets to tailor the portfolio for your own brand.
 
 ### Links
-- [Production](priyanshusah.com) - Github Pages
-- [Test](dev.priyanshusah.com) - Cloudflare Pages
+- [Production](https://priyanshusah.com) - Github Pages
+- [Test](https://dev.priyanshusah.com) - Cloudflare Pages
 
 ## Credits
 
