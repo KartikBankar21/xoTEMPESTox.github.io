@@ -766,6 +766,8 @@ section {
 
 .home__info__btn {
   overflow: hidden;
+  cursor: pointer;         /* Use button-like pointer cursor */
+  user-select: none;       /* Prevent text selection */
 }
 
 .home__info__btn:after {
