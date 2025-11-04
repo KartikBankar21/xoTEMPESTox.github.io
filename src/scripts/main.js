@@ -929,7 +929,7 @@ function setVideoPlaceholder(main, poster) {
     if (!placeholder) {
         placeholder = document.createElement("img");
         placeholder.className = "main__background-media main__background-placeholder";
-        placeholder.alt = "";
+        placeholder.alt = "High-quality dynamic wallpaper from Wallpaper Engine workshop, looping seamlessly to create an ambient, nature-inspired background that adapts for day and night, enhancing the relaxing and scenic feel of Priyanshu Sah’s portfolio website.";
         placeholder.setAttribute("aria-hidden", "true");
         placeholder.draggable = false;
         container.prepend(placeholder);
