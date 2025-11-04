@@ -10,7 +10,7 @@ A Vite-powered personal portfolio showcasing key projects, services, and testimo
 
 ## About Priyanshu Sah
 
-Hi, I'm Priyanshu Sah — an AI/ML engineer and full-stack developer focused on shipping production-ready machine learning systems, cloud-native applications, and end-to-end product experiences. My work spans data science research, model deployment, React + Node.js development, and MLOps automation.
+Hi, I'm Priyanshu Sah an AI/ML engineer and full-stack developer focused on shipping production-ready machine learning systems, cloud-native applications, and end-to-end product experiences. My work spans data science research, model deployment, React + Node.js development, and MLOps automation.
 
 ### Core Expertise
 
@@ -114,6 +114,10 @@ vite.config.js                 # Vite configuration (default)
 3. Ensure `public/assets/` is copied alongside the build output so media and manifest files resolve correctly.
 
 Feel free to adapt the content, color palette, or assets to tailor the portfolio for your own brand.
+
+### Links
+- [Production](priyanshusah.com) - Github Pages
+- [Test](priyanshusah.pages.dev) - Cloudflare Pages
 
 ## Credits
 
