@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm install && vite build",
-    "preview": "vite preview",
-    "deploy-prod": "npm install && npm run build && npx gh-pages -d dist -b prod-deploy",
-    "deploy-test": "npm install && npm run build && del-cli \"dist/assets/images/backgrounds/*\" \"!dist/assets/images/backgrounds/1.jpg\" \"!dist/assets/images/backgrounds/backgrounds.json\" && node -e \"const fs=require('fs');const p='dist/assets/images/backgrounds/backgrounds.json';const a=JSON.parse(fs.readFileSync(p,'utf8'));fs.writeFileSync(p,JSON.stringify([a[0]],null,2),'utf8');\" && del-cli \"dist/assets/videos/backgrounds/*\" \"!dist/assets/videos/backgrounds/1.mp4\" && npx gh-pages -d dist -b dev-deploy"
+    "preview": "vite preview"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
