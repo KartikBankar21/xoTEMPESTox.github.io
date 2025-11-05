@@ -30,18 +30,33 @@ Hi, I'm Priyanshu Sah an AI/ML engineer and full-stack developer focused on ship
 
 ## Roadmap
 
-- [ ] Compress videos for seamless looping and trim clips as needed
-- [ ] Build richer animations for text, form fields, hover states, and transforms
-- [ ] Implement blurred content reveal for the About page with loading/unblur behaviour
-- [ ] Enhance Journey scroll with down-arrow prompt, container logic, and disintegration transitions
-- [ ] Tailor Journey mobile view with simplified disintegration and limit to two visible cards
-- [ ] Add a scroll-linked progress bar for the Journey section
-- [ ] Introduce a navbar pointer-follow gradient light effect
-- [ ] Animate the About section title with stroke-by-stroke drawing
-- [ ] Refresh project cards with improved UI, reveal animations, and border effects
-- [ ] Add scrolling feed for blog and LinkedIn posts
-- [ ] Expand Journey and Projects data with additional tech stack details
-- [ ] Refactor to React + Tailwind
+* [x] **Compress and optimize videos** for seamless looping; trim clips as needed for performance.
+* [ ] **Build richer animations** for text, form fields, hover states, and transforms.
+* [x] **Implement blurred content reveal** for the About page with smooth load and unblur behavior.
+* [ ] **Enhance Journey scroll experience**:
+
+  * Add down-arrow scroll prompt.
+  * Enable container scroll with one visible entry at a time.
+  * Add disintegration + blur transition (old fades, new emerges).
+  * Simplify mobile view to max two visible cards.
+* [ ] **Add a scroll-linked progress bar** tied to the Journey section.
+* [ ] **Create gradient light-follow effect** for navbar pointer.
+* [ ] **Animate Preload animation ** using stroke-by-stroke SVG animation of "Priyanshu Sah".
+* [ ] **Refresh project cards** with improved UI, reveal animations, and animated border effects.
+* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
+* [ ] **Expand Journey and Project sections** with more detailed tech stack data.
+* [ ] **Add Tech Stack listing** as a standalone section or integrated into projects.
+* [ ] **Add small “refresh page” reminder** or animation cue for dynamic content.
+* [ ] **Fix image aspect ratio (16:9)** and ensure consistent photo scaling (fit/fill).
+* [ ] **Use TEMPEST logo in navbar** on compressing to a single line with logo in middle.
+* [ ] **Create a global gradient overlay** for navbar and social bar that adapts across iOS and desktop devices.
+* [ ] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
+* [ ] **Implement Dark/Light mode ** for user preference based on system mode.
+* [ ] ** Music player ** simialr to #2 Reference
+* [ ] **Services Gradient background** anbd border animation 
+* [ ] **Refactor entire project to React + Tailwind** for better maintainability and scalability.
+
+Reference : [[1](https://www.rauliqbal.my.id/#about),[2](https://tranhuudat2004.github.io/blog.html),[3](https://theodorusclarence.com/),[4](https://www.abirthakur.com/),[5](https://portfolio-rho-one-93.vercel.app/),[Music](https://open.spotify.com/track/10FzVK0cj8of3oGw2ALYOC?si=2b2a6f563bf040e5)]
 
 ## Getting Started
 
