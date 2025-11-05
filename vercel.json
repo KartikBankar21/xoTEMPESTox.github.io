@@ -1,12 +1,13 @@
 {
-  "rewrites": [
+  "version": 2,
+  "routes": [
     {
-      "source": "/metrics-a/:path*",
-      "destination": "/_vercel/insights/:path*"
+      "src": "/metrics-a/(.*)",
+      "dest": "/_vercel/insights/$1"
     },
     {
-      "source": "/metrics-b/:path*",
-      "destination": "/_vercel/speed-insights/:path*"
+      "src": "/metrics-b/(.*)",
+      "dest": "/_vercel/speed-insights/$1"
     }
   ]
 }
