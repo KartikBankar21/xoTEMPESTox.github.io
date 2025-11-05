@@ -56,7 +56,7 @@ Hi, I'm Priyanshu Sah an AI/ML engineer and full-stack developer focused on ship
 * [ ] **Services Gradient background** anbd border animation 
 * [ ] **Refactor entire project to React + Tailwind** for better maintainability and scalability.
 
-Reference : [[1](https://www.rauliqbal.my.id/#about),[2](https://tranhuudat2004.github.io/blog.html),[3](https://theodorusclarence.com/),[4](https://www.abirthakur.com/),[5](https://portfolio-rho-one-93.vercel.app/),[Music](https://open.spotify.com/track/10FzVK0cj8of3oGw2ALYOC?si=d382f8ca65bd4fc6)]
+Reference : [[1](https://www.rauliqbal.my.id/#about),[2](https://tranhuudat2004.github.io/blog.html),[3](https://theodorusclarence.com/),[4](https://www.abirthakur.com/),[5](https://portfolio-rho-one-93.vercel.app/),[Music](https://open.spotify.com/track/10FzVK0cj8of3oGw2ALYOC?si=d382f8ca65bd4fc6 - Spotfiy embeed code comented out below]
 
 <!-- <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/2L74PiwfbQFS1QNs4XAGYj?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> -->
 ## Getting Started
