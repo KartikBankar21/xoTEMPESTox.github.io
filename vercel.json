@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/metrics-a/:path*",
+      "destination": "/_vercel/insights/:path*"
+    },
+    {
+      "source": "/metrics-b/:path*",
+      "destination": "/_vercel/speed-insights/:path*"
+    }
+  ]
+}

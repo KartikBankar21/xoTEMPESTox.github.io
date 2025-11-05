@@ -872,10 +872,12 @@
     <!-- Bundled entry -->
     <script type="module" src="/src/main.js"></script>
     <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.stats = window.stats || function () {
+        (window.statsQ = window.statsQ || []).push(arguments);
+    };
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script defer src="/metrics-a/script.js" data-endpoint="/metrics-a"></script>
+    <script defer src="/metrics-b/script.js" data-endpoint="/metrics-b"></script>
 </body>
 
 </html>
