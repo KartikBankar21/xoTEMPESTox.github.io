@@ -19,6 +19,117 @@
   color: #000000;
 }
 
+@font-face {
+  font-family: "fontello";
+  src: url("/fonts/fontello/fontello.eot@73109038");
+  src: url("/fonts/fontello/fontello.eot@73109038") format("embedded-opentype"),
+    url("/fonts/fontello/fontello.woff2@73109038") format("woff2"),
+    url("/fonts/fontello/fontello.woff@73109038") format("woff"),
+    url("/fonts/fontello/fontello.ttf@73109038") format("truetype"),
+    url("/fonts/fontello/fontello.svg@73109038") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class$="icon-"]:before,
+[class*="icon- "]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  margin-left: 0.2em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.help-circledicon-:before {
+  content: "\e800";
+}
+.clipboardicon-:before {
+  content: "\e801";
+}
+.homeicon-:before {
+  content: "\e802";
+}
+.toolsicon-:before {
+  content: "\e803";
+}
+.briefcaseicon-:before {
+  content: "\e804";
+}
+.mailicon-:before {
+  content: "\e805";
+}
+.desktopicon-:before {
+  content: "\e806";
+}
+.penicon-:before {
+  content: "\e807";
+}
+.linkicon-:before {
+  content: "\e808";
+}
+.search-1icon-:before {
+  content: "\e809";
+}
+.doc-texticon-:before {
+  content: "\f0f6";
+}
+.codeicon-:before {
+  content: "\f121";
+}
+.servericon-:before {
+  content: "\f233";
+}
+.handshake-oicon-:before {
+  content: "\f2b5";
+}
+.searchicon-:before {
+  content: "\f50d";
+}
+.chart-baricon-:before {
+  content: "\f526";
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;          /* Disable vertical scroll globally */
+}
+
+.horizontal-wrapper {
+  height: 100vh;
+  width: 100%;
+  overflow-x: auto;          /* Horizontal scrolling enabled */
+  overflow-y: hidden;        /* No vertical scroll */
+  white-space: nowrap;       /* Children sit side-by-side */
+  scroll-behavior: smooth;
+}
+
+.page-overlay {
+  display: flex;             /* Horizontal stacking */
+  height: 100%;
+}
+
+.page-section {
+  flex: 0 0 100vw;           
+  /* height: 100%; */
+  /* overflow-y: auto;          */
+  /* overflow-x: hidden; */
+  /* position: relative; */
+}
+
+
 ul {
   list-style-type: none;
   margin: 0 !important;
@@ -234,7 +345,7 @@ section {
 }
 
 .main {
-  background-color: #000000;
+  /* background-color: #000000; */
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -346,11 +457,11 @@ section {
   width: 80%;
   z-index: 999999999999;
 }
-
+ 
 .list::before,
 .socials::before {
   border-radius: inherit;
-  content: "";
+  content: " ";
   inset: 0;
   opacity: 0.9;
   pointer-events: none;
@@ -387,7 +498,7 @@ section {
   left: 50%;
   list-style: none;
   min-height: 4.4rem;
-  opacity: 0;
+  opacity: 1;
   overflow: hidden;
   padding: 0.6rem 2.2rem;
   pointer-events: none;
@@ -509,6 +620,63 @@ section {
   width: 10rem;
 }
 
+.layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+HeaderBackground {
+  position: fixed;     /* background should stay fixed */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;       /* or your background height */
+  z-index: 1;          /* behind content */
+}
+
+.page-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; /* Higher than background */
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* Ensure HeaderBackground stays in the back */
+.header-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Lower z-index to stay behind */
+}
+
+.App.horizontal-wrapper {
+  position: relative; /* Creates stacking context */
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Make sure footer is on top too */
+.footer-navbar {
+  position: relative;
+  z-index: 100; /* Above everything */
+}
+
+.page-overlay {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+
 @media (max-width: 991.98px) {
   .list .list-item:before {
     content: none;
@@ -520,7 +688,7 @@ section {
   top: -145%;
   visibility: visible;
 }
-
+ 
 .home {
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -531,16 +699,16 @@ section {
   display: -ms-flexbox;
   display: flex;
   justify-content: center;
-  top: 0;
+  /* top: 0; */
   width: 100%;
 }
 
 .home {
   background-color: transparent;
   height: 100%;
-  left: -100%;
+  left: 0;
   opacity: 1;
-  position: absolute;
+  /* position: absolute; */
   -webkit-transition: all 0.5s ease-in-out 0s;
   -o-transition: all 0.5s ease-in-out 0s;
   transition: all 0.5s ease-in-out 0s;
@@ -824,7 +992,7 @@ section {
   padding-inline: clamp(1.5rem, 5vw, 6rem);
   padding-block: clamp(5rem, 15vh, 9rem);
   position: absolute;
-  right: -100%;
+  /* right: -100%; */
   top: 0;
   -webkit-transition: all 0.5s ease-in-out 0s;
   -o-transition: all 0.5s ease-in-out 0s;
@@ -859,7 +1027,7 @@ section {
   display: grid;
   gap: clamp(1.5rem, 5vw, 4rem);
   grid-template-areas: "left center right";
-  grid-template-columns: minmax(0, 1fr) minmax(230px, clamp(16rem, 22vw, 20rem)) minmax(0, 1fr);
+  /* grid-template-columns: minmax(0, 1fr) minmax(230px, clamp(16rem, 22vw, 20rem)) minmax(0, 1fr); */
 }
 
 .about__stack {
@@ -1027,7 +1195,7 @@ section {
 
 @media (max-width: 1200px) {
   .about__layout {
-    grid-template-columns: minmax(0, 1fr) minmax(210px, clamp(15rem, 28vw, 18rem)) minmax(0, 1fr);
+    /* grid-template-columns: minmax(0, 1fr) minmax(210px, clamp(15rem, 28vw, 18rem)) minmax(0, 1fr); */
   }
 }
 
@@ -1036,7 +1204,7 @@ section {
     grid-template-areas:
       "center center"
       "left right";
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
   }
 
   .about__stack--left,
@@ -1057,7 +1225,7 @@ section {
       "center"
       "left"
       "right";
-    grid-template-columns: minmax(0, 1fr);
+    /* grid-template-columns: minmax(0, 1fr); */
   }
 
   .about__stack {
@@ -1083,7 +1251,7 @@ section {
   display: flex;
   height: 100%;
   justify-content: center;
-  left: -100%;
+  /* left: 100%; */
   opacity: 1;
   position: absolute;
   text-transform: capitalize;
@@ -1376,7 +1544,7 @@ section {
   justify-content: center;
   opacity: 1;
   position: absolute;
-  right: -100%;
+  /* right: -100%; */
   top: 0;
   -webkit-transition: all 0.5s ease-in-out 0s;
   -o-transition: all 0.5s ease-in-out 0s;
@@ -1549,7 +1717,7 @@ section {
   display: flex;
   height: 100%;
   justify-content: center;
-  left: -100%;
+  /* left: 100%; */
   opacity: 1;
   position: absolute;
   text-transform: capitalize;
@@ -1753,7 +1921,7 @@ section {
   justify-content: center;
   opacity: 1;
   position: absolute;
-  right: -100%;
+  /* right: -100%; */
   text-transform: capitalize;
   top: 0;
   -webkit-transition: all 0.5s ease-in-out 0s;
@@ -2310,8 +2478,8 @@ mark {
 }
 
 a {
-  color: #000000;
-  color: var(--bs-link-color);
+  color: #fff;
+  /* color: var(--bs-link-color); */
   text-decoration: underline;
 }
 
