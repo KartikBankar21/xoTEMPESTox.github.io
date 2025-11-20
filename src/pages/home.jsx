@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../styles/main.css";
 import { NavLink } from "react-router-dom";
 
 const Home = () => {
   const descRef = useRef(null);
   const [currentText, setCurrentText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
     const container = descRef.current;
     if (!container) return;
 
-    // respect reduced motion
+    // Respect reduced motion
     if (
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -32,38 +32,62 @@ const Home = () => {
     let roleIndex = 0;
     let charIndex = 0;
     let deleting = false;
+    let timeoutId;
 
     const typeSpeed = 75;
     const deleteSpeed = 45;
-    const holdDelay = 800;
+    const holdDelay = 1500;
 
     const tick = () => {
       const fullText = roles[roleIndex];
 
       if (!deleting) {
-        // typing
-        setCurrentText(fullText.substring(0, charIndex + 1));
+        // Typing forward
         charIndex++;
+        setCurrentText(fullText.substring(0, charIndex));
 
         if (charIndex === fullText.length) {
-          setTimeout(() => (deleting = true), holdDelay);
+          // Finished typing, wait before deleting
+          timeoutId = setTimeout(() => {
+            deleting = true;
+            tick();
+          }, holdDelay);
+          return;
         }
       } else {
-        // deleting
-        setCurrentText(fullText.substring(0, charIndex - 1));
+        // Deleting backward
         charIndex--;
+        setCurrentText(fullText.substring(0, charIndex));
 
         if (charIndex === 0) {
+          // Finished deleting, move to next role
           deleting = false;
           roleIndex = (roleIndex + 1) % roles.length;
         }
       }
 
       const nextDelay = deleting ? deleteSpeed : typeSpeed;
-      setTimeout(tick, nextDelay);
+      timeoutId = setTimeout(tick, nextDelay);
     };
 
+    // Start the animation
     tick();
+
+    // Cleanup function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 530);
+
+    return () => clearInterval(cursorInterval);
   }, []);
 
   return (
@@ -77,7 +101,7 @@ const Home = () => {
                   src="/assets/images/person/man-1-min.jpg"
                   alt="Profile picture of Priyanshu Sah"
                   draggable="false"
-                  fetchpriority="high"
+                  fetchPriority="high"
                   decoding="async"
                 />
               </div>
@@ -90,17 +114,16 @@ const Home = () => {
                   <span></span>
                 </h1>
 
-                {/* DESCRIPTION */}
                 <p
-                  className="home__info__desc my-4"
+                  className="home__info__desc my-4 text-center"
                   data-roles='["AI/ML Engineer","Full Stack Developer","@Intern at Liferythm Healthcare"]'
                   ref={descRef}
                 >
-                  <span className="typed-text__content">{currentText}</span>
-                  <span className="typed-text__cursor">|</span>
+                  <span className="typed-text__content">{currentText}<p className="inline" style={{ opacity: showCursor ? 1 : 0 }}>|</p></span>
+                  
 
-                  {/* hidden fallback */}
-                  <span className="typed-text__fallback" aria-hidden="true">
+                  {/* Hidden fallback */}
+                  <span className="typed-text__fallback" aria-hidden="true" style={{ display: 'none' }}>
                     AI/ML Engineer <br />
                     Full Stack Developer <br />
                     @Intern at Liferythm Healthcare.

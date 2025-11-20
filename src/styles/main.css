@@ -120,8 +120,8 @@ html, body {
 
 .page-section {
   flex: 0 0 100vw;           
-  min-height: calc(100vh - 9rem); /* Allow it to grow beyond viewport */
-  height: auto; /* Remove fixed height */
+  /* min-height: calc(100vh - 9rem); Allow it to grow beyond viewport */
+  /* height: auto; Remove fixed height */
 }
 
 /* * {
@@ -823,9 +823,17 @@ HeaderBackground {
 }
 
 .page-section {
-  min-height: 100vh; /* Allow section to grow */
+  min-height: 100vh;
   width: 100%;
+
+  display: flex;              
+  justify-content: center;    
+  align-items: center;        
+
+  /* optional: to stack children vertically */
+  /* flex-direction: column; */
 }
+
 
 @media (max-width: 991.98px) {
   .list .list-item:before {
@@ -1026,28 +1034,33 @@ HeaderBackground {
   white-space: nowrap;
 }
 
+/* Replace your existing .typed-text__cursor styles with this: */
 .home__info__desc .typed-text__cursor {
-  animation: typed-underline-blink 1.1s steps(2, start) infinite;
-  background-color: currentColor;
-  border-radius: 999px;
-  bottom: -0.05em;
-  display: block;
-  height: 0.18em;
-  opacity: 0.85;
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  transition:
-    width 0.48s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s ease;
-  width: 0.95ch;
+  display: inline-block;
+  margin-left: 2px;
+  font-weight: 400;
+  color: currentColor;
+  animation: cursor-blink 1.1s steps(2, start) infinite;
+  vertical-align: baseline;
 }
 
-.home__info__desc.typed-text--expanding .typed-text__cursor,
-.home__info__desc.typed-text--deleting .typed-text__cursor {
-  animation: none;
-  opacity: 0.95;
+@keyframes cursor-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
+
+/* Optional: Keep cursor solid while typing/deleting */
+.home__info__desc.typing .typed-text__cursor,
+.home__info__desc.deleting .typed-text__cursor {
+  animation: none;
+  opacity: 1;
+}
+
+
 
 .home__info__desc .typed-text__fallback {
   display: inline;
@@ -1913,6 +1926,14 @@ HeaderBackground {
   z-index: 999;
 }
 
+.services__wrapper__icons {
+  font-size: 2.5rem;
+  height: 100%;
+  width: 100%;
+  z-index: -1; /* Start behind the circle */
+  transition: z-index 0s 0.9s; /* Optional: smooth z-index change */
+}
+
 .services__wrapper__circle {
   -webkit-animation: rotation-360 10s linear infinite;
   animation: rotation-360 10s linear infinite;
@@ -1922,13 +1943,7 @@ HeaderBackground {
   padding: 0.25rem;
   position: relative;
   width: 100%;
-}
-
-.services__wrapper__icons {
-  font-size: 2.5rem;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
+  z-index: 0; /* Keep circle above icons initially */
 }
 
 .services__wrapper__icons,
@@ -1942,13 +1957,16 @@ HeaderBackground {
 }
 
 .services__wrapper__icons__item {
+  color: white;
   -webkit-box-align: center;
   -ms-flex-align: center;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background-color: #000000;
-  border: 1px solid #ffffff;
+  background: rgba(102, 126, 234, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
   cursor: pointer;
   display: -webkit-box;
@@ -1956,22 +1974,57 @@ HeaderBackground {
   display: flex;
   height: 6rem;
   justify-content: center;
+  /* position: relative; */
+  /* overflow: hidden; */
   -webkit-transform-origin: center;
   -ms-transform-origin: center;
   transform-origin: center;
-  -webkit-transition: all 0.5s ease-in-out 0.4s;
-  -o-transition: all 0.5s ease-in-out 0.4s;
-  transition: all 0.5s ease-in-out 0.4s;
+  -webkit-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
   width: 6rem;
+  box-shadow: 0 8px 32px 0 rgba(102, 126, 234, 0.2);
+}
+.services__wrapper__icons__item:hover{
+    background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(102, 126, 234, 0.4);
+  transform: scale(1.05);
 }
 
+.services__wrapper__icons__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: 
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(10, 7, 7, 0.945) 90deg,
+      /* rgba(10, 7, 7, 0.945) 120deg, */
+      transparent 180deg,
+      rgba(3, 101, 212, 0.671) 270deg,
+      transparent 360deg
+    );
+  opacity: 0;
+  transform: rotate(0deg) scale(0.1);
+  -webkit-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.services__wrapper__icons__item:hover::after {
+  opacity: 1;
+  transform: rotate(360deg) scale(1.0);
+}
 .services__wrapper__icons__item:before {
   -webkit-box-align: center;
   -ms-flex-align: center;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background-color: #000000;
+  background: #000;
   border-radius: 0.7rem;
   content: attr(data-service-name);
   display: -webkit-box;
@@ -1989,7 +2042,7 @@ HeaderBackground {
   padding: 0.3rem 1rem;
   position: absolute;
   text-align: center;
-  top: -40%;
+  top: -100%; /* push it above the icon */
   bottom: 100%;
   transform: translateY(-0.5rem);
   -webkit-transition: all 0.3s ease-in-out 0s;
@@ -1997,13 +2050,19 @@ HeaderBackground {
   transition: all 0.3s ease-in-out 0s;
   visibility: hidden;
   width: 12rem;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
 }
 
 .services__wrapper__icons__item:hover:before {
   opacity: 1;
   top: -80%;
   visibility: visible;
-  border: 1px solid #ffffff;
+  color:white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: #000;
+  transform: translateY(-0.5rem);
+   /* margin-bottom: 0.8rem; */
+   box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
 }
 
 .services__wrapper__icons__item.deg-45 {
