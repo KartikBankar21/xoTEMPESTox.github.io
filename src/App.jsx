@@ -108,7 +108,7 @@ const musicAPI = [
 ];
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
