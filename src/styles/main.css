@@ -826,9 +826,9 @@ HeaderBackground {
   min-height: 100vh;
   width: 100%;
 
-  display: flex;              
+  /* display: flex;              
   justify-content: center;    
-  align-items: center;        
+  align-items: center;         */
 
   /* optional: to stack children vertically */
   /* flex-direction: column; */

@@ -108,7 +108,7 @@ const musicAPI = [
 ];
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -309,7 +309,7 @@ const handleMuteToggle = () => {
 
     // Desktop (lg:): Fixed left, constrained by top and bottom (4 units), removing the height-breaking centering transforms.
     positionClasses +=
-      " lg:left-10 lg:w-1/5 lg:max-w-xs lg:-translate-x-0 lg:translate-y-0";
+      " lg:left-10 lg:w-1/5 lg:max-w-sm lg:-translate-x-0 lg:translate-y-0";
   } else {
     // Mobile/Tablet (default): Top-right corner, compact horizontal bar.
     positionClasses = "fixed top-0 right-0 w-58 h-12";

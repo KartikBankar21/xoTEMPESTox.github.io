@@ -477,7 +477,7 @@ export default function App() {
     }, []);
     
     const selectedPost = selectedPostId ? getPostById(selectedPostId) : null;
-
+ 
     return (
         <div className="font-sans text-gray-100 p-4 sm:p-8 min-h-screen"
              style={{ 

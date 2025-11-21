@@ -202,7 +202,7 @@ export const LoFiPlayer = ({
                             className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-[var(--lo-fi-dark)]/20 hover:bg-[var(--lo-fi-bg)]" 
                             aria-label="Skip Back"
                         >
-                            <SkipBack className="w-3 h-3 md:w-6 md:h-6" />
+                            <SkipBack className="w-6 h-6 md:w-6 md:h-6" />
                         </button>
                         {/* Play/Pause */}
                         <button 
@@ -211,9 +211,9 @@ export const LoFiPlayer = ({
                             aria-label={isPlaying ? "Pause" : "Play"}
                         >
                             {isPlaying ? (
-                                <Pause className="w-3 h-3 md:w-6 md:h-6 fill-current" />
+                                <Pause className="w-6 h-6 md:w-6 md:h-6 fill-current" />
                             ) : (
-                                <Play className="w-3 h-3 md:w-6 md:h-6 fill-current" />
+                                <Play className="w-6 h-6 md:w-6 md:h-6 fill-current" />
                             )}
                         </button>
                         {/* Skip Forward */}
@@ -222,13 +222,13 @@ export const LoFiPlayer = ({
                             className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-[var(--lo-fi-dark)]/20 hover:bg-[var(--lo-fi-bg)]" 
                             aria-label="Skip Forward"
                         >
-                            <SkipForward className="w-3 h-3 md:w-6 md:h-6" />
+                            <SkipForward className="w-6 h-6 md:w-6 md:h-6" />
                         </button>
                     </div>
 
                     {/* Heart/Like Icon */}
                     <div className="flex space-x-1">
-                        <Heart className="w-3 h-3 md:w-5 md:h-5 text-[var(--lo-fi-dark)] fill-[var(--lo-fi-dark)]" />
+                        <Heart className="w-6 h-6 md:w-6 md:h-6 text-[var(--lo-fi-dark)] fill-[var(--lo-fi-dark)]" />
                     </div>
                 </div>
             </div>

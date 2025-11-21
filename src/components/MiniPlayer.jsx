@@ -155,7 +155,7 @@ export const MiniPlayer = ({
             {currentTrack.title}
           </p>
           {/* Artist visible only on larger screens, including desktop minimized */}
-          <p className="text-lg opacity-70 hidden sm:block lg:block">
+          <p className="text-lg opacity-70 sm:block lg:block">
             {currentTrack.artist}
           </p>
         </div>
