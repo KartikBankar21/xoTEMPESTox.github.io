@@ -89,21 +89,21 @@ const musicAPI = [
     title: "Chasing",
     artist: "NEFFEX",
     songSrc: "../assets/songs/music1.mp3",
-    img: "../../public/assets/images/music/image1.jpg",
+    img: "../assets/images/music/image1.jpg",
   },
   {
     index: 2,
     title: "AURORA - Runaway",
     artist: "Aurora Aksnes",
     songSrc: "../assets/songs/music2.mp3",
-    img: "../../public/assets/images/music/image2.jpg",
+    img: "../assets/images/music/image2.jpg",
   },
   {
     index:3,
     title: "Comedy (SPY X FAMILY)",
     artist: "Kayuo. Beats",
     songSrc: "../assets/songs/music3comedy.mp3",
-    img: "../../public/assets/images/music/comedy.jpeg",
+    img: "../assets/images/music/comedy.jpeg",
   }
 ];
 
