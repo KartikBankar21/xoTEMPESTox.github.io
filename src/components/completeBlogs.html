@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Blog - Front-End Thoughts</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the "Inter" font and background gradient */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Applying a radial gradient similar to the image for depth */
+            background: radial-gradient(circle at center, #111827 0%, #000000 100%);
+            min-height: 100vh;
+        }
+
+        /* Custom glow for the header text and icon container */
+        .header-glow {
+            filter: drop-shadow(0 0 10px rgba(52, 211, 163, 0.4));
+            transition: filter 0.3s;
+        }
+
+        .search-input-container {
+            background-color: #1e293b; /* slate-800 equivalent */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-input-container:focus-within {
+             border-color: #34d399; /* green-400 */
+             box-shadow: 0 0 15px rgba(52, 211, 163, 0.6);
+        }
+
+        /* Custom glow effect on hover for the image and title in listing */
+        .glow-on-hover:hover {
+            box-shadow: 0 0 10px rgba(52, 211, 163, 0.5); /* Green-400 shadow */
+        }
+        
+        .article-card {
+            cursor: pointer;
+        }
+
+        .article-card:hover .article-title {
+            color: #bbf7d0; /* Light green on hover */
+            transition: color 0.3s;
+        }
+
+        /* Subtle dashed line separator, matching the design aesthetic */
+        .divider {
+            border-bottom: 1px dashed #374151; /* gray-700 */
+        }
+
+        /* Style for the active/focused sort button */
+        .sort-button {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Style for the topic tags */
+        .topic-tag {
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Hero Section for Detail Page */
+        .hero-bg {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-bg::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Vertical gradient overlay */
+            background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.7) 30%, rgba(0, 0, 0, 0.2) 70%, rgba(0, 0, 0, 0.1) 100%);
+            z-index: 1; 
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="text-gray-100 p-4 sm:p-8">
+
+    <div id="app" class="max-w-7xl mx-auto">
+        
+        <!-- ===================================== 1. HEADER ===================================== -->
+        <header class="max-w-3xl mx-auto text-center mb-16">
+            
+            <!-- Icon Container -->
+            <div class="inline-block p-3 bg-gray-900 border-2 border-gray-700 rounded-xl mb-6 header-glow">
+                <!-- Simple document/notes icon using SVG -->
+                <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 1.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-6xl sm:text-7xl font-extrabold mb-4">
+                <span class="text-white">The</span>
+                <span class="text-green-400 header-glow">Blog</span>
+            </h1>
+
+            <!-- Subtitle/Description -->
+            <p class="text-lg sm:text-xl text-gray-400 mb-12">
+                Thoughts, mental models, and tutorials about front-end development.
+            </p>
+
+            <!-- Search Input -->
+            <div class="search-input-container relative flex items-center w-full max-w-lg mx-auto p-4 rounded-xl border border-transparent">
+                
+                <!-- Search Icon -->
+                <svg class="w-6 h-6 text-gray-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                
+                <!-- Input Field -->
+                <input 
+                    type="text" 
+                    id="search-input"
+                    placeholder="Search titles, excerpts, and tags..." 
+                    class="flex-grow bg-transparent text-white placeholder-gray-500 text-lg focus:outline-none"
+                >
+
+                <!-- Keyboard Shortcut Hint -->
+                <div class="text-sm text-gray-500 bg-gray-900 px-2 py-1 rounded-md border border-gray-700 ml-4 flex-shrink-0 hidden sm:block">
+                    Shift S
+                </div>
+            </div>
+        </header>
+
+        <!-- ===================================== 2 & 3. MAIN CONTENT (Listing and Filtering) ===================================== -->
+        <main id="list-view" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            
+            <!-- 2. Blog Listing (Left - Takes 2/3 width on desktop) -->
+            <section id="blog-listing" class="md:col-span-2">
+                <!-- Posts will be injected here by JavaScript -->
+            </section>
+
+            <!-- 3. Filtering and Sorting (Right - Takes 1/3 width on desktop) -->
+            <aside class="md:col-span-1">
+                
+                <!-- Sort By Date Dropdown -->
+                <div id="sort-button" class="sort-button w-full cursor-pointer p-4 bg-gray-900 border-2 border-green-400 rounded-xl shadow-lg hover:shadow-green-500/20">
+                    <div class="flex items-center justify-between text-lg font-medium text-gray-100">
+                        <div class="flex items-center space-x-3">
+                            <!-- Calendar Icon (SVG) -->
+                            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span id="sort-text">Sort by date (Newest)</span>
+                        </div>
+                        <!-- Chevron/Dropdown Icon (SVG) - Rotates based on sort direction -->
+                        <svg id="sort-icon" class="w-5 h-5 text-gray-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Topic Selection -->
+                <h3 class="text-xl font-semibold mt-8 mb-4">Filter by topics</h3>
+                
+                <div id="topic-filters" class="flex flex-wrap gap-3">
+                    <!-- Tags will be injected here by JavaScript -->
+                </div>
+
+                <div id="active-filters" class="mt-6">
+                    <!-- Active filter visualization -->
+                </div>
+
+            </aside>
+        </main>
+
+        <!-- ===================================== 4. DETAILED PAGE ===================================== -->
+        <div id="detail-view" class="hidden">
+            <button id="back-button" class="flex items-center space-x-2 text-gray-400 hover:text-green-400 mb-8 transition-colors duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span>Back to Blog</span>
+            </button>
+
+            <!-- Hero Section Container (Dynamically set background) -->
+            <div id="detail-hero" class="hero-bg min-h-[400px] sm:min-h-[500px] rounded-xl overflow-hidden">
+                
+                <!-- Content within the Hero Section -->
+                <div id="detail-hero-content" class="hero-content max-w-5xl mx-auto px-4 sm:px-8 pt-20 pb-8 flex flex-col justify-end h-full">
+                    <!-- Hero content (title, excerpt, author) injected here -->
+                </div>
+            </div>
+
+            <!-- Main Post Body -->
+            <article class="max-w-3xl mx-auto mt-12 px-4 sm:px-0">
+                <div id="post-body" class="prose prose-invert max-w-none text-gray-300">
+                    <!-- Post content injected here -->
+                </div>
+            </article>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        const BLOG_POSTS = [
+            { id: 1, title: "The 2024 Retrospective", date: "2024-12-31", excerpt: "First Full-Time Year, Solo Travel while Working, Socializing, and more!", readTime: 10, views: 4097, tags: ["retro", "life"], imageUrl: "https://placehold.co/144x144/222222/FFD700?text=2024", body: "This is the full retrospective post content. A detailed look at the year's achievements and lessons learned, covering everything from professional growth to personal travels and social life...", heroImage: "https://placehold.co/1200x500/0a0a0a/34d399?text=2024+Review", author: "Theodorus Clarence", likes: 512 },
+            { id: 2, title: "List Animation using Motion for React", date: "2024-12-17", excerpt: "An in-depth guide on how to animate enter and exit animation for list using Motion for React (previously Framer Motion).", readTime: 6, views: 7228, tags: ["react", "animation"], imageUrl: "https://placehold.co/144x144/282a36/F8F8F2?text=Motion", body: "A comprehensive tutorial on creating fluid and beautiful list transitions in React using the latest techniques from Motion. Covers keyframes, layout, and performance optimization. It's a must-read for serious front-end developers.", heroImage: "https://placehold.co/1200x500/1e293b/a5f3fc?text=React+Motion", author: "Theodorus Clarence", likes: 220 },
+            { id: 3, title: "CSS Grid vs. Flexbox: A modern guide", date: "2024-11-25", excerpt: "When to use Grid for two-dimensional layouts and when Flexbox is sufficient for one-dimensional flows.", readTime: 8, views: 5100, tags: ["css", "grid", "flexbox"], imageUrl: "https://placehold.co/144x144/334155/e0f7fa?text=Layout", body: "Deep dive into the differences between CSS Grid and Flexbox. We look at real-world examples and common anti-patterns to ensure you choose the right tool for the job. Mastering both is key to modern web development.", heroImage: "https://placehold.co/1200x500/0f172a/94a3b8?text=Grid+vs+Flex", author: "Theodorus Clarence", likes: 350 },
+            { id: 4, title: "Vite for Next-Gen Front-End Setup", date: "2024-10-10", excerpt: "How Vite revolutionized my development workflow and its benefits over traditional bundlers like Webpack.", readTime: 5, views: 3200, tags: ["vite", "tools", "setup"], imageUrl: "https://placehold.co/144x144/475569/cbd5e1?text=Vite", body: "Exploring the speed and simplicity of Vite.js. We cover configuration, hot module replacement, and deploying a Vite-powered application. This tool drastically reduces build times.", heroImage: "https://placehold.co/1200x500/1f2937/d1d5db?text=Vite+Setup", author: "Theodorus Clarence", likes: 180 },
+        ];
+
+        // Collect all unique tags for the filter UI
+        const ALL_TAGS = [...new Set(BLOG_POSTS.flatMap(post => post.tags))].sort();
+
+
+        // --- STATE & ELEMENTS ---
+        let currentPage = 'list'; // 'list' or 'detail'
+        let currentFilters = {
+            tags: [],
+            search: '',
+            sortDir: 'desc' // 'desc' for newest first, 'asc' for oldest first
+        };
+        
+        const $listView = document.getElementById('list-view');
+        const $detailView = document.getElementById('detail-view');
+        const $blogListing = document.getElementById('blog-listing');
+        const $topicFilters = document.getElementById('topic-filters');
+        const $searchInput = document.getElementById('search-input');
+        const $sortButton = document.getElementById('sort-button');
+        const $sortIcon = document.getElementById('sort-icon');
+        const $sortText = document.getElementById('sort-text');
+        const $backButton = document.getElementById('back-button');
+
+        const $detailHero = document.getElementById('detail-hero');
+        const $detailHeroContent = document.getElementById('detail-hero-content');
+        const $postBody = document.getElementById('post-body');
+
+
+        // --- RENDERING FUNCTIONS ---
+
+        function formatViews(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k views';
+            }
+            return num + ' views';
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+        }
+
+        function renderPostCard(post) {
+            const dateStr = formatDate(post.date);
+            const viewsStr = formatViews(post.views);
+
+            const tagsHtml = post.tags.map(tag => 
+                `<span class="bg-gray-800 text-gray-400 text-xs font-medium px-3 py-1 rounded-full">${tag}</span>`
+            ).join('');
+
+            const html = `
+                <article data-post-id="${post.id}" class="article-card flex flex-col sm:flex-row justify-between items-start py-8 divider cursor-pointer">
+                    
+                    <!-- Text Content -->
+                    <div class="flex-grow pr-0 sm:pr-8 mb-4 sm:mb-0">
+                        <p class="text-sm font-medium text-gray-400 mb-1">${dateStr}</p>
+                        <h2 class="article-title text-3xl font-extrabold leading-tight text-green-400 hover:text-green-300 transition-colors duration-300">
+                            ${post.title}
+                        </h2>
+                        <p class="text-base text-gray-300 mt-2">${post.excerpt}</p>
+                        
+                        <!-- Metadata and Tags Container -->
+                        <div class="flex flex-wrap items-center justify-start mt-4 space-y-2 sm:space-y-0">
+                            <div class="flex items-center space-x-4 text-sm text-gray-400 flex-shrink-0">
+                                <!-- Read Time -->
+                                <div class="flex items-center space-x-1">
+                                    <!-- Clock Icon -->
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span>${post.readTime} min read</span>
+                                </div>
+                                <!-- View Count -->
+                                <div class="flex items-center space-x-1">
+                                    <!-- Eye Icon -->
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    <span>${viewsStr}</span>
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div class="flex items-center space-x-2 flex-wrap mt-2 sm:mt-0 sm:ml-4">
+                                ${tagsHtml}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Thumbnail -->
+                    <div class="flex-shrink-0 w-full sm:w-auto mt-4 sm:mt-0">
+                        <img
+                            class="glow-on-hover w-full h-auto sm:w-36 sm:h-36 object-cover rounded-xl shadow-2xl transition duration-300"
+                            src="${post.imageUrl}"
+                            alt="${post.title} thumbnail"
+                            onerror="this.onerror=null;this.src='https://placehold.co/144x144/222222/FFD700?text=Image';"
+                        >
+                    </div>
+                </article>
+            `;
+            return html;
+        }
+
+        function renderBlogPosts() {
+            let posts = [...BLOG_POSTS]; // Work on a copy
+
+            // 1. Filtering by Tags
+            if (currentFilters.tags.length > 0) {
+                posts = posts.filter(post => 
+                    currentFilters.tags.some(tag => post.tags.includes(tag))
+                );
+            }
+
+            // 2. Search
+            if (currentFilters.search) {
+                const searchLower = currentFilters.search.toLowerCase();
+                posts = posts.filter(post => 
+                    post.title.toLowerCase().includes(searchLower) ||
+                    post.excerpt.toLowerCase().includes(searchLower) ||
+                    post.tags.some(tag => tag.toLowerCase().includes(searchLower))
+                );
+            }
+
+            // 3. Sorting
+            posts.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                if (currentFilters.sortDir === 'desc') {
+                    return dateB - dateA; // Newest first
+                } else {
+                    return dateA - dateB; // Oldest first
+                }
+            });
+
+            // 4. Render
+            if (posts.length === 0) {
+                $blogListing.innerHTML = `
+                    <div class="text-center py-16 border-2 border-gray-800 rounded-xl">
+                        <p class="text-xl text-gray-500">No posts found matching your criteria.</p>
+                        <p class="text-sm text-gray-600 mt-2">Try adjusting your filters or search terms.</p>
+                    </div>
+                `;
+            } else {
+                $blogListing.innerHTML = posts.map(renderPostCard).join('');
+            }
+            
+            // Re-attach click handlers to newly rendered cards
+            document.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const postId = parseInt(card.dataset.postId);
+                    showDetailView(postId);
+                });
+            });
+        }
+
+        function renderTagFilters() {
+            $topicFilters.innerHTML = ALL_TAGS.map(tag => {
+                const isActive = currentFilters.tags.includes(tag);
+                const activeClass = isActive 
+                    ? 'bg-green-600 text-white shadow-green-500/50 ring-2 ring-green-400' 
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white';
+                return `
+                    <button data-tag="${tag}" class="topic-tag ${activeClass} px-4 py-2 text-sm font-medium rounded-lg shadow-md">${tag}</button>
+                `;
+            }).join('');
+
+            // Attach click listeners to tags
+            $topicFilters.querySelectorAll('.topic-tag').forEach(button => {
+                button.addEventListener('click', toggleTagFilter);
+            });
+        }
+        
+        // --- NAVIGATION & INTERACTION LOGIC ---
+
+        function toggleView() {
+            if (currentPage === 'list') {
+                $listView.classList.remove('hidden');
+                $detailView.classList.add('hidden');
+            } else {
+                $listView.classList.add('hidden');
+                $detailView.classList.remove('hidden');
+            }
+        }
+
+        function showDetailView(postId) {
+            const post = BLOG_POSTS.find(p => p.id === postId);
+            if (!post) return;
+
+            // 1. Update Hero Section
+            $detailHero.style.backgroundImage = `url('${post.heroImage}')`;
+            
+            const tagsHtml = post.tags.map(tag => 
+                `<span class="bg-gray-700/50 text-gray-300 text-sm font-medium px-3 py-1 rounded-md">${tag}</span>`
+            ).join('');
+
+            const dateStr = formatDate(post.date);
+            const viewsStr = post.views.toLocaleString();
+
+            $detailHeroContent.innerHTML = `
+                <!-- Tags -->
+                <div class="flex space-x-2 mb-4 mt-auto">
+                    ${tagsHtml}
+                </div>
+
+                <!-- Title -->
+                <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-3">
+                    ${post.title}
+                </h1>
+
+                <!-- Subtitle/Excerpt -->
+                <p class="text-lg text-gray-300 mb-8 max-w-3xl">
+                    ${post.excerpt}
+                </p>
+
+                <!-- Author Section -->
+                <div class="flex items-center space-x-3 mb-8">
+                    <img 
+                        class="w-10 h-10 rounded-full object-cover" 
+                        src="https://placehold.co/40x40/5d5d5d/ffffff?text=TC" 
+                        alt="Author ${post.author}"
+                        onerror="this.onerror=null;this.src='https://placehold.co/40x40/5d5d5d/ffffff?text=TC';"
+                    >
+                    <div>
+                        <p class="font-semibold text-white">${post.author}</p>
+                        <p class="text-sm text-gray-400">${dateStr}</p>
+                    </div>
+                </div>
+
+                <!-- Metadata Footer -->
+                <div class="flex justify-between items-center pt-6 border-t border-gray-700/50 text-sm text-gray-400">
+                    <div class="flex space-x-6">
+                        <!-- Views -->
+                        <div class="flex items-center space-x-1">
+                            <!-- Eye Icon -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <span>${viewsStr} views</span>
+                        </div>
+                        <!-- Read Time -->
+                        <div class="flex items-center space-x-1">
+                            <!-- Clock Icon -->
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>${post.readTime} min read</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Likes -->
+                    <div class="flex items-center space-x-1">
+                        <!-- Heart Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        <span>${post.likes.toLocaleString()} likes</span>
+                    </div>
+                </div>
+            `;
+            
+            // 2. Update Post Body Content
+            $postBody.innerHTML = `
+                <p class="text-xl leading-relaxed font-serif">${post.body}</p>
+                <h2 class="mt-8 text-2xl font-bold">Key Takeaways</h2>
+                <ul>
+                    <li>The front-end landscape is constantly evolving, requiring continuous learning.</li>
+                    <li>Performance optimization is not optional; it's central to the user experience.</li>
+                    <li>Modern tools like React and Vite dramatically improve developer velocity.</li>
+                </ul>
+                <p>Thank you for reading this post. If you enjoyed it, consider sharing it on social media!</p>
+            `;
+            
+            // 3. Switch View
+            currentPage = 'detail';
+            toggleView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showListView() {
+            currentPage = 'list';
+            toggleView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // --- EVENT HANDLERS ---
+        
+        function toggleSortDirection() {
+            currentFilters.sortDir = currentFilters.sortDir === 'desc' ? 'asc' : 'desc';
+            
+            // Update UI
+            if (currentFilters.sortDir === 'desc') {
+                $sortText.textContent = 'Sort by date (Newest)';
+                $sortIcon.style.transform = 'rotate(0deg)';
+            } else {
+                $sortText.textContent = 'Sort by date (Oldest)';
+                $sortIcon.style.transform = 'rotate(180deg)';
+            }
+            
+            renderBlogPosts();
+        }
+
+        function toggleTagFilter(event) {
+            const tag = event.target.dataset.tag;
+            const index = currentFilters.tags.indexOf(tag);
+
+            if (index > -1) {
+                // Remove tag
+                currentFilters.tags.splice(index, 1);
+            } else {
+                // Add tag
+                currentFilters.tags.push(tag);
+            }
+
+            renderTagFilters(); // Re-render filters to update active state
+            renderBlogPosts();  // Re-render posts based on new filters
+        }
+        
+        function handleSearch() {
+            currentFilters.search = $searchInput.value.trim();
+            renderBlogPosts();
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            // Initial render
+            renderTagFilters();
+            renderBlogPosts();
+            toggleView();
+            
+            // Attach main event listeners
+            $sortButton.addEventListener('click', toggleSortDirection);
+            $backButton.addEventListener('click', showListView);
+            $searchInput.addEventListener('input', handleSearch);
+            
+            // Keyboard shortcut for search
+            document.addEventListener('keydown', (e) => {
+                if (e.shiftKey && e.key === 'S' && currentPage === 'list') {
+                    e.preventDefault();
+                    $searchInput.focus();
+                }
+            });
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>

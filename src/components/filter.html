@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Filters</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the "Inter" font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style for the active/focused sort button */
+        .sort-button {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0); /* Placeholder for inner shadow effect */
+        }
+        
+        /* Style for the topic tags */
+        .topic-tag {
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Hover effect for the tag chips */
+        .topic-tag:hover {
+            background-color: #374151; /* gray-700 */
+            box-shadow: 0 0 5px rgba(52, 211, 163, 0.5); /* Subtle green glow */
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-xs mx-auto md:mx-0">
+        
+        <!-- 1. Sort By Date Dropdown -->
+        <div class="sort-button w-full cursor-pointer p-4 bg-gray-900 border-2 border-green-400 rounded-xl shadow-lg hover:shadow-green-500/20">
+            <div class="flex items-center justify-between text-lg font-medium text-gray-100">
+                <div class="flex items-center space-x-3">
+                    <!-- Calendar Icon (SVG) -->
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span>Sort by date</span>
+                </div>
+                <!-- Chevron/Dropdown Icon (SVG) -->
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+            </div>
+        </div>
+
+        <!-- 2. Topic Selection -->
+        <h3 class="text-xl font-semibold mt-8 mb-4">Choose topics</h3>
+        
+        <div class="flex flex-wrap gap-3">
+            <!-- List of Topic Tags -->
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">nextjs</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">react</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">css</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">tailwindcss</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">retro</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">flexbox</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">design</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">tips</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">grid</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">tools</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">vite</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">core-concept</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">git</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">pattern</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">typescript</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">setup</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">form</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">swift</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">web</button>
+            <button class="topic-tag bg-gray-800 text-gray-300 px-4 py-2 text-sm font-medium rounded-lg shadow-md hover:bg-gray-700 hover:text-white">animation</button>
+        </div>
+
+    </div>
+
+</body>
+</html>

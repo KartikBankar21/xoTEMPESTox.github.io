@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/main.css";
-// import ProjectCard from "../components/ProjectCard";
 
 const Socials = () => {
   return (
@@ -162,9 +161,7 @@ const Socials = () => {
           </a>
         </li>
       </ul>
-      <div className="flex justify-center items-center">
-      {/* <CopiedCard/> */}
-      {/* <ProjectCard /> */}
+      <div className="">
       </div>
 
     </div>

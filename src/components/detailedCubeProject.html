@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlisted Valley Project Detail</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use a dark theme and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark': '#0f172a', // slate-900
+                        'secondary-dark': '#1e293b', // slate-800
+                        'accent-blue': '#6366f1', // indigo-500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling for a darker look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* secondary-dark */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* slate-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* slate-500 */
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Project Detail Card Container -->
+    <div class="w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden text-gray-200">
+        
+        <!-- Header Section -->
+        <header class="p-6 pb-4 border-b border-slate-800/50 flex justify-between items-start">
+            <div>
+                <!-- Icon and Title -->
+                <div class="flex items-center space-x-3 mb-1">
+                    <!-- Placeholder for the chart/mountain icon (using a Unicode symbol) -->
+                    <span class="text-indigo-400 text-2xl" aria-hidden="true">&#128200;</span>
+                    <h1 class="text-2xl font-bold text-white leading-tight">Unlisted Valley</h1>
+                </div>
+                <p class="text-sm text-gray-400">Stock analytics platform with admin CMS, SEO, and high-performance backend</p>
+            </div>
+            
+            <!-- Close Button (using an SVG cross) -->
+            <button class="text-gray-400 hover:text-white transition-colors p-1 -mt-1 -mr-1 rounded-full hover:bg-slate-800" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content Body -->
+        <div class="p-6 space-y-8">
+
+            <!-- 1. Description Section -->
+            <section>
+                <h2 class="text-lg font-semibold text-indigo-400 mb-2">Description</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Full-stack unlisted shares platform with custom CMS to manage stocks, blogs, and news. Features optimized Express backend, high Lighthouse scores, and Google Sheets integration for outreach.
+                </p>
+            </section>
+
+            <!-- 2. Tech Stack Section -->
+            <section>
+                <h2 class="text-lg font-semibold text-indigo-400 mb-3">Tech Stack</h2>
+                <div class="flex flex-wrap gap-2">
+                    
+                    <!-- Tech Badge Component -->
+                    <div class="flex items-center bg-slate-800 text-cyan-300 text-sm font-medium px-3 py-1 rounded-full border border-slate-700">
+                        <span class="mr-2 text-base" aria-hidden="true">&lt;/&gt;</span>
+                        <span>React</span>
+                    </div>
+
+                    <div class="flex items-center bg-slate-800 text-green-400 text-sm font-medium px-3 py-1 rounded-full border border-slate-700">
+                        <!-- Node.js icon placeholder (simple circle) -->
+                        <span class="mr-2 text-base" aria-hidden="true">&#9679;</span>
+                        <span>Node.js</span>
+                    </div>
+
+                    <div class="flex items-center bg-slate-800 text-sky-400 text-sm font-medium px-3 py-1 rounded-full border border-slate-700">
+                        <!-- MongoDB icon placeholder (simple M) -->
+                        <span class="mr-2 text-base font-serif" aria-hidden="true">M</span>
+                        <span>MongoDB</span>
+                    </div>
+
+                    <div class="flex items-center bg-slate-800 text-cyan-300 text-sm font-medium px-3 py-1 rounded-full border border-slate-700">
+                        <span class="mr-2 text-base" aria-hidden="true">&lt;/&gt;</span>
+                        <span>Tailwind CSS</span>
+                    </div>
+                    
+                    <div class="flex items-center bg-slate-800 text-blue-500 text-sm font-medium px-3 py-1 rounded-full border border-slate-700">
+                        <!-- DigitalOcean icon placeholder (water drop) -->
+                        <span class="mr-2 text-base" aria-hidden="true">&#9752;</span>
+                        <span>DigitalOcean</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Key Highlights Section -->
+            <section>
+                <h2 class="text-lg font-semibold text-indigo-400 mb-3">Key Highlights</h2>
+                <ul class="list-disc list-outside ml-5 space-y-2 text-gray-300 marker:text-indigo-400">
+                    <li class="pl-1">
+                        Built custom CMS to add/manage stocks, financials, blogs (via React Quill), and linked news articles
+                    </li>
+                    <li class="pl-1">
+                        Optimized Express backend with parallel data processing and sampling to reduce latency by 65% and payload size by 85%
+                    </li>
+                    <li class="pl-1">
+                        Achieved 95+ Lighthouse scores via Cloudinary CDN, skeleton loaders, and preloading of critical assets
+                    </li>
+                    <li class="pl-1">
+                        Deployed on DigitalOcean with Nginx reverse proxy, custom domain, SSL config, and Google Sheets API for contact form
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- Call to Action Button -->
+        <div class="p-6 pt-0">
+            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-indigo-600/30 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
+                <!-- Placeholder for the Globe/Website icon (using a Unicode symbol) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span>Website</span>
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

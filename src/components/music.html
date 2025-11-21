@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Lo-Fi Music Player</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Tailwind Configuration */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        /* Original Pinkish/Lavender Theme */
+                        'lo-fi-bg': '#f8f4ff',
+                        'lo-fi-ui': '#e5d4f9',
+                        'lo-fi-accent': '#c6aee3',
+                        'lo-fi-dark': '#5a3d8b',
+                        /* Minimized Bar Dark Theme */
+                        'mini-bg': '#282828', /* We'll actually use the lo-fi colors, but darker pink */
+                        'mini-text': '#f0f0f0',
+                        'mini-vertical-bg': '#e5d4f9', /* Same as lo-fi-ui */
+                        'mini-vertical-border': '#c6aee3', /* Same as lo-fi-accent */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['VT323', 'monospace'],
+                    }
+                }
+            }
+        }
+
+        body {
+            /* Removed centering styles to allow fixed positioning */
+            background-color: #f3eaf8;
+            min-height: 100vh;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease;
+        }
+
+        .icon-btn {
+            @apply p-2 rounded-xl transition duration-150 ease-in-out hover:bg-lo-fi-bg active:scale-95 shadow-inner;
+        }
+
+        /* --- Custom Transition Classes for Player Expansion --- */
+        #player-container {
+            /* Fixed positioning to the bottom left corner */
+            position: fixed; 
+            bottom: 1rem; 
+            left: 1rem;
+            z-index: 1000;
+            
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            /* Transform Origin remains 'bottom left' for expansion outwards and upwards */
+            transform-origin: bottom left; 
+        }
+
+        .minimized {
+            /* New dimensions for the vertical bar */
+            width: 4.5rem; /* Narrow */
+            height: 20rem; /* Tall */
+            padding: 0.5rem;
+            border-radius: 1rem; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            /* Resetting background color for the vertical bar theme */
+            background-color: var(--lo-fi-ui);
+            border: 2px solid var(--lo-fi-accent);
+        }
+
+        /* Styling for the content inside the minimized vertical bar */
+        #mini-player-content {
+            /* Align content vertically */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 0.5rem 0; /* Vertical padding inside */
+            color: var(--lo-fi-dark);
+        }
+
+        .expanded {
+            /* Expanded size (same as before) */
+            width: 100%;
+            max-width: 384px; 
+            height: auto;
+            padding: 1rem;
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for rotated text/elements in the vertical bar */
+        .vertical-text {
+            writing-mode: vertical-rl; /* Rotate text 90 degrees clockwise */
+            transform: rotate(180deg); /* Flip it to read bottom-to-top */
+            white-space: nowrap;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        /* Adjust body background when expanded to match original design */
+        body.expanded-bg {
+            background-color: #f3eaf8;
+        }
+    </style>
+</head>
+<body class="bg-lo-fi-bg" id="body">
+    <!-- Note: Added a large content block to simulate a real website background -->
+    <div class="absolute inset-0 bg-lo-fi-bg p-8 flex items-center justify-center text-lo-fi-dark/70 text-4xl font-bold z-0">
+        <h1>Website Main Content Area</h1>
+    </div>
+
+
+    <!-- Player Container - Handles the transition between states -->
+    <div id="player-container" class="minimized bg-mini-vertical-bg border-mini-vertical-border">
+
+        <!-- Minimized Player (Default State - Vertical Bar) -->
+        <div id="mini-player" class="h-full">
+            <div id="mini-player-content">
+                
+                <!-- Volume/Mute Icon -->
+                <div class="flex flex-col items-center space-y-2">
+                    <i data-lucide="volume-2" class="w-5 h-5 text-lo-fi-dark"></i>
+                </div>
+
+                <!-- Play/Expand Button (Click to transition) -->
+                <button id="expand-button" class="bg-lo-fi-accent p-2 rounded-full hover:bg-lo-fi-dark/10 active:scale-95 shadow-lg flex items-center justify-center">
+                    <i data-lucide="play" class="w-5 h-5 fill-lo-fi-dark text-lo-fi-dark"></i>
+                </button>
+                
+                <!-- Song Info (Rotated) -->
+                <div class="vertical-text flex flex-col items-start space-y-1">
+                    <p class="text-sm font-semibold tracking-wide">Happy Birthday</p>
+                    <p class="text-xs opacity-70">Birthday Song</p>
+                </div>
+                
+                <!-- Album Art Placeholder (Bottom Left) -->
+                <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg shadow-md flex items-center justify-center text-xs font-bold text-white">
+                    N&Q
+                </div>
+            </div>
+        </div>
+
+        <!-- Expanded Lo-Fi Player (Hidden by default) -->
+        <div id="lofi-player" class="hidden">
+            <!-- Content from the original pinkish player -->
+            <div class="w-full bg-lo-fi-ui rounded-[2.5rem] border-4 border-lo-fi-accent">
+
+                <!-- Header: Title and Top Collapse Button -->
+                <div class="w-full bg-lo-fi-accent rounded-xl px-4 py-2 mb-3 shadow-md border border-lo-fi-dark/20">
+                    <div class="flex justify-between items-center relative">
+                        <!-- Left Spacer (to help center the title) -->
+                        <div class="w-6 h-6"></div>
+
+                        <!-- Song Title Display (Centered) -->
+                        <h1 class="font-mono text-xl md:text-2xl text-lo-fi-dark uppercase tracking-widest text-center flex-1">
+                            doehli - denial is a river
+                        </h1>
+
+                        <!-- Top Right Minimize Button -->
+                        <button id="collapse-button" class="bg-lo-fi-ui text-lo-fi-dark p-1 rounded-full hover:bg-lo-fi-bg active:scale-95 transition-all shadow-inner border border-lo-fi-dark/20">
+                            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Media Window -->
+                <div class="w-full aspect-[3/4] bg-gray-600 rounded-xl overflow-hidden relative shadow-inner border-2 border-lo-fi-accent/50">
+                    <!-- Placeholder Image/Video Area - Using a fitting placeholder image -->
+                    <img src="https://placehold.co/400x533/c6aee3/ffffff?text=Lo-Fi+Window+View"
+                        alt="Lo-fi animated landscape"
+                        class="w-full h-full object-cover opacity-70"
+                        onerror="this.onerror=null; this.src='https://placehold.co/400x533/c6aee3/ffffff?text=Lo-Fi+Window+View'"
+                    >
+
+                    <!-- Faux Playback Bar Area Overlay -->
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <!-- Progress Bar -->
+                        <div class="h-1.5 w-full bg-lo-fi-dark/30 rounded-full mb-2 relative">
+                            <!-- Progress (70% complete) -->
+                            <div class="h-full bg-white rounded-full" style="width: 70%;"></div>
+                            <!-- Thumb (Indicator) -->
+                            <div class="absolute top-1/2 -mt-1.5 right-[30%] w-3 h-3 rounded-full bg-lo-fi-dark shadow-xl border-2 border-lo-fi-bg"></div>
+                        </div>
+
+                        <!-- Time/Heart Indicator (Bottom Left of Main Screen) -->
+                        <div class="flex justify-between items-center text-lo-fi-dark text-sm">
+                            <span class="font-mono">2:45 / 3:52</span>
+                            <!-- Like/Heart Icon (Filled and clickable) -->
+                            <div class="icon-btn bg-lo-fi-accent text-lo-fi-dark/90 p-1.5 flex items-center justify-center">
+                                <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="w-full bg-lo-fi-accent p-4 mt-3 rounded-xl shadow-md border border-lo-fi-dark/20">
+                    <div class="flex justify-between items-center">
+
+                        <!-- Left Section: Menu Button -->
+                        <button class="bg-lo-fi-ui icon-btn text-lo-fi-dark text-xl font-mono px-4 py-2 shadow-inner border border-lo-fi-dark/20">
+                            Menu
+                        </button>
+
+                        <!-- Center Section: Playback Buttons -->
+                        <div class="flex items-center space-x-2 md:space-x-3">
+                            <!-- Skip Backward -->
+                            <button class="bg-lo-fi-ui icon-btn text-lo-fi-dark shadow-inner border border-lo-fi-dark/20">
+                                <i data-lucide="skip-back" class="w-6 h-6"></i>
+                            </button>
+                            <!-- Pause Button -->
+                            <button id="pause-button-expanded" class="bg-lo-fi-ui icon-btn text-lo-fi-dark shadow-inner border border-lo-fi-dark/20">
+                                <i data-lucide="pause" class="w-6 h-6"></i>
+                            </button>
+                            <!-- Skip Forward -->
+                            <button class="bg-lo-fi-ui icon-btn text-lo-fi-dark shadow-inner border border-lo-fi-dark/20">
+                                <i data-lucide="skip-forward" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+
+                        <!-- Right Section: Status/Favorite Icons (Removed collapse button here) -->
+                        <div class="flex space-x-1">
+                            <i data-lucide="heart" class="w-5 h-5 text-lo-fi-dark fill-lo-fi-dark"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initialize Lucide Icons to render SVG elements
+        lucide.createIcons();
+
+        const playerContainer = document.getElementById('player-container');
+        const miniPlayer = document.getElementById('mini-player');
+        const lofiPlayer = document.getElementById('lofi-player');
+        const expandButton = document.getElementById('expand-button');
+        const collapseButton = document.getElementById('collapse-button'); 
+        const body = document.getElementById('body');
+
+        // Function to expand the player
+        function expandPlayer() {
+            // 1. Change the background color of the body (if needed, although it's static now)
+            body.classList.remove('bg-mini-bg'); // Although bg-lo-fi-bg is used, keep for clarity
+            body.classList.add('bg-lo-fi-bg', 'expanded-bg');
+
+            // 2. Apply expansion classes and color to the container
+            // Remove minimized dimensions and add expanded ones
+            playerContainer.classList.remove('minimized');
+            playerContainer.classList.add('expanded', 'bg-lo-fi-ui');
+
+            // 3. Hide the mini player content immediately
+            miniPlayer.classList.add('hidden');
+
+            // 4. Wait for the transition to settle, then display the lofi content
+            setTimeout(() => {
+                lofiPlayer.classList.remove('hidden');
+            }, 500);
+        }
+
+        // Function to collapse the player
+        function collapsePlayer() {
+            // 1. Hide the lofi content immediately
+            lofiPlayer.classList.add('hidden');
+
+            // 2. Change the background color of the body
+            body.classList.remove('bg-lo-fi-bg', 'expanded-bg');
+            body.classList.add('bg-lo-fi-bg'); // Keep it the same for a seamless look
+
+            // 3. Apply minimized classes and color to the container
+            setTimeout(() => {
+                playerContainer.classList.remove('expanded', 'bg-lo-fi-ui');
+                playerContainer.classList.add('minimized');
+
+                // 4. Show the mini player content after container transition is complete
+                setTimeout(() => {
+                    miniPlayer.classList.remove('hidden');
+                }, 500);
+            }, 50);
+        }
+
+
+        // Event listeners
+        expandButton.addEventListener('click', expandPlayer);
+        collapseButton.addEventListener('click', collapsePlayer);
+
+        // Simple click feedback for other buttons (demonstration)
+        document.querySelectorAll('.icon-btn').forEach(button => {
+            if (button.id !== 'expand-button' && button.id !== 'collapse-button') {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    console.log(`Button clicked: ${button.textContent.trim() || button.querySelector('i').getAttribute('data-lucide')}`);
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
