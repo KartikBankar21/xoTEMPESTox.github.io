@@ -119,8 +119,8 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0); // Current time in seconds
   const [playbackProgress, setPlaybackProgress] = useState(0); // 0-100% for slider
   const [duration, setDuration] = useState(NaN); // Total duration in seconds
-  const [prevVolume, setPrevVolume] = useState(0.5);
-  const [volume, setVolume] = useState(1); // 50% volume
+  const [prevVolume, setPrevVolume] = useState(0.35);
+  const [volume, setVolume] = useState(0.35); // 50% volume
 
   const currentAudio = useRef(null);
 
