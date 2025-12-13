@@ -128,68 +128,90 @@ export const MiniPlayer = ({
   isMuted,
   setIsMuted,
   handleMuteToggle,
+  handleAudioPlay,
 }) => {
   return (
     // Default (Mobile/Tablet): Horizontal (flex-row)
     // Desktop (lg:): Vertical (lg:flex-col)
-    <div
-      id="mini-player-content"
-      className="flex flex-row items-end justify-center lg:flex-col lg:rotate-180 lg:justify-between lg:items-center h-full w-full px-2 py-1 lg:p-2 text-[var(--lo-fi-dark)]"
-    >
-      {/* Album Art: Always visible, fixed size */}
-      <div className="w-9 h-9 lg:w-16 lg:h-16 rounded-lg lg:rotate-90 shadow-md flex-shrink-0 overflow-hidden">
-        <img
-          src={currentTrack.img}
-          alt="Album Art"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Song Info: Horizontal on mobile, Rotated on desktop */}
-      <div className="flex-grow flex items-center justify-center p-2">
+    <div className="relative h-full w-full overflow-hidden">
+      <div
+        className="absolute inset-0 bg-[#000000] "
+        style={{
+          filter: "url(#nnnoise-filter)",
+        }}
+        // onClick={onExpand}
+      />
+      <div
+        id="mini-player-content"
+        className="flex flex-row items-end justify-center lg:flex-col lg:rotate-180 lg:justify-between lg:items-center h-full w-full px-2 py-1 lg:p-2 text-[var(--lo-fi-dark)] "
+      >
+        {/* Album Art: Always visible, fixed size */}
         <div
-          className="flex flex-col rotated-text-container lg:vertical-rl lg:rotate-90 lg:justify-center lg:items-start space-y-0 lg:space-y-1 truncate flex-grow mx-0 lg:mx-0 lg:mt-4 lg:mb-4 text-center"
-          style={verticalTextStyle}
-        >
-          <p className="text-xs lg:text-xl font-bold tracking-wide truncate max-w-[100px] lg:max-w-none">
-            {currentTrack.title}
-          </p>
-          {/* Artist visible only on larger screens, including desktop minimized */}
-          <p className="text-lg opacity-70 sm:block lg:block">
-            {currentTrack.artist}
-          </p>
-        </div>
-      </div>
-
-      {/* Volume/Mute Icon: Hidden on mobile (lack of space), visible on desktop vertical bar */}
-      <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-y-2 flex-shrink-0">
-        <button
+          className="w-9 h-9 lg:w-16 lg:h-16 rounded-lg lg:-rotate-90 shadow-md flex-shrink-0 overflow-hidden cursor-pointer select-none hover:opacity-100 active:scale-95 transition"
           onClick={onExpand}
-          className="bg-[#c6aee3] p-2 lg:p-2 rounded-full hover:bg-[#5a3d8b]/10 active:scale-95 flex-shrink-0 bg-transparent "
-          aria-label="Expand Player"
         >
-          {isPlaying ? (
-            // Icon when playing
-            <Pause className="w-4 h-4 lg:w-9 lg:h-9 fill-[var(--lo-fi-dark)] text-[var(--lo-fi-dark)]" />
-          ) : (
-            // Icon when paused
-            <Play className="w-4 h-4 lg:w-9 lg:h-9 fill-[var(--lo-fi-dark)] text-[var(--lo-fi-dark)]" />
-          )}
-        </button>
-        <button
-          onClick={()=>{handleMuteToggle(); console.log('hello')}}
-          className="p-2 active:scale-95 flex-shrink-0 bg-transparent text-[var(--lo-fi-dark)]"
-          aria-label={isMuted ? "Unmute Volume" : "Mute Volume"}
+          <img
+            src={currentTrack.img}
+            alt="Album Art"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Song Info: Horizontal on mobile, Rotated on desktop */}
+        <div
+          className="flex-grow flex items-center justify-center p-2 cursor-pointer select-none hover:opacity-100 active:scale-95 transition"
+          onClick={onExpand}
         >
-          {isMuted ? (
-            // Icon when muted
-            <VolumeX className="w-5 h-5 lg:w-8 lg:h-8 fill-current" />
-          ) : (
-            // Icon when audible
-            <Volume2 className="w-5 h-5 lg:w-8 lg:h-8 fill-current" />
-          )}
-        </button>
-        {/* Play/Expand Button: Always visible */}
+          <div
+            className="flex flex-col rotated-text-container lg:vertical-rl lg:-rotate-90 lg:justify-center lg:items-start space-y-0 lg:space-y-1 truncate flex-grow mx-0 lg:mx-0 lg:mt-4 lg:mb-4 text-center"
+            style={verticalTextStyle}
+          >
+            <p className="text-xs text-white lg:text-xl font-bold tracking-wide truncate max-w-[100px] lg:max-w-none">
+              {currentTrack.title}
+            </p>
+            {/* Artist visible only on larger screens, including desktop minimized */}
+            <p className="text-lg text-white opacity-70 sm:block lg:block">
+              {currentTrack.artist}
+            </p>
+          </div>
+        </div>
+
+        {/* Volume/Mute Icon: Hidden on mobile (lack of space), visible on desktop vertical bar */}
+        <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-y-2 flex-shrink-0">
+          <button
+            onClick={() => {
+              handleAudioPlay();
+              console.log("Play Pause");
+            }}
+            className="bg-[#c6aee3] p-2 lg:p-2 rounded-full hover:bg-[#5a3d8b]/10 active:scale-95 flex-shrink-0 bg-transparent "
+            aria-label="Expand Player"
+          >
+            {isPlaying ? (
+              // Icon when playing
+              <Pause className="text-white w-5 h-5 lg:w-9 lg:h-9 fill-[white] " />
+            ) : (
+              // Icon when paused
+              <Play className="text-white w-5 h-5 lg:w-9 lg:h-9 fill-[white]" />
+            )}
+          </button>
+          <button
+            onClick={() => {
+              handleMuteToggle();
+              console.log("hello");
+            }}
+            className="p-2 active:scale-95 flex-shrink-0 bg-transparent text-[var(--lo-fi-dark)]"
+            aria-label={isMuted ? "Unmute Volume" : "Mute Volume"}
+          >
+            {isMuted ? (
+              // Icon when muted
+              <VolumeX className="text-white w-5 h-5 lg:w-8 lg:h-8 fill-current" />
+            ) : (
+              // Icon when audible
+              <Volume2 className="text-white w-5 h-5 lg:w-8 lg:h-8 fill-current" />
+            )}
+          </button>
+          {/* Play/Expand Button: Always visible */}
+        </div>
       </div>
     </div>
   );
