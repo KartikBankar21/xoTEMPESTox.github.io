@@ -51,7 +51,7 @@ const drawSingle = {
     <motion.div className="flex items-center justify-center h-full w-full bg-black">
     <motion.svg
         viewBox="-1 -1 72 18" // Adjust viewBox to fit your SVG content
-        className="w-[30%] h-auto"
+        className="w-[80%] md:w-[30%] lg:w-[30%] h-auto"
         fill="none"
         stroke="white"
         // strokeWidth="2"

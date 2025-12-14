@@ -110,6 +110,7 @@ const musicAPI = [
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -374,11 +375,16 @@ function App() {
         >
           <HeaderBackground />
         </div>
-
+ 
         {/* 2. Loader overlays everything until animation completes */}
         {loading && (
-          <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]">
-            <SvgText onFinish={() => setLoading(false)} />
+          <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]
+      transition-opacity duration-700 ease-in-out
+      ${fadeOut ? "opacity-0" : "opacity-100"}`}
+    onTransitionEnd={() => {
+      if (fadeOut) setLoading(false);
+    }}>
+            <SvgText onFinish={() => setFadeOut(true)} />
           </div>
         )}
 

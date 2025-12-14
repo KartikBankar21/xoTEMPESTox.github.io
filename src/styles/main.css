@@ -2133,10 +2133,10 @@ HeaderBackground {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background: rgba(102, 126, 234, 0.15);
+  background:black;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 1);
   border-radius: 50%;
   cursor: pointer;
   display: -webkit-box;
@@ -2144,6 +2144,8 @@ HeaderBackground {
   display: flex;
   height: 6rem;
   justify-content: center;
+  z-index: 2;          /* icon stays above */
+  overflow: visible;  /* allow tooltip to escape */
   /* position: relative; */
   /* overflow: hidden; */
   -webkit-transform-origin: center;
@@ -2153,41 +2155,15 @@ HeaderBackground {
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
   width: 6rem;
-  box-shadow: 0 8px 32px 0 rgba(102, 126, 234, 0.2);
+  /* box-shadow: 0 8px 32px 0 rgba(102, 126, 234, 0.2); */
 }
 .services__wrapper__icons__item:hover{
-    background: rgba(102, 126, 234, 0.25);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(102, 126, 234, 0.4);
-  transform: scale(1.05);
+    background: rgba(0, 8, 4,0.9);
+  /* border-color: rgba(255, 255, 255, 0.3); */
+  /* box-shadow: 0 12px 40px 0 rgba(102, 126, 234, 0.4); */
+  transform: scale(1.15);
 }
 
-.services__wrapper__icons__item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: 
-    conic-gradient(
-      from 0deg,
-      transparent 0deg,
-      rgba(10, 7, 7, 0.945) 90deg,
-      /* rgba(10, 7, 7, 0.945) 120deg, */
-      transparent 180deg,
-      rgba(3, 101, 212, 0.671) 270deg,
-      transparent 360deg
-    );
-  opacity: 0;
-  transform: rotate(0deg) scale(0.1);
-  -webkit-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  -o-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.services__wrapper__icons__item:hover::after {
-  opacity: 1;
-  transform: rotate(360deg) scale(1.0);
-}
 .services__wrapper__icons__item:before {
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -2208,31 +2184,73 @@ HeaderBackground {
   justify-content: center;
   left: -60%;
   letter-spacing: 0.05rem;
+  z-index: -1;
   opacity: 0;
   padding: 0.3rem 1rem;
   position: absolute;
   text-align: center;
   top: -100%; /* push it above the icon */
   bottom: 100%;
-  transform: translateY(-0.5rem);
+ transform: translateY(10px) scale(0.95);
   -webkit-transition: all 0.3s ease-in-out 0s;
   -o-transition: all 0.3s ease-in-out 0s;
   transition: all 0.3s ease-in-out 0s;
   visibility: hidden;
   width: 12rem;
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    z-index 0s linear 0.35s;   /* delay z-index jump */
+
+  /* box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); */
 }
 
 .services__wrapper__icons__item:hover:before {
+  z-index: 3; 
   opacity: 1;
   top: -80%;
   visibility: visible;
   color:white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 1);
   background: #000;
-  transform: translateY(-0.5rem);
+  transform: translateY(-8px) scale(1);
+  visibility: visible;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    z-index 0s;
    /* margin-bottom: 0.8rem; */
-   box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+   /* box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6); */
+}
+
+
+.services__wrapper__icons__item::after {
+  z-index: -1;          /* 👈 behind icon */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: 
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(10, 7, 7, 0.945) 90deg,
+      /* rgba(10, 7, 7, 0.945) 120deg, */
+      /* transparent 180deg, */
+      rgba(3, 101, 212, 0.671) 270deg,
+      transparent 360deg
+    );
+  opacity: 0;
+  transform: rotate(0deg) scale(0.1);
+  -webkit-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.services__wrapper__icons__item:hover::after {
+  opacity: 1;
+  transform: rotate(360deg) scale(1.0);
 }
 
 .services__wrapper__icons__item.deg-45 {

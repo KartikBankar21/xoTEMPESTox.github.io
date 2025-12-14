@@ -6,7 +6,7 @@ const Services = () => {
   useEffect(() => {
     const icons = document.querySelectorAll(".services__wrapper__icons__item");
     const iconsWrapper = document.querySelector(".services__wrapper__icons");
-
+ 
     icons.forEach((div, index) => {
       const classes = [
         "deg-45",
@@ -36,7 +36,7 @@ const Services = () => {
           <div className="services__wrapper__circle rounding"></div>
 
           <div className="services__wrapper__icons" id="icon-div">
-            <div className="services__wrapper__icons__item" data-service-name="AI Systems">
+            <div className="services__wrapper__icons__item " data-service-name="AI Systems">
               <i className="demo-icon desktopicon-"></i>
             </div>
 

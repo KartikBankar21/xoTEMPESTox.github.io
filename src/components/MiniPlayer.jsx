@@ -135,7 +135,7 @@ export const MiniPlayer = ({
     // Desktop (lg:): Vertical (lg:flex-col)
     <div className="relative h-full w-full overflow-hidden">
       <div
-        className="absolute inset-0 bg-[#000000] "
+        className="absolute inset-0 bg-[#000000] pointer-events-none"
         style={{
           filter: "url(#nnnoise-filter)",
         }}

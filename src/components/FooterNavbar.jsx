@@ -90,58 +90,6 @@ const FooterNavbar = () => {
             "radial-gradient(circle, rgba(169, 169, 169, 0.4) 0%, transparent 70%)",
         }}
       ></div>
-
-      {/* SVG filter definition (The noise filter for the background) */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        style={{
-          position: "absolute",
-          width: 0,
-          height: 0,
-          pointerEvents: "none",
-          visibility: "hidden",
-        }}
-      >
-        <defs>
-          <filter
-            id="nnnoise-filter"
-            x="-20%"
-            y="-20%"
-            width="140%"
-            height="140%"
-            filterUnits="objectBoundingBox"
-            primitiveUnits="userSpaceOnUse"
-            colorInterpolationFilters="linearRGB"
-          >
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.2"
-              numOctaves="4"
-              seed="15"
-              stitchTiles="stitch"
-              x="0%"
-              y="0%"
-              width="100%"
-              height="100%"
-              result="turbulence"
-            ></feTurbulence>
-            <feSpecularLighting
-              surfaceScale="15"
-              specularConstant="1.1"
-              specularExponent="20"
-              lightingColor="#a193b3"
-              x="0%"
-              y="0%"
-              width="100%"
-              height="100%"
-              in="turbulence"
-              result="specularLighting"
-            >
-              <feDistantLight azimuth="3" elevation="62"></feDistantLight>
-            </feSpecularLighting>
-          </filter>
-        </defs>
-      </svg>
     </div>
   );
 };
