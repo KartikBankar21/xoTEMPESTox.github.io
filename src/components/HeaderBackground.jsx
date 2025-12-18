@@ -455,25 +455,25 @@ const HeaderComponent = () => {
       });
 
       video.addEventListener("loadedmetadata", () => {
-        console.log("✅ Video metadata loaded:", assetUrl, {
-          duration: video.duration,
-          videoWidth: video.videoWidth,
-          videoHeight: video.videoHeight,
-        });
+        // console.log("✅ Video metadata loaded:", assetUrl, {
+        //   duration: video.duration,
+        //   videoWidth: video.videoWidth,
+        //   videoHeight: video.videoHeight,
+        // });
       });
 
       video.addEventListener("loadeddata", () => {
-        console.log(
-          "✅ Video data loaded:",
-          assetUrl,
-          "readyState:",
-          video.readyState
-        );
+        // console.log(
+        //   "✅ Video data loaded:",
+        //   assetUrl,
+        //   "readyState:",
+        //   video.readyState
+        // );
         // Try to play as soon as data is loaded
         video
           .play()
           .then(() => {
-            console.log("✅ Video started playing (loadeddata)");
+            // console.log("✅ Video started playing (loadeddata)");
             video.style.opacity = "1";
             video.classList.add("is-active");
             setTimeout(() => {
@@ -504,11 +504,11 @@ const HeaderComponent = () => {
       });
 
       video.addEventListener("canplay", () => {
-        console.log("✅ Video can play:", assetUrl);
+        // console.log("✅ Video can play:", assetUrl);
         video
           .play()
           .then(() => {
-            console.log("✅ Video started playing (canplay)");
+            // console.log("✅ Video started playing (canplay)");
             video.style.opacity = "1";
             video.classList.add("is-active");
           })
@@ -516,14 +516,14 @@ const HeaderComponent = () => {
       });
 
       video.addEventListener("canplaythrough", () => {
-        console.log("✅ Video can play through:", assetUrl);
+        // console.log("✅ Video can play through:", assetUrl);
         video.style.opacity = "1";
         video.classList.add("is-active");
 
         video
           .play()
           .then(() => {
-            console.log("✅ Video playing successfully");
+            // console.log("✅ Video playing successfully");
             // Clear background image once video is playing
             setTimeout(() => {
               main.style.backgroundImage = "";
@@ -535,15 +535,15 @@ const HeaderComponent = () => {
       });
 
       video.addEventListener("playing", () => {
-        console.log("✅ Video is now playing!", assetUrl);
+        // console.log("✅ Video is now playing!", assetUrl);
       });
 
       video.addEventListener("stalled", () => {
-        console.warn("⚠️ Video stalled:", assetUrl);
+        // console.warn("⚠️ Video stalled:", assetUrl);
       });
 
       video.addEventListener("waiting", () => {
-        console.warn("⚠️ Video waiting for data:", assetUrl);
+        // console.warn("⚠️ Video waiting for data:", assetUrl);
       });
 
       video.addEventListener("suspend", () => {
