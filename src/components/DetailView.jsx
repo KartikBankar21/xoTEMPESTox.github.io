@@ -46,7 +46,7 @@ const DetailView = ({ post, onBack }) => {
     if (isLiking) return;
     setIsLiking(true);
     try {
-      const res = await fetch("/api/blogs/increment-like", {
+      const res = await fetch("/api/increment-like", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: post.id }),

@@ -25,7 +25,7 @@ const BLOG_POSTS = [
     excerpt:
       "First Full-Time Year, Solo Travel while Working, Socializing, and more!",
     readTime: 10,
-    views: 4097,
+    views: 0,
     tags: ["retro", "life"],
     imageUrl: "https://placehold.co/144x144/222222/FFD700?text=2024",
     heroImage: "https://placehold.co/1200x500/0a0a0a/34d399?text=2024+Review",
@@ -64,7 +64,7 @@ This year has set the foundation for even greater things to come, and I'm very e
     excerpt:
       "An in-depth guide on how to animate enter and exit animation for list using Motion for React (previously Framer Motion).",
     readTime: 6,
-    views: 7228,
+    views: 0,
     tags: ["react", "animation"],
     imageUrl: "https://placehold.co/144x144/282a36/F8F8F2?text=Motion",
     heroImage: "https://placehold.co/1200x500/1e293b/a5f3fc?text=React+Motion",
@@ -93,7 +93,7 @@ For more complex examples, check out the official [GitHub Repository](https://gi
     excerpt:
       "When to use Grid for two-dimensional layouts and when Flexbox is sufficient for one-dimensional flows.",
     readTime: 8,
-    views: 5100,
+    views: 0,
     tags: ["css", "grid", "flexbox"],
     imageUrl: "https://placehold.co/144x144/334155/e0f7fa?text=Layout",
     body: "Deep dive into the differences between CSS Grid and Flexbox. We look at real-world examples and common anti-patterns to ensure you choose the right tool for the job. Mastering both is key to modern web development.",
@@ -108,7 +108,7 @@ For more complex examples, check out the official [GitHub Repository](https://gi
     excerpt:
       "How Vite revolutionized my development workflow and its benefits over traditional bundlers like Webpack.",
     readTime: 5,
-    views: 3200,
+    views: 0,
     tags: ["vite", "tools", "setup"],
     imageUrl: "https://placehold.co/144x144/475569/cbd5e1?text=Vite",
     body: "Exploring the speed and simplicity of Vite.js. We cover configuration, hot module replacement, and deploying a Vite-powered application. This tool drastically reduces build times.",
@@ -123,7 +123,7 @@ For more complex examples, check out the official [GitHub Repository](https://gi
     excerpt:
       "First Full-Time Year, Solo Travel while Working, Socializing, and more!",
     readTime: 10,
-    views: 4097,
+    views: 0,
     tags: ["retro", "life"],
     imageUrl:
       "https://www.cometapi.com/wp-content/uploads/2025/07/elon-musk-launches-grok-4.webp",
@@ -278,7 +278,7 @@ const Socials = () => {
 
   const incrementView = async (id) => {
     try {
-      const response = await fetch("/api/blogs/increment-view", {
+      const response = await fetch("/api/increment-view", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
