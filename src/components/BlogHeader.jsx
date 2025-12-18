@@ -113,48 +113,47 @@ const BlogHeader = ({ search, setSearch, setFilters }) => {
     }
 
     return (
-        <header className="max-w-3xl mx-auto text-center mb-16">
+       <header className="max-w-3xl mx-auto text-center mb-20">
             
-            {/* Icon Container with simulated glow */}
-            <div className="inline-block p-3 bg-gray-900 border-2 border-gray-700 rounded-xl mb-6 
-                            shadow-xl shadow-green-400/30 transition-shadow duration-300">
-                <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-            </div>
+    <div className="inline-block p-4 bg-zinc-950 border border-blue-900/40 rounded-2xl mb-8 
+                shadow-2xl shadow-blue-500/10 transition-all duration-300">
+    <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+    </svg>
+</div>
 
-            {/* Title with simulated glow */}
-            <h1 className="text-6xl sm:text-7xl font-extrabold mb-4">
-                <span className="text-white">The</span>
-                <span className="text-green-400 drop-shadow-[0_0_10px_rgba(52,211,163,0.4)]">Blog</span>
-            </h1>
+<h1 className="text-6xl sm:text-8xl font-black mb-6 tracking-tighter">
+    <span className="text-slate-500">The</span>
+    <span className="text-slate-50 drop-shadow-[0_0_25px_rgba(59,130,246,0.3)]">Blog</span>
+</h1>
 
-            {/* Subtitle/Description */}
-            <p className="text-lg sm:text-xl text-gray-200 mb-12">
-                Thoughts, mental models, and tutorials about front-end development.
-            </p>
+<p className="text-lg sm:text-xl text-slate-400 mb-12 max-w-xl mx-auto leading-relaxed">
+    Thoughts, mental models, and tutorials about <span className="text-blue-400">front-end development</span>.
+</p>
 
-            {/* Search Input Container with dynamic focus styling */}
-            <div className="relative flex items-center w-full max-w-lg mx-auto p-4 rounded-xl transition-all duration-300 
-                            bg-slate-800 shadow-xl shadow-black/50 border border-transparent 
-                            focus-within:border-green-400 focus-within:shadow-2xl focus-within:shadow-green-500/40">
-                
-                <Search className="w-6 h-6 text-gray-500 mr-3 flex-shrink-0" />
-                
-                <input 
-                    type="text" 
-                    id="search-input"
-                    placeholder="Search titles, excerpts, and tags..." 
-                    className="flex-grow bg-transparent text-white placeholder-gray-500 text-lg focus:outline-none"
-                    value={search}
-                    onChange={handleChange}
-                />
+<div className="relative flex items-center w-full max-w-xl mx-auto p-1.5 rounded-2xl transition-all duration-500 
+                bg-zinc-950 border border-blue-900/30 
+                focus-within:border-blue-500 focus-within:shadow-[0_0_30px_rgba(30,58,138,0.2)]">
+    
+    <div className="pl-4">
+        <Search className="w-5 h-5 text-slate-500" />
+    </div>
+    
+    <input 
+        type="text" 
+        id="search-input"
+        placeholder="Search titles, tags, or topics..." 
+        className="flex-grow bg-transparent text-slate-100 placeholder-slate-600 text-lg py-3 px-3 focus:outline-none"
+        value={search}
+        onChange={handleChange}
+    />
 
-                <div className="text-sm text-gray-500 bg-gray-900 px-2 py-1 rounded-md border border-gray-700 ml-4 flex-shrink-0 hidden sm:block">
-                    Shift S
-                </div>
-            </div>
-        </header>
+    <div className="hidden sm:flex items-center space-x-1 text-[10px] font-bold text-slate-400 bg-zinc-900 px-2.5 py-1.5 rounded-lg border border-blue-900/40 mr-2 uppercase tracking-widest">
+        <span>Shift</span>
+        <span>S</span>
+    </div>
+</div>
+</header>
     );
 };
 

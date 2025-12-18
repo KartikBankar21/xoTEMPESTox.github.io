@@ -135,7 +135,7 @@ export const MiniPlayer = ({
     // Desktop (lg:): Vertical (lg:flex-col)
     <div className="relative h-full w-full overflow-hidden">
       <div
-        className="absolute inset-0 bg-[#000000] pointer-events-none"
+        className=" absolute inset-0 bg-[#000000] pointer-events-none"
         style={{
           filter: "url(#nnnoise-filter)",
         }}
@@ -143,7 +143,7 @@ export const MiniPlayer = ({
       />
       <div
         id="mini-player-content"
-        className="flex flex-row items-end justify-center lg:flex-col lg:rotate-180 lg:justify-between lg:items-center h-full w-full px-2 py-1 lg:p-2 text-[var(--lo-fi-dark)] "
+        className=" flex flex-row items-end justify-center lg:flex-col lg:rotate-180 lg:justify-between lg:items-center h-full w-full px-2 py-1 lg:p-2 text-[var(--lo-fi-dark)] "
       >
         {/* Album Art: Always visible, fixed size */}
         <div

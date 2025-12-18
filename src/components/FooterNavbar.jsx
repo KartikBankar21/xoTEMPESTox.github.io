@@ -59,7 +59,7 @@ const FooterNavbar = () => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-    >
+    > 
       <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0  media-object">
         {navItems.map((item) => (
           <li key={item.to} className="list-item">

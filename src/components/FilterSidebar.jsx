@@ -127,45 +127,50 @@ const FilterSidebar = ({ filters, setFilters }) => {
     const iconRotation = sortDir === 'desc' ? 'rotate-0' : 'rotate-180';
 
     return (
-        <aside className="md:col-span-1 order-1 md:order-none">
-            
-            {/* Sort Button */}
-            <div 
-                onClick={toggleSortDirection}
-                className="sort-button w-full cursor-pointer p-4 bg-gray-900 rounded-xl shadow-lg border-2 border-green-400 
-                           hover:shadow-green-500/20 transition-all duration-200 active:scale-[.99] mb-4"
-            >
-                <div className="flex items-center justify-between text-lg font-medium text-gray-100">
-                    <div className="flex items-center space-x-3">
-                        <Calendar className="w-6 h-6 text-green-400" />
-                        <span id="sort-text">{sortText}</span>
-                    </div>
-                    <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${iconRotation}`} />
-                </div>
-            </div>
+       <aside className="md:col-span-1 order-1 md:order-none">
+    
+   <div 
+    onClick={toggleSortDirection}
+    className="sort-button w-full cursor-pointer p-4 bg-zinc-950 rounded-xl 
+               shadow-xl border border-blue-900/40 hover:border-blue-500 
+               hover:shadow-blue-500/10 transition-all duration-300 active:scale-[.98] mb-6"
+>
+    <div className="flex items-center justify-between text-lg font-medium text-slate-100">
+        <div className="flex items-center space-x-3">
+            <Calendar className="w-6 h-6 text-blue-400" />
+            <span id="sort-text" className="tracking-tight">{sortText}</span>
+        </div>
+        <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${iconRotation}`} />
+    </div>
+</div>
 
-            {/* Topic Selection */}
-            <h3 className="text-xl font-semibold mt-16 mb-4 text-white">Filter by topics</h3>
+<div className="mt-12">
+    <h3 className="text-sm uppercase tracking-[0.2em] font-bold mb-6 text-slate-500">
+        Filter by topics
+    </h3>
+    
+    <div className="flex flex-wrap gap-2.5">
+        {ALL_TAGS.map(tag => {
+            const isActive = tags.includes(tag);
             
-            <div className="flex flex-wrap gap-3 ">
-                {ALL_TAGS.map(tag => {
-                    const isActive = tags.includes(tag);
-                    const activeClass = isActive 
-                        ? 'bg-green-600 text-white shadow-lg shadow-green-500/50 ring-2 ring-green-400  ' 
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white  ';
-                    return (
-                        <button 
-                            key={tag}
-                            onClick={() => toggleTagFilter(tag)}
-                            className={`topic-tag px-4 py-2 text-sm font-medium !rounded-lg shadow-md transition-all duration-200 ${activeClass}`}
-                        >
-                            {tag}
-                        </button>
-                    );
-                })}
-            </div>
+            const activeClass = isActive 
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40 border-blue-400 ring-1 ring-blue-400 font-bold' 
+                : 'bg-zinc-900 text-slate-400 border border-blue-900/20 hover:bg-zinc-800 hover:text-slate-100 hover:border-blue-700';
+            
+            return (
+                <button 
+                    key={tag}
+                    onClick={() => toggleTagFilter(tag)}
+                    className={`topic-tag px-4 py-2 text-xs uppercase tracking-wider rounded-md border transition-all duration-300 ${activeClass}`}
+                >
+                    {tag}
+                </button>
+            );
+        })}
+    </div>
+</div>
 
-        </aside>
+</aside>
     );
 };
 

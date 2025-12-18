@@ -400,8 +400,10 @@ function App() {
                 zIndex: 10,
               }}
             >
-              <div className={`${positionClasses} ${containerClasses} z-1200`}>
+              <div className={`${positionClasses} ${containerClasses} z-1200 `}>
                 {isExpanded ? (
+                 
+
                   <LoFiPlayer
                     isExpanded={isExpanded}
                     onCollapse={() => handleToggle(false)}
@@ -419,7 +421,10 @@ function App() {
                     tracks={musicAPI}
                     trackIndex={trackIndex}
                   />
+                 
                 ) : (
+                  <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]"> 
+
                   <MiniPlayer
                     onExpand={() => handleToggle(true)}
                     currentTrack={currentTrack}
@@ -428,7 +433,8 @@ function App() {
                     setIsMuted={setIsMuted}
                     handleMuteToggle={handleMuteToggle}
                     handleAudioPlay={handleAudioPlay}
-                  />
+                    />
+                    </div>
                 )}
               </div>
               <AnimatedOutlet />
