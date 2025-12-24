@@ -488,8 +488,8 @@ section {
 /* 2. Cursor Glow Styling */
 .cursor-glow {
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 4rem;
+  height: 4rem;
   /* The grey gradient is applied via inline style in the JSX */
   border-radius: 50%;
   pointer-events: none;
@@ -2552,7 +2552,7 @@ HeaderBackground {
 .portfolio .my-card__img__links a {
   background-color: #000000;
   border-radius: 50%;
-  color: #ffffff;
+  /* color: #ffffff; */
   font-size: 1.3rem;
   height: 4rem;
   margin-left: 1rem;
@@ -3039,7 +3039,7 @@ mark {
 }
 
 a {
-  color: #fff;
+  /* color: #fff; */
   /* color: var(--bs-link-color); */
   text-decoration: underline;
 }

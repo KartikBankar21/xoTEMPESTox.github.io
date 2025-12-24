@@ -42,14 +42,13 @@ const FooterNavbar = () => {
     padding-zero
     list 
     flex justify-evenly items-center 
-    text-white 
     w-[80%] md:w-[64%] max-w-9xl 
     min-h-[5rem] rounded-[1.4rem] 
     text-[2.2rem] sm:text-[2.1rem] 
     isolation-isolate z-[999999999999] 
     overflow-hidden transition-all duration-300
     max-lg:w-[93%] max-lg:bottom-6
-    
+    bg-gray-700/20
   `;
 
   return (
@@ -60,21 +59,26 @@ const FooterNavbar = () => {
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
     > 
-      <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0  media-object">
+   
+      <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 bg-gray-700/20  media-object group">
         {navItems.map((item) => (
-          <li key={item.to} className="list-item">
+          <>
+          <li key={item.to} className="list-item ">
+          <div class="absolute -inset-2 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none"></div>
             {/* NavLink for routing and active state */}
             <NavLink
               to={item.to}
-              className={({ isActive }) =>
-                `demo-icon ${item.icon} ${
-                  isActive ? "text-[#00d9ff]" : "text-white hover:text-gray-300"
-                } transition-colors duration-300`
-              }
+              className={({ isActive }) => {
+                console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
+  return `demo-icon ${item.icon} ${
+    isActive ? "text-sky-400" : "text-gray-300 hover:text-sky-400"
+  } transition-colors duration-300`;
+              }}
             >
               {/* Icon is rendered via the demo-icon class and custom font */}
             </NavLink>
           </li>
+          </>
         ))}
       </ul>
 
