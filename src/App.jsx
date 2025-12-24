@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import HeaderBackground from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
-import SvgText from "./components/SvgText";
 import {
   Play,
   SkipBack,
