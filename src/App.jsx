@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
+import SvgLoader from "./components/SvgLoader";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -384,7 +385,7 @@ function App() {
     onTransitionEnd={() => {
       if (fadeOut) setLoading(false);
     }}>
-            <SvgText onFinish={() => setFadeOut(true)} />
+            <SvgLoader onFinish={() => setFadeOut(true)} />
           </div>
         )}
 
