@@ -328,8 +328,8 @@ const Socials = () => {
       icon: (
         // LinkedIn SVG Icon
         <svg
-          width="20"
-          height="20"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -456,7 +456,7 @@ const Socials = () => {
         id="socials"
         aria-label="Social links"
         // Combine custom class for positioning/border and Tailwind for flex layout/colors
-        className="socials-container flex items-center justify-evenly text-white list-none m-0 p-0 relative z-10"
+        className="socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group"
       >
         <div className="absolute overflow-hidden h-[100%] w-[100%] pointer-events-none ">
           <div
@@ -464,79 +464,69 @@ const Socials = () => {
             style={{
               filter: "url(#nnnoise-filter)",
             }}
-            // onClick={onExpand}
           />
         </div>
         {socialLinks.map((link, index) => (
           <li key={index}>
+            <div class="absolute h-[3.4rem] w-[3.4rem] rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none z-0 "></div>
             <a
               className="socials-link border border-transparent rounded-full 
                                 flex items-center justify-center 
-                                h-[3.4rem] w-[3.4rem] 
-                                transition-all duration-200 ease-in-out
-                                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white"
+                                h-[3.4rem] w-[3.4rem] z-10
+                                transition-all duration-200 ease-in-out text-white
+                                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white hover:text-sky-400 transition-transform duration-200 hover:scale-125"
               href={link.href}
               target={link.target}
               rel={link.rel}
               aria-label={link.label}
             >
-              <span className="h-5 w-5 md:h-8 md:w-8">{link.icon}</span>
+              <span className="h-5 w-5 md:h-8 md:w-8 "><div className="[&>svg]:stroke-[2px]"> 
+    {link.icon}
+  </div></span>
             </a>
           </li>
         ))}
       </ul>
-      <div className="max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto 
-                
-                bg-zinc-950 
-                
-                border border-blue-900/30 p-6 md:p-12 
-                rounded-[2.5rem] 
-                
-                shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(30,58,138,0.1)] ">
-  
-  
-  {/* LIST VIEW */}
-  {currentPage === "list" && (
-    <>
-      <BlogHeader
-        search={search}
-        setSearch={setSearch}
-        setFilters={setFilters}
-        /* Styling Suggestion for Header:
+      <div className="max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto bg-zinc-950 border border-blue-900/30 p-6 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(00,0,0.5),0_0_20px_rgba(30,58,138,0.1)] ">
+        {/* LIST VIEW */}
+        {currentPage === "list" && (
+          <>
+            <BlogHeader
+              search={search}
+              setSearch={setSearch}
+              setFilters={setFilters}
+              /* Styling Suggestion for Header:
            Use text-slate-100 (White/Grey) for titles
            Use text-slate-400 (Grey) for subtitles
            Use bg-blue-600 (Blue) for primary buttons 
         */
-      />
-      
-      <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
-        <div className="lg:col-span-2">
-          <PostList
-            filteredPosts={filteredPosts}
-            onPostClick={handlePostClick}
-            /* Inside PostList: 
+            />
+
+            <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
+              <div className="lg:col-span-2">
+                <PostList
+                  filteredPosts={filteredPosts}
+                  onPostClick={handlePostClick}
+                  /* Inside PostList: 
                Cards should use bg-zinc-900 and hover:border-blue-500/50 
             */
-          />
-        </div>
-        
-        <aside className="lg:col-span-1">
-          <FilterSidebar 
-            filters={filters} 
-            setFilters={setFilters} 
-          />
-        </aside>
-      </main>
-    </>
-  )}
+                />
+              </div>
 
-  {/* DETAIL VIEW */}
-  {currentPage === "detail" && selectedPost && (
-    <div className="animate-in fade-in duration-500">
-      <DetailView post={selectedPost} onBack={handleBack} />
-    </div>
-  )}
-</div>
+              <aside className="lg:col-span-1">
+                <FilterSidebar filters={filters} setFilters={setFilters} />
+              </aside>
+            </main>
+          </>
+        )}
+
+        {/* DETAIL VIEW */}
+        {currentPage === "detail" && selectedPost && (
+          <div className="animate-in fade-in duration-500">
+            <DetailView post={selectedPost} onBack={handleBack} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

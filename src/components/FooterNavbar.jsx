@@ -74,7 +74,7 @@ const FooterNavbar = () => {
     isActive ? "text-sky-400" : "text-gray-300 hover:text-sky-400"
   } transition-colors duration-300`;
               }}
-            >
+            > 
               {/* Icon is rendered via the demo-icon class and custom font */}
             </NavLink>
           </li>

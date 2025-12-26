@@ -160,10 +160,10 @@ export const LoFiPlayer = ({
             </p>
             <button
               onClick={onMenuToggle}
-              className="bg-[white]/5 text-[white] p-2 rounded-full hover:bg-[white]/10 active:scale-95 transition-all shadow-md"
+              className="bg-[white]/5 border border-current text-white hover:text-sky-400 p-2 rounded-full hover:bg-[white]/10 active:scale-95 transition-all shadow-md"
               aria-label="Close Menu"
             >
-              <ChevronDown className="text-white w-5 h-5 rotate-90 rounded-full " />
+              <ChevronDown className=" w-5 h-5 rotate-90 rounded-full fill-current " />
             </button>
           </div>
 
@@ -175,7 +175,7 @@ export const LoFiPlayer = ({
                 className={`p-3 rounded-xl cursor-pointer transition-all border-2 ${
                   trackIndex != index
                     ? "bg-[var(--lo-fi-dark)] text-white shadow-xl scale-[1.01]"
-                    : "bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] hover:bg-[var(--lo-fi-accent)]/50"
+                    : "bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] hover:bg-[var(--lo-fi-accent)]/50 border-current text-sky-400"
                 }`}
               >
                 <div className="font-semibold text-sm md:text-base truncate">
@@ -204,10 +204,10 @@ export const LoFiPlayer = ({
             {/* Top Right Minimize Button */}
             <button
               onClick={onCollapse}
-              className="bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] p-1 rounded-full hover:bg-[var(--lo-fi-bg)] active:scale-95 transition-all shadow-inner border border-[white]/80"
+              className="bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] p-1 rounded-full hover:bg-[var(--lo-fi-bg)] active:scale-95 transition-all shadow-inner border border-current text-white hover:text-sky-400"
               aria-label="Minimize Player"
             >
-              <ChevronDown className="text-white w-5 h-5" />
+              <ChevronDown className=" w-5 h-5" />
             </button>
           </div>
         </div>
@@ -261,47 +261,47 @@ export const LoFiPlayer = ({
             {/* Menu Button: Calls new handler */}
             <button
               onClick={onMenuToggle}
-              className="bg-[var(--lo-fi-ui)] icon-btn text-xs md:text-xl font-mono px-2 py-1 md:px-4 md:py-2 shadow-inner border border-[white] hover:bg-[white]/10 text-white"
+              className="bg-[var(--lo-fi-ui)] icon-btn text-xs md:text-xl font-mono px-2 py-1 md:px-4 md:py-2 shadow-inner border border-current hover:bg-[white]/10 text-white hover:text-sky-400 fill-current"
               aria-label="Open Track List Menu"
             >
               Menu
             </button>
 
             {/* Transport Controls: Functional hooks */}
-            <div className="flex items-center space-x-1 md:space-x-3">
+            <div className="flex items-center space-x-1 md:space-x-3 ">
               {/* Skip Back */}
               <button
                 onClick={onPrev}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-[white] hover:bg-[white]/10"
+                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400  hover:bg-[white]/10"
                 aria-label="Skip Back"
               >
-                <SkipBack className="text-white w-6 h-6 md:w-6 md:h-6" />
+                <SkipBack className=" w-6 h-6 md:w-6 md:h-6 fill-current" />
               </button>
               {/* Play/Pause */}
               <button
                 onClick={onPlayPause}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-[white] hover:bg-[white]/10"
+                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400 hover:bg-[white]/10 "
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
                 {isPlaying ? (
-                  <Pause className="text-white w-6 h-6 md:w-6 md:h-6 fill-current" />
+                  <Pause className=" w-6 h-6 md:w-6 md:h-6 fill-current" />
                 ) : (
-                  <Play className="text-white w-6 h-6 md:w-6 md:h-6 fill-current" />
+                  <Play className=" w-6 h-6 md:w-6 md:h-6  fill-current" />
                 )}
               </button>
               {/* Skip Forward */}
               <button
                 onClick={onNext}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-[white] hover:bg-[white]/10"
+                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400 hover:bg-[white]/10"
                 aria-label="Skip Forward"
               >
-                <SkipForward className="w-6 h-6 md:w-6 md:h-6 text-white" />
+                <SkipForward className="w-6 h-6 md:w-6 md:h-6  fill-current" />
               </button>
             </div>
 
             {/* Heart/Like Icon */}
-            <div className="flex space-x-1">
-              <Heart className="w-6 h-6 md:w-6 md:h-6 text-[white] fill-[white]" />
+            <div className="flex space-x-1 text-white hover:text-sky-400">
+              <Heart className="w-6 h-6 md:w-6 md:h-6  fill-current" />
             </div>
           </div>
         </div>

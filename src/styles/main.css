@@ -784,9 +784,9 @@ section {
 /* Link Hover Effect (using parent class for context) */
 .socials-link:hover,
 .socials-link:focus-visible {
-  background-color: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
+  /* background-color: #ffffff; */
+  /* border-color: #ffffff; */
+  /* color: #000000; */
   outline: none;
 }
 
@@ -3044,10 +3044,10 @@ a {
   text-decoration: underline;
 }
 
-a:hover {
+/* a:hover {
   color: #2b3a46;
   color: var(--bs-link-hover-color);
-}
+} */
 
 a:not([href]):not([class]),
 a:not([href]):not([class]):hover {

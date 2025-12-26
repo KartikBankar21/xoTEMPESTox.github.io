@@ -133,7 +133,7 @@ export const MiniPlayer = ({
   return (
     // Default (Mobile/Tablet): Horizontal (flex-row)
     // Desktop (lg:): Vertical (lg:flex-col)
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden group ">
       <div
         className=" absolute inset-0 bg-[#000000] pointer-events-none"
         style={{
@@ -177,21 +177,22 @@ export const MiniPlayer = ({
         </div>
 
         {/* Volume/Mute Icon: Hidden on mobile (lack of space), visible on desktop vertical bar */}
-        <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-y-2 flex-shrink-0">
-          <button
+        <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-y-2 flex-shrink-0  ">
+          <button 
             onClick={() => {
               handleAudioPlay();
               console.log("Play Pause");
             }}
-            className="bg-[#c6aee3] p-2 lg:p-2 rounded-full hover:bg-[#5a3d8b]/10 active:scale-95 flex-shrink-0 bg-transparent "
+            className="bg-[#c6aee3] p-2 lg:p-2 rounded-full  active:scale-95 flex-shrink-0 bg-transparent relative"
             aria-label="Expand Player"
           >
+            <div class="absolute inset-0 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]: bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none "></div>
             {isPlaying ? (
               // Icon when playing
-              <Pause className="text-white w-5 h-5 lg:w-9 lg:h-9 fill-[white] " />
+              <Pause className="text-white hover:text-sky-400 w-5 h-5 lg:w-9 lg:h-9 fill-current" />
             ) : (
               // Icon when paused
-              <Play className="text-white w-5 h-5 lg:w-9 lg:h-9 fill-[white]" />
+              <Play className=" text-white hover:text-sky-400  w-5 h-5 lg:w-9 lg:h-9 fill-current" />
             )}
           </button>
           <button
@@ -199,15 +200,16 @@ export const MiniPlayer = ({
               handleMuteToggle();
               console.log("hello");
             }}
-            className="p-2 active:scale-95 flex-shrink-0 bg-transparent text-[var(--lo-fi-dark)]"
+            className="p-2 active:scale-95 flex-shrink-0 bg-transparent text-[var(--lo-fi-dark)] relative"
             aria-label={isMuted ? "Unmute Volume" : "Mute Volume"}
           >
+             <div class="absolute inset-0 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]: bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none "></div>
             {isMuted ? (
               // Icon when muted
-              <VolumeX className="text-white w-5 h-5 lg:w-8 lg:h-8 fill-current" />
+              <VolumeX className="text-white hover:text-sky-400 w-5 h-5 lg:w-8 lg:h-8 fill-current" />
             ) : (
               // Icon when audible
-              <Volume2 className="text-white w-5 h-5 lg:w-8 lg:h-8 fill-current" />
+              <Volume2 className="text-white hover:text-sky-400 w-5 h-5 lg:w-8 lg:h-8 fill-current" />
             )}
           </button>
           {/* Play/Expand Button: Always visible */}
