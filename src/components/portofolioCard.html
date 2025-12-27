@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cube Portfolio Carousel</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles for 3D perspective */
+        .scene {
+            perspective: 1200px;
+            overflow: hidden; 
+            height: 300px; 
+            position: relative;
+            user-select: none;
+            cursor: grab;
+        }
+        .scene.dragging {
+            cursor: grabbing;
+        }
+
+        /* Container for all cubes (Real + Phantom clones) */
+        .cubes-wrapper {
+            display: flex;
+            gap: 4rem; /* Space between cubes (64px) */
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        /* Individual cube container */
+        .cube-wrapper {
+            width: 200px; 
+            height: 200px;
+            transform-style: preserve-3d;
+            position: relative;
+            cursor: pointer; 
+        }
+        
+        /* The cube element that rotates */
+        .cube {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(-100px); 
+        }
+
+        /* Styles for all 6 faces */
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            /* Removed global padding: content will control its own spacing */
+            padding: 0; 
+            text-align: center;
+            line-height: 1.25;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            /* Reset font size/weight for content */
+            font-size: 1rem;
+            font-weight: 400;
+            overflow: hidden; /* Important for the tag badge */
+        }
+
+        /* 3D transforms to position the faces */
+        /* FACE 1: New dark, card-like background (Front) */
+        .face-1 { 
+            transform: rotateY(0deg) translateZ(100px); 
+            background-color: #1a1a2e; /* Dark deep blue/purple */
+            color: #f3f4f6; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+        }
+        /* FACE 2: Tech Stack (Left side) - Set to same base background as face 1 for seamless transition */
+        .face-2 { 
+            transform: rotateY(90deg) translateZ(100px); 
+            background-color: #1a1a2e; /* Dark deep blue/purple */
+            padding: 0; /* Content handles its own padding and inner gradient */
+        }
+        /* FACE 3: Links/Image (Right side) */
+        .face-3 { 
+            transform: rotateY(-90deg) translateZ(100px); 
+            background-color: rgba(37, 99, 235, 0.8); 
+        }
+        /* FACE 4: Back (Simple link summary) */
+        .face-4 { 
+            transform: rotateY(180deg) translateZ(100px); 
+            background-color: #1a1a2e; 
+            padding: 1rem; 
+        } 
+        /* FACE 5: Top */
+        .face-5 { 
+            transform: rotateX(-90deg) translateZ(100px); 
+            background-color: #60a5fa; 
+            padding: 1rem; 
+        } 
+        /* FACE 6: Bottom */
+        .face-6 { 
+            transform: rotateX(90deg) translateZ(100px); 
+            background-color: #93c5fd; 
+            padding: 1rem; 
+        } 
+
+        /* JavaScript-controlled rotation classes */
+        .cube.show-right { transform: translateZ(-100px) rotateY(-90deg); } /* Shows Face 3 (Links) */
+        .cube.show-left { transform: translateZ(-100px) rotateY(90deg); } /* Shows Face 2 (Tech Stack) */
+        /* Classes for other rotations (e.g., top/bottom) - not used but good practice */
+        .cube.show-top { transform: translateZ(-100px) rotateX(90deg); }
+        .cube.show-bottom { transform: translateZ(-100px) rotateX(-90deg); }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-8 font-sans">
+
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-extrabold text-blue-400">Portfolio Cube Navigator</h1>
+        <p class="text-gray-400 mt-2">The carousel is built with 8 unique projects and loops infinitely. Drag or click the "View Details" link to interact.</p>
+        <p class="text-sm text-gray-500 mt-1">(Click "View Details" on the front face to rotate to the links page.)</p>
+    </header>
+
+    <!-- Main Scene Container -->
+    <div class="scene w-full max-w-5xl flex justify-center items-center relative">
+
+        <!-- Cubes Wrapper -->
+        <div id="cubes-wrapper" class="cubes-wrapper">
+            <!-- Cubes are injected here by JavaScript -->
+        </div>
+
+    </div>
+
+    <script>
+        // --- Portfolio Data ---
+        const portfolioData = [
+            {
+                title: "Organizational Chatbot",
+                description: "RAG-powered HR & IT assistant with secure 2FA and tool calling.",
+                image_url: "https://placehold.co/200x200/0d1e3d/FFFFFF?text=Chatbot",
+                tag: "AI/ML Project",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/Enerzal",
+                    live_link: "https://www.youtube.com/watch?v=azj_7OdSxcY"
+                }
+            },
+            {
+                title: "Eco Chain",
+                description: "MERN + Blockchain marketplace for carbon credit tokenization.",
+                image_url: "https://placehold.co/200x200/1e3a8a/FFFFFF?text=EcoChain",
+                tag: "Web3 Ecosystem",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/EcoChain",
+                    live_link: "https://eco-chain-ashen.vercel.app/"
+                }
+            },
+            {
+                title: "Supplyzal",
+                description: "Blockchain-based supply tracking with verified sustainability.",
+                image_url: "https://placehold.co/200x200/2563eb/FFFFFF?text=Supplyzal",
+                tag: "Blockchain Dapp",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/Supplyzal",
+                    live_link: "https://www.youtube.com/watch?v=CEGqZsqdnN8"
+                }
+            },
+            {
+                title: "LedgerPlay",
+                description: "ERC20 based Staking Logic with Web socket based Multiplayer.",
+                image_url: "https://placehold.co/200x200/3b82f6/FFFFFF?text=LedgerPlay",
+                tag: "Gaming/Web3",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/LedgerPlay",
+                    live_link: "https://www.youtube.com/watch?v=w-SHifenCqE"
+                }
+            },
+            {
+                title: "WakeBot32",
+                description: "ESP32 based WOL bot using Telegram API and Arduino IDE",
+                image_url: "https://placehold.co/200x200/60a5fa/FFFFFF?text=WakeBot32",
+                tag: "Hardware/IoT",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/WakeBot32",
+                    live_link: "https://youtu.be/fOirqvQiiFo"
+                }
+            },
+            {
+                title: "TradingviewPlus",
+                description: "Open Source Contributor for Trading View extenstion.",
+                image_url: "https://placehold.co/200x200/93c5fd/FFFFFF?text=TVPlus",
+                tag: "OSS Contribution",
+                links: {
+                    github_link: "https://github.com/Tiqur/TradingviewPlus",
+                    live_link: "https://chromewebstore.google.com/detail/tradingviewplus/pkcgjgllebhppgegpedlhjmabmnpcpec?hl=en&authuser=0"
+                }
+            },
+            {
+                title: "Portfolio Website",
+                description: "Portfolio website Built with Quality and Performance in mind",
+                image_url: "https://placehold.co/200x200/bfdbfe/000000?text=Portfolio",
+                tag: "Personal Website",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/xoTEMPESTox.github.io",
+                    live_link: "https://priyanshusah.com"
+                }
+            },
+            {
+                title: "ML Kaggle Competition",
+                description: "Hosted a Kaggle Competition under TCET ACM SIG AI 2025",
+                image_url: "https://placehold.co/200x200/e0f2fe/000000?text=Kaggle",
+                tag: "Competition Host",
+                links: {
+                    github_link: "https://github.com/xoTEMPESTox/TCET_ACM_SIGAI_KAGGLE_COMP",
+                    live_link: "https://www.kaggle.com/competitions/acm-sigai-tcet"
+                }
+            }
+        ];
+
+        // --- Helper Functions for Content Generation ---
+        
+        // Function to generate content for Face 2 (Tech Stack) - UPDATED TO NEW DESIGN
+        function createTechStackContent(item) {
+            // Define a set of possible tech items with simple inline SVGs
+            const techMap = [
+                // Icon for Code/Frontend (Checkmark inside hexagon for "React/TS")
+                { name: 'React', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12l3 3 7-7"/><path d="M12 2l-8 5v10l8 5 8-5V7l-8-5z"/></svg>` },
+                // Icon for Backend (Server/Data Center)
+                { name: 'Node.js', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>` },
+                // Icon for Database (Barrel)
+                { name: 'MongoDB', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>` },
+                // Icon for Styling (Code Brackets)
+                { name: 'Tailwind CSS', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>` },
+                // Icon for Hosting (Cloud Globe)
+                { name: 'DigitalOcean', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 2a10 10 0 0 0-8 4h16a10 10 0 0 0-8-4z"/><path d="M12 22a10 10 0 0 1-8-4h16a10 10 0 0 1-8 4z"/><path d="M2 12h20"/><path d="M12 2v20"/></svg>` },
+                // Extra Tech for variety
+                { name: 'TypeScript', icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="12" y1="9" x2="12" y2="15"/></svg>` },
+            ];
+
+            // Select a random subset of 4-6 items
+            const numTech = 4 + Math.floor(Math.random() * 3); 
+            const stack = techMap.sort(() => 0.5 - Math.random()).slice(0, numTech);
+
+            // Onclick handler resets the cube rotation to show Face 1 (the front face)
+            // Removes both show-right (Face 3) and show-left (Face 2) classes
+            const rotationHandler = `event.preventDefault(); this.closest('.cube').classList.remove('show-right', 'show-left');`;
+
+            return `
+                <div class="relative w-full h-full p-4 flex flex-col justify-between text-left">
+                    <!-- Background Gradient Layer (Mimicking the uploaded image) -->
+                    <!-- This gradient is applied inside the container to ensure the 0.5rem rounded corners of the .face element clip it properly. -->
+                    <div class="absolute inset-0 z-0 rounded-lg opacity-70" style="background-image: linear-gradient(135deg, #44002c 0%, #201323 50%, #150033 100%);"></div>
+
+                    <div class="relative z-10 flex flex-col h-full">
+                        <!-- Title -->
+                        <h2 class="text-xl font-bold text-white mb-4">Tech Stack</h2>
+                        
+                        <!-- Tags Grid -->
+                        <div class="flex flex-wrap gap-2 mb-auto">
+                            ${stack.map(tech => `
+                                <div class="flex items-center text-sm font-medium text-white p-2 rounded-lg shadow-inner whitespace-nowrap" style="background-color: rgba(255, 255, 255, 0.1);">
+                                    ${tech.icon}
+                                    <span>${tech.name}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Footer Links -->
+                        <div class="flex justify-between items-center pt-4 border-t border-white/10 mt-auto">
+                            <span class="text-sm text-white font-medium">Website</span>
+                            <a href="#" onclick="${rotationHandler}" class="text-blue-400 hover:text-blue-300 transition-colors font-medium text-sm flex items-center">
+                                Click for more &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // New function to create the card layout for Face 1 (kept for reference, no change)
+        function createFace1Content(item) {
+            // Placeholder SVG for the chart/analytics icon (green line chart)
+            const chartIcon = `
+                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3 3 7-7m-7 5a2 2 0 11-4 0 2 2 0 014 0zm0 0l3-3m7 7a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            `;
+
+            // Onclick handler rotates the cube to show Face 3 (the links/details face)
+            // show-right class rotates the cube 90 degrees left (so Face 3 comes forward)
+            const rotationHandler = `event.preventDefault(); this.closest('.cube').classList.add('show-right');`;
+
+            return `
+                <div class="relative w-full h-full p-4 flex flex-col justify-between text-left">
+                    
+                    <!-- Top Right Tag (Gradient Badge) -->
+                    <div class="absolute top-0 right-0 p-1 px-4 text-xs font-semibold text-white 
+                                rounded-bl-lg rounded-tr-lg 
+                                bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg">
+                        ${item.tag || 'Project'}
+                    </div>
+
+                    <!-- Top Content Section -->
+                    <div>
+                        <!-- Icon -->
+                        <div class="mb-4">${chartIcon}</div>
+                        
+                        <!-- Title -->
+                        <h2 class="text-xl font-extrabold text-white leading-tight">
+                            ${item.title}
+                        </h2>
+                        
+                        <!-- Description -->
+                        <p class="text-xs mt-2 text-gray-400">
+                            ${item.description}
+                        </p>
+                    </div>
+
+                    <!-- Bottom Section: View Details Link -->
+                    <div class="mt-4">
+                        <a href="#" onclick="${rotationHandler}" class="text-blue-400 hover:text-blue-300 transition-colors font-medium text-sm flex items-center">
+                            View Details &rarr;
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function createFace3Content(item) {
+            // GitHub Icon (simple octocat path)
+            const githubIcon = `
+                <svg class="w-8 h-8 fill-white" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.805 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.082-.742.083-.727.083-.727 1.205.084 1.839 1.237 1.839 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.77.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.923.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.583 8.2-6.088 8.2-11.389 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            `;
+            // Live Demo Icon (External Link)
+            const liveIcon = `
+                <svg class="w-8 h-8 fill-white" viewBox="0 0 24 24">
+                    <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 17v-10l7 5-7 5z"/>
+                </svg>
+            `; 
+
+            // IMPORTANT: Setting the image as a background layer with low opacity
+            return `
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${item.image_url}'); opacity: 0.25; transform: translateZ(0);"></div>
+                <div class="relative z-10 flex flex-col items-center justify-center space-y-4">
+                    <a href="${item.links.github_link}" target="_blank" class="p-3 bg-gray-900/70 backdrop-blur-sm rounded-full shadow-xl ring-2 ring-gray-600 hover:scale-110 transition-transform duration-300">
+                        ${githubIcon}
+                    </a>
+                    <a href="${item.links.live_link}" target="_blank" class="p-3 bg-blue-900/70 backdrop-blur-sm rounded-full shadow-xl ring-2 ring-blue-600 hover:scale-110 transition-transform duration-300">
+                        ${liveIcon}
+                    </a>
+                </div>
+            `;
+        }
+
+        // Map the portfolio data to the format expected by the carousel logic
+        const REAL_CONTENT = portfolioData.map(item => ({
+            // Face 1: Title and Description (Custom Card Design)
+            face1: createFace1Content(item),
+            // Face 2: Tech Stack (New design, updated function name)
+            face2: createTechStackContent(item),
+            // Face 3: Image background with links overlay
+            face3: createFace3Content(item),
+            // Face 4: Back (Simple link summary)
+            face4: `<div class="text-lg">View Source</div><p class="text-xs mt-2">${item.links.github_link.split('/')[4] || 'Repo Link'}</p>`,
+            // Face 5: Top (Quick CTA)
+            face5: `<div class="text-lg">Rotate to Tech Stack</div><p class="text-sm">Hover right edge</p>`,
+            // Face 6: Bottom (Tech stack hint)
+            face6: `<div class="text-lg">Rotate to Details</div><p class="text-sm">Hover left edge</p>`
+        }));
+
+        // --- Carousel Logic Constants ---
+        const realTotal = REAL_CONTENT.length; // 8 items
+        const NUM_PHANTOM = 3; 
+        
+        const CUBE_CONTENT = [
+            ...REAL_CONTENT.slice(-NUM_PHANTOM), 
+            ...REAL_CONTENT,                     
+            ...REAL_CONTENT.slice(0, NUM_PHANTOM)
+        ];
+        
+        const totalCubes = CUBE_CONTENT.length; // 3 + 8 + 3 = 14
+
+        const REAL_START_INDEX = NUM_PHANTOM; // Index 3 (The real Cube 0)
+        const REAL_END_INDEX = REAL_START_INDEX + realTotal - 1; // Index 10 (The real Cube 7)
+
+        const CUBE_WIDTH = 200;
+        const GAP_WIDTH = 64; // 4rem from CSS
+        const ITEM_WIDTH = CUBE_WIDTH + GAP_WIDTH; // 264px
+        const autoSlideDelay = 2000; // 2 seconds between slides 
+        const swipeThreshold = 50; 
+        
+        // State variables
+        let activeCubeIndex = REAL_START_INDEX + Math.floor(realTotal / 2); // Start at index 7 (Real Cube 4/WakeBot32)
+        let autoSlideInterval = null;
+        let isDragging = false;
+        let startX = 0;
+        let initialTranslateX = 0;
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.getElementById('cubes-wrapper');
+            const scene = document.querySelector('.scene');
+            
+            // --- Helper Functions ---
+
+            function calculateTranslation(index) {
+                const offset = index * ITEM_WIDTH;
+                const centerOffset = offset + (CUBE_WIDTH / 2);
+                const sceneCenter = wrapper.parentElement.clientWidth / 2;
+                return sceneCenter - centerOffset;
+            }
+
+            function updateWrapperPosition(transition = true) {
+                const requiredTranslation = calculateTranslation(activeCubeIndex);
+                
+                wrapper.style.transition = transition 
+                    ? 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)' 
+                    : 'none';
+
+                wrapper.style.transform = `translateX(${requiredTranslation}px)`;
+                initialTranslateX = requiredTranslation;
+            }
+
+            function checkAndSnapToRealSet() {
+                let shouldSnap = false;
+
+                if (activeCubeIndex < REAL_START_INDEX) {
+                    // Snap from leading clones back to end of real set
+                    activeCubeIndex = REAL_END_INDEX - (REAL_START_INDEX - activeCubeIndex) + 1;
+                    shouldSnap = true;
+
+                } else if (activeCubeIndex > REAL_END_INDEX) {
+                    // Snap from trailing clones back to start of real set
+                    activeCubeIndex = REAL_START_INDEX + (activeCubeIndex - REAL_END_INDEX) - 1;
+                    shouldSnap = true;
+                }
+
+                if (shouldSnap) {
+                    updateWrapperPosition(false); // Instant snap
+                }
+            }
+                
+            function autoSlide() {
+                activeCubeIndex++;
+                updateWrapperPosition(); 
+
+                if (activeCubeIndex > REAL_END_INDEX) {
+                    // Wait 850ms for the 800ms slide transition to complete, then snap
+                    setTimeout(() => {
+                        activeCubeIndex = REAL_START_INDEX; 
+                        updateWrapperPosition(false); 
+                    }, 850);
+                }
+            }
+
+            function startAutoSlide() {
+                if (!autoSlideInterval) {
+                    autoSlideInterval = setInterval(autoSlide, autoSlideDelay);
+                }
+            }
+
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                    autoSlideInterval = null;
+                }
+            }
+            
+            // --- HTML Generation ---
+            function createCubeHTML(content) {
+                // Ensure all faces are present for the cube structure
+                const facesContent = [
+                    { class: 'face-1', content: content.face1 || '' },
+                    { class: 'face-2', content: content.face2 || '' },
+                    { class: 'face-3', content: content.face3 || '' },
+                    { class: 'face-4', content: content.face4 || '' },
+                    { class: 'face-5', content: content.face5 || '' },
+                    { class: 'face-6', content: content.face6 || '' },
+                ];
+                
+                let facesHTML = facesContent.map(face => 
+                    `<div class="face ${face.class}">${face.content}</div>`
+                ).join('');
+
+                return `
+                    <div class="cube-wrapper">
+                        <div class="cube">
+                            ${facesHTML}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render all cubes (Real + Phantom)
+            CUBE_CONTENT.forEach(content => {
+                wrapper.innerHTML += createCubeHTML(content);
+            });
+
+
+            // --- Initialization & Event Listeners ---
+
+            window.addEventListener('resize', () => {
+                updateWrapperPosition(false); 
+            });
+
+            updateWrapperPosition(false); 
+            startAutoSlide();
+            
+            // Pause/Resume on hover
+            scene.addEventListener('mouseenter', stopAutoSlide);
+            scene.addEventListener('mouseleave', startAutoSlide);
+
+
+            // --- Drag Interaction Logic ---
+
+            const startDrag = (clientX) => {
+                stopAutoSlide(); 
+                isDragging = true;
+                startX = clientX;
+                scene.classList.add('dragging');
+                wrapper.style.transition = 'none'; 
+            };
+
+            const moveDrag = (clientX) => {
+                if (!isDragging) return;
+                const dx = clientX - startX;
+                const newTranslateX = initialTranslateX + dx;
+                wrapper.style.transform = `translateX(${newTranslateX}px)`;
+            };
+
+            // Mouse down handler
+            scene.addEventListener('mousedown', (e) => {
+                // Prevent drag if a link/button inside the card is clicked
+                if (e.target.closest('a')) return;
+                if (e.button !== 0) return; 
+                startDrag(e.clientX);
+            });
+            
+            // Touch start handler
+            scene.addEventListener('touchstart', (e) => {
+                // Prevent drag if a link/button inside the card is clicked
+                if (e.target.closest('a')) return;
+                e.preventDefault(); 
+                if (e.touches && e.touches.length > 0) {
+                    startDrag(e.touches[0].clientX);
+                }
+            }, { passive: false });
+
+            // Mouse move handler
+            scene.addEventListener('mousemove', (e) => {
+                moveDrag(e.clientX);
+            });
+            
+            // Touch move handler
+            scene.addEventListener('touchmove', (e) => {
+                e.preventDefault(); 
+                if (e.touches && e.touches.length > 0) {
+                    moveDrag(e.touches[0].clientX);
+                }
+            }, { passive: false });
+
+
+            const handleDragEnd = (endEvent) => {
+                if (!isDragging) return;
+
+                isDragging = false;
+                scene.classList.remove('dragging');
+                
+                let endX;
+                if (endEvent.changedTouches) {
+                    endX = endEvent.changedTouches[0].clientX;
+                } else {
+                    endX = endEvent.clientX;
+                }
+                
+                const dragDistance = endX - startX;
+                let newIndex = activeCubeIndex;
+
+                if (dragDistance > swipeThreshold) {
+                    newIndex = Math.max(0, activeCubeIndex - 1);
+                } else if (dragDistance < -swipeThreshold) {
+                    newIndex = Math.min(totalCubes - 1, activeCubeIndex + 1);
+                }
+                
+                activeCubeIndex = newIndex;
+
+                updateWrapperPosition(true); 
+                
+                setTimeout(() => {
+                    checkAndSnapToRealSet();
+                    startAutoSlide();
+                }, 850);
+            };
+
+            // Stop dragging events globally
+            window.addEventListener('mouseup', handleDragEnd);
+            window.addEventListener('touchend', handleDragEnd); 
+            
+            // Handle leaving the scene area while dragging (mouse only)
+            scene.addEventListener('mouseleave', (e) => {
+                if (isDragging) {
+                    handleDragEnd(e);
+                } else {
+                    startAutoSlide();
+                }
+            });
+
+
+            // --- Individual Cube Rotation (Hover/Touch Interaction) ---
+            const cubeWrapperElements = document.querySelectorAll('.cube-wrapper');
+
+            cubeWrapperElements.forEach(wrapper => {
+                const cube = wrapper.querySelector('.cube');
+                const face1 = cube.querySelector('.face-1');
+
+                const handleCubeInteraction = (clientX) => {
+                    // Prevent rotation if currently dragging the carousel
+                    if (isDragging) return; 
+                    if (clientX === undefined) return;
+                    
+                    const rect = face1.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const mouseX = clientX;
+
+                    const relX = (mouseX - centerX) / (rect.width / 2);
+
+                    let newClass = 'cube';
+                    const THRESHOLD = 0.3; 
+                    
+                    // Rotate to Face 3 (the links/image side)
+                    if (relX < -THRESHOLD) {
+                        newClass = 'cube show-right'; 
+                    } 
+                    // Rotate to Face 2 (the tech stack side)
+                    else if (relX > THRESHOLD) {
+                        newClass = 'cube show-left';
+                    }
+                    
+                    cube.className = newClass;
+                };
+                
+                const handleCubeMouseMove = (e) => {
+                     handleCubeInteraction(e.clientX);
+                };
+                
+                const handleCubeTouchMove = (e) => {
+                     if (e.touches && e.touches.length > 0) {
+                        handleCubeInteraction(e.touches[0].clientX);
+                     }
+                };
+
+                const handleCubeMouseLeave = () => {
+                    cube.className = 'cube'; // Revert to Face 1
+                };
+
+                wrapper.addEventListener('mousemove', handleCubeMouseMove);
+                wrapper.addEventListener('mouseleave', handleCubeMouseLeave);
+                // Touch events for manual rotation are less intuitive than drag, 
+                // but we keep them to ensure the cube returns to face 1 after interaction.
+                wrapper.addEventListener('touchmove', handleCubeTouchMove);
+                wrapper.addEventListener('touchend', handleCubeMouseLeave);
+                wrapper.addEventListener('touchcancel', handleCubeMouseLeave);
+            });
+        });
+    </script>
+</body>
+</html>

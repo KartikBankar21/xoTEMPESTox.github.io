@@ -2,19 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const SvgLoader = ({ onFinish }) => {
-  // Container variant to handle the sequencing of children
-//   const containerVariants = {
-//     hidden: { opacity: 0 },
-//     visible: {
-//       opacity: 1,
-//       transition: {
-//         staggerChildren: 0.4, // Delay between each path starting
-//         when: "beforeChildren",
-//       },
-//     },
-//   };
 
-  // Path variant for the "drawing" stroke effect
   const pathVariants = {
     hidden: {
       pathLength: 0,

@@ -58,26 +58,27 @@ const FooterNavbar = () => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-    > 
-   
+    >
       <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 bg-gray-700/20  media-object group">
         {navItems.map((item) => (
           <>
-          <li key={item.to} className="list-item ">
-          <div class="absolute -inset-2 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none"></div>
-            {/* NavLink for routing and active state */}
-            <NavLink
-              to={item.to}
-              className={({ isActive }) => {
-                console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
-  return `demo-icon ${item.icon} ${
-    isActive ? "text-sky-400" : "text-gray-300 hover:text-sky-400"
-  } transition-colors duration-300`;
-              }}
-            > 
-              {/* Icon is rendered via the demo-icon class and custom font */}
-            </NavLink>
-          </li>
+            <li key={item.to} className="list-item ">
+              <div class="absolute -inset-2 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none"></div>
+              {/* NavLink for routing and active state */}
+              <NavLink
+                to={item.to}
+                className={({ isActive }) => {
+                  console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
+                  return `demo-icon ${item.icon} ${
+                    isActive
+                      ? "text-sky-400"
+                      : "text-gray-300 hover:text-sky-400"
+                  } transition-colors duration-300`;
+                }}
+              >
+                {/* Icon is rendered via the demo-icon class and custom font */}
+              </NavLink>
+            </li>
           </>
         ))}
       </ul>
@@ -99,78 +100,3 @@ const FooterNavbar = () => {
 };
 
 export default FooterNavbar;
-
-// import React from "react";
-// import { NavLink } from "react-router-dom";
-// import "../styles/main.css";
-
-// const FooterNavbar = () => {
-//   const navItems = [
-//     { to: "/", label: "Home", icon: "homeicon-" },
-//     { to: "/about", label: "About", icon: "help-circledicon-" },
-//     { to: "/journey", label: "Journey", icon: "chart-baricon-" },
-//     { to: "/skills", label: "Skills", icon: "toolsicon-" },
-//     { to: "/services", label: "Services", icon: "clipboardicon-" },
-//     { to: "/portfolio", label: "Portfolio", icon: "briefcaseicon-" },
-//     // { to: "/reviews", label: "Reviews", icon: "staricon-" },
-//     { to: "/socials", label: "Socials", icon: "linkicon-" },
-//   ];
-
-//   return (
-//     <ul className="list" id="list">
-//       {navItems.map((item) => (
-//         <li key={item.to} className="list-item">
-//           <NavLink
-//             to={item.to}
-//             className={({ isActive }) =>
-//               `demo-icon ${item.icon} ${isActive ? "active" : ""} `
-//             }
-//           >
-//           </NavLink>
-//         </li>
-//       ))}
-//     </ul>
-//   );
-// };
-
-// export default FooterNavbar;
-
-// import React from 'react'
-// import '../styles/styles.css'
-// const FooterNavbar = () => {
-//   return (
-//     <div>
-//         <ul class="list" id="list">
-//             <li id="item-home" class="list-item" data-name-sec="home">
-//                 <i class="demo-icon homeicon-"></i>
-//             </li>
-
-//             <li id="item-about" class="list-item" data-name-sec="about">
-//                 <i class="demo-icon help-circledicon-"></i>
-//             </li>
-
-//             <li id="item-journey" class="list-item" data-name-sec="journey">
-//                 <i class="demo-icon chart-baricon-"></i>
-//             </li>
-
-//             <li id="item-skills" class="list-item" data-name-sec="skills">
-//                 <i class="demo-icon toolsicon-"></i>
-//             </li>
-
-//             <li id="item-services" class="list-item" data-name-sec="services">
-//                 <i class="demo-icon clipboardicon-"></i>
-//             </li>
-
-//             <li id="item-portfolio" class="list-item" data-name-sec="portfolio">
-//                 <i class="demo-icon briefcaseicon-"></i>
-//             </li>
-
-//             <li id="item-socials" class="list-item" data-name-sec="socials">
-//                 <i class="demo-icon linkicon-"></i>
-//             </li>
-//         </ul>
-//     </div>
-//   )
-// }
-
-// export default FooterNavbar
