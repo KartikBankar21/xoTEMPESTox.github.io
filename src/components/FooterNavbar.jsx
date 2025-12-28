@@ -68,7 +68,7 @@ const FooterNavbar = () => {
               <NavLink
                 to={item.to}
                 className={({ isActive }) => {
-                  console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
+                  // console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
                   return `demo-icon ${item.icon} ${
                     isActive
                       ? "text-sky-400"
