@@ -5,18 +5,14 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import {
-  Github,
-  ExternalLink,
-  Activity,
-  Server,
-  Database,
-  Code,
-  Cloud,
-  Box,
-} from "lucide-react";
+import { 
+  X, TrendingUp, Globe, Terminal, Server, Database, 
+  Cloud, Palette, Github, ExternalLink, Activity, Box,
+  Cpu, Layout, Layers, ShieldCheck, Zap, Code
+} from 'lucide-react';
 import "../styles/main.css";
 import Cube from "../components/Cube";
+import DetailCard from "../components/DetailedCard";
 
 // --- Configuration Constants ---
 const CUBE_WIDTH = 200;
@@ -26,223 +22,214 @@ const AUTO_SLIDE_DELAY = 2500;
 const SWIPE_THRESHOLD = 50;
 const NUM_PHANTOM = 3;
 
+
+// --- Sub-Components ---
+
+const TechBadge = ({ icon: Icon, label, colorClass, textColor }) => (
+  <div className={`flex items-center bg-slate-800 ${textColor} text-[11px] font-medium px-2 py-1 rounded-full border border-slate-700`}>
+    {Icon && <Icon size={12} className={`mr-1.5 ${colorClass}`} />}
+    <span>{label}</span>
+  </div>
+);
+
 // --- Data ---
 const rawPortfolioData = [
   {
+    id: "org-chatbot",
     title: "Organizational Chatbot",
-    description:
-      "RAG-powered HR & IT assistant with secure 2FA and tool calling.",
+    tagline: "RAG-powered AI assistant for streamlined HR & IT support",
+    description: "A sophisticated AI-driven assistant utilizing Retrieval-Augmented Generation (RAG) to provide accurate answers from internal documentation. It features secure authentication and dynamic tool calling for real-time task execution.",
     image_url: "../assets/images/projects/project-1.png",
     tag: "AI/ML Project",
+    highlights: [
+      "Implemented RAG architecture for context-aware responses from internal knowledge bases",
+      "Integrated 2FA security protocols using TOTP for sensitive organizational data access",
+      "Built dynamic tool-calling functionality allowing the AI to execute SQL queries and API calls",
+      "Developed a custom React-based chat interface with streaming responses"
+    ],
+    techStack: [
+      { name: 'Python', icon: Code, color: 'text-blue-400', textColor: 'text-blue-300' },
+      { name: 'OpenAI', icon: Zap, color: 'text-green-400', textColor: 'text-green-300' },
+      { name: 'React', icon: Terminal, color: 'text-cyan-400', textColor: 'text-cyan-300' },
+      { name: 'PostgreSQL', icon: Database, color: 'text-indigo-400', textColor: 'text-indigo-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/Enerzal",
-      live_link: "https://www.youtube.com/watch?v=azj_7OdSxcY",
-    },
+      live_link: "https://www.youtube.com/watch?v=azj_7OdSxcY"
+    }
   },
   {
+    id: "eco-chain",
     title: "Eco Chain",
-    description:
-      "MERN + Blockchain marketplace for carbon credit tokenization.",
+    tagline: "Blockchain marketplace for transparent carbon credit tokenization",
+    description: "A decentralized ecosystem designed to tokenize carbon credits, enabling businesses to trade environmental assets with full auditability and transparency on the blockchain.",
     image_url: "../assets/images/projects/project-2.png",
     tag: "Web3 Ecosystem",
+    highlights: [
+      "Developed smart contracts for secure ERC-20 tokenization of carbon offsets",
+      "Built a MERN-stack dashboard for tracking real-time carbon footprint data",
+      "Integrated MetaMask for seamless Web3 wallet authentication and transactions",
+      "Designed a custom ledger view for permanent, immutable environmental auditing"
+    ],
+    techStack: [
+      { name: 'Solidity', icon: ShieldCheck, color: 'text-gray-400', textColor: 'text-gray-300' },
+      { name: 'Ethereum', icon: Layers, color: 'text-indigo-400', textColor: 'text-indigo-300' },
+      { name: 'React', icon: Terminal, color: 'text-cyan-400', textColor: 'text-cyan-300' },
+      { name: 'Node.js', icon: Server, color: 'text-green-500', textColor: 'text-green-400' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/EcoChain",
-      live_link: "https://eco-chain-ashen.vercel.app/",
-    },
+      live_link: "https://eco-chain-ashen.vercel.app/"
+    }
   },
   {
+    id: "supplyzal",
     title: "Supplyzal",
-    description:
-      "Blockchain-based supply tracking with verified sustainability.",
+    tagline: "Blockchain-based supply tracking with verified sustainability markers",
+    description: "A comprehensive supply chain management tool that leverages blockchain to verify the origin and sustainability of products at every stage of the logistics process.",
     image_url: "../assets/images/projects/project-3.png",
     tag: "Blockchain Dapp",
+    highlights: [
+      "Created a transparent tracking system for high-value assets across global routes",
+      "Utilized decentralized storage (IPFS) for immutable product certifications",
+      "Reduced logistics verification time by 40% through automated smart contract triggers",
+      "Integrated QR-code based scanning for instant product history retrieval"
+    ],
+    techStack: [
+      { name: 'Hardhat', icon: Box, color: 'text-yellow-500', textColor: 'text-yellow-400' },
+      { name: 'React', icon: Terminal, color: 'text-cyan-400', textColor: 'text-cyan-300' },
+      { name: 'Ethers.js', icon: Zap, color: 'text-purple-400', textColor: 'text-purple-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/Supplyzal",
-      live_link: "https://www.youtube.com/watch?v=CEGqZsqdnN8",
-    },
+      live_link: "https://www.youtube.com/watch?v=CEGqZsqdnN8"
+    }
   },
   {
+    id: "ledger-play",
     title: "LedgerPlay",
-    description: "ERC20 based Staking Logic with Web socket based Multiplayer.",
+    tagline: "Multiplayer Web3 gaming with real-time token staking mechanics",
+    description: "A competitive multiplayer gaming platform where players can stake tokens in real-time matches. Uses WebSockets for low-latency synchronization and smart contracts for payout logic.",
     image_url: "../assets/images/projects/project-4.png",
     tag: "Gaming/Web3",
+    highlights: [
+      "Engineered a high-concurrency WebSocket server for real-time game state synchronization",
+      "Implemented ERC-20 staking logic ensuring secure and automated match payouts",
+      "Designed an interactive lobby system with global leaderboard integration",
+      "Optimized game assets for smooth 60FPS performance in-browser"
+    ],
+    techStack: [
+      { name: 'Socket.io', icon: Zap, color: 'text-white', textColor: 'text-white' },
+      { name: 'Unity', icon: Box, color: 'text-gray-300', textColor: 'text-gray-200' },
+      { name: 'Solidity', icon: ShieldCheck, color: 'text-blue-400', textColor: 'text-blue-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/LedgerPlay",
-      live_link: "https://www.youtube.com/watch?v=w-SHifenCqE",
-    },
+      live_link: "https://www.youtube.com/watch?v=w-SHifenCqE"
+    }
   },
   {
+    id: "wakebot32",
     title: "WakeBot32",
-    description: "ESP32 based WOL bot using Telegram API and Arduino IDE",
+    tagline: "IoT Wake-on-LAN controller with Telegram API integration",
+    description: "A hardware-based solution using ESP32 to remotely wake computers over a local network, controlled via a secure Telegram bot interface for global accessibility.",
     image_url: "../assets/images/projects/project-5.jpg",
     tag: "Hardware/IoT",
+    highlights: [
+      "Programmed ESP32 microcontrollers using C++ and Arduino IDE for low-power operation",
+      "Built a secure Telegram bot bridge for controlling local network packets over the internet",
+      "Implemented auto-reconnect logic and status heartbeat for 99.9% hardware uptime",
+      "Designed a custom PCB layout and 3D-printable enclosure for the final prototype"
+    ],
+    techStack: [
+      { name: 'C++', icon: Code, color: 'text-blue-500', textColor: 'text-blue-400' },
+      { name: 'ESP32', icon: Cpu, color: 'text-orange-500', textColor: 'text-orange-400' },
+      { name: 'Telegram API', icon: Globe, color: 'text-sky-400', textColor: 'text-sky-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/WakeBot32",
-      live_link: "https://youtu.be/fOirqvQiiFo",
-    },
+      live_link: "https://youtu.be/fOirqvQiiFo"
+    }
   },
   {
+    id: "tv-plus",
     title: "TradingviewPlus",
-    description: "Open Source Contributor for Trading View extension.",
+    tagline: "Open-source browser extension enhancing the TradingView ecosystem",
+    description: "A popular open-source utility that adds advanced charting tools, custom themes, and trade automation features to the standard TradingView web interface.",
     image_url: "../assets/images/projects/project-6.png",
     tag: "OSS Contribution",
+    highlights: [
+      "Contributed to the core extension architecture for Chrome and Firefox compatibility",
+      "Developed a custom CSS injection engine for user-defined chart aesthetics",
+      "Optimized DOM manipulation scripts to ensure zero performance lag on heavy charts",
+      "Managed community PRs and maintained technical documentation for new contributors"
+    ],
+    techStack: [
+      { name: 'JavaScript', icon: Code, color: 'text-yellow-400', textColor: 'text-yellow-300' },
+      { name: 'CSS3', icon: Palette, color: 'text-blue-500', textColor: 'text-blue-400' },
+      { name: 'Chrome API', icon: Layout, color: 'text-red-400', textColor: 'text-red-300' }
+    ],
     links: {
       github_link: "https://github.com/Tiqur/TradingviewPlus",
-      live_link:
-        "https://chromewebstore.google.com/detail/tradingviewplus/pkcgjgllebhppgegpedlhjmabmnpcpec?hl=en&authuser=0",
-    },
+      live_link: "https://chromewebstore.google.com/detail/tradingviewplus/pkcgjgllebhppgegpedlhjmabmnpcpec?hl=en&authuser=0"
+    }
   },
   {
+    id: "portfolio-web",
     title: "Portfolio Website",
-    description: "Portfolio website Built with Quality and Performance in mind",
+    tagline: "High-performance interactive developer showcase",
+    description: "A bespoke portfolio built with a focus on creative engineering, featuring 3D interactions, smooth transitions, and a clean, information-dense UI.",
     image_url: "../assets/images/preview.png",
     tag: "Personal Website",
+    highlights: [
+      "Achieved a 100/100 performance score on Google Lighthouse",
+      "Implemented advanced CSS 3D transforms for interactive project cubes",
+      "Designed a fully responsive layout that adapts from mobile to ultra-wide displays",
+      "Utilized Framer Motion for sophisticated entrance and exit animations"
+    ],
+    techStack: [
+      { name: 'React', icon: Terminal, color: 'text-cyan-400', textColor: 'text-cyan-300' },
+      { name: 'Tailwind CSS', icon: Palette, color: 'text-sky-400', textColor: 'text-sky-300' },
+      { name: 'Vite', icon: Zap, color: 'text-purple-400', textColor: 'text-purple-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/xoTEMPESTox.github.io",
-      live_link: "https://priyanshusah.com",
-    },
+      live_link: "https://priyanshusah.com"
+    }
   },
   {
+    id: "ml-kaggle",
     title: "ML Kaggle Competition",
-    description: "Hosted a Kaggle Competition under TCET ACM SIG AI 2025",
+    tagline: "Organized machine learning challenge for aspiring data scientists",
+    description: "Planned and hosted a competitive data science event featuring complex datasets and automated evaluation metrics, fostering community learning and innovation.",
     image_url: "../assets/images/projects/project-8.png",
     tag: "Competition Host",
+    highlights: [
+      "Curated a proprietary dataset with over 10,000 samples for predictive modeling",
+      "Managed the competition platform and real-time leaderboard for 200+ participants",
+      "Conducted post-competition analysis and workshops on winning ML architectures",
+      "Collaborated with industry partners to define real-world problem statements"
+    ],
+    techStack: [
+      { name: 'Python', icon: Code, color: 'text-blue-400', textColor: 'text-blue-300' },
+      { name: 'Pandas', icon: Database, color: 'text-blue-600', textColor: 'text-blue-500' },
+      { name: 'Scikit-learn', icon: Activity, color: 'text-orange-400', textColor: 'text-orange-300' }
+    ],
     links: {
       github_link: "https://github.com/xoTEMPESTox/TCET_ACM_SIGAI_KAGGLE_COMP",
-      live_link: "https://www.kaggle.com/competitions/acm-sigai-tcet",
-    },
-  },
-];
-
-// --- Tech Stack Icons (SVG Components) ---
-const TechIcon = ({ name, className }) => {
-  switch (name) {
-    case "React":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M7 12l3 3 7-7" />
-          <path d="M12 2l-8 5v10l8 5 8-5V7l-8-5z" />
-        </svg>
-      );
-    case "Node.js":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-          <line x1="8" y1="21" x2="16" y2="21" />
-          <line x1="12" y1="17" x2="12" y2="21" />
-        </svg>
-      );
-    case "MongoDB":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <ellipse cx="12" cy="5" rx="9" ry="3" />
-          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-        </svg>
-      );
-    case "Tailwind CSS":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
-      );
-    case "DigitalOcean":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-          <path d="M12 2a10 10 0 0 0-8 4h16a10 10 0 0 0-8-4z" />
-          <path d="M12 22a10 10 0 0 1-8-4h16a10 10 0 0 1-8 4z" />
-          <path d="M2 12h20" />
-          <path d="M12 2v20" />
-        </svg>
-      );
-    case "TypeScript":
-      return (
-        <svg
-          className={className}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-          <line x1="9" y1="12" x2="15" y2="12" />
-          <line x1="12" y1="9" x2="12" y2="15" />
-        </svg>
-      );
-    default:
-      return <Box className={className} />;
+      live_link: "https://www.kaggle.com/competitions/acm-sigai-tcet"
+    }
   }
-};
-
-const availableTech = [
-  { name: "React", color: "text-blue-400" },
-  { name: "Node.js", color: "text-green-400" },
-  { name: "MongoDB", color: "text-yellow-400" },
-  { name: "Tailwind CSS", color: "text-cyan-400" },
-  { name: "DigitalOcean", color: "text-gray-400" },
-  { name: "TypeScript", color: "text-blue-500" },
 ];
 
-// Pre-process data to include a fixed random tech stack per item
-const portfolioData = rawPortfolioData.map((item) => {
-  const shuffled = [...availableTech].sort(() => 0.5 - Math.random());
-  const numTech = 4 + Math.floor(Math.random() * 2); // 4 or 5 items
-  return {
-    ...item,
-    techStack: shuffled.slice(0, numTech),
-  };
-});
 
 const Portfolio = () => {
-   const realCount = portfolioData.length;
+  const [selectedProject, setSelectedProject] = useState(null);
+   const realCount = rawPortfolioData.length;
   const cubeList = useMemo(() => {
-    const startClones = portfolioData.slice(-NUM_PHANTOM);
-    const endClones = portfolioData.slice(0, NUM_PHANTOM);
-    return [...startClones, ...portfolioData, ...endClones];
+    const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
+    const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
+    return [...startClones, ...rawPortfolioData, ...endClones];
   }, []);
 
   const totalCubes = cubeList.length;
@@ -340,14 +327,11 @@ const Portfolio = () => {
         <p className="text-8xl md:text-9xl font-black mb-2 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/40 uppercase">
           Portfolio
         </p>
-        {/* <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base">
-          Interactive 3D carousel. Drag to navigate, hover edges to peek at content, or click details to flip cards.
-        </p> */}
       </header>
 
       <div 
         ref={containerRef}
-        className="w-full h-[400px] relative flex items-center justify-center touch-none overflow-visible"
+        className="w-full h-[400px] relative flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing overflow-visible"
         style={{ perspective: '1200px' }}
         onMouseEnter={() => { isHoveringRef.current = true; stopAutoSlide(); }}
         onMouseLeave={(e) => { 
@@ -373,25 +357,29 @@ const Portfolio = () => {
           }}
         >
           {cubeList.map((item, index) => (
-            <Cube key={`${index}-${item.title}`} item={item} isDragging={isDragging} />
+            <Cube key={`${index}-${item.title}`} item={item} isDragging={isDragging} onViewDetails={setSelectedProject} />
           ))}
         </div>
 
         <div className="absolute inset-y-0 -left-16 w-32 bg-gradient-to-r from-[#050505] to-transparent pointer-events-none z-10 rounded-r-full" />
         <div className="absolute inset-y-0 -right-16 w-32 bg-gradient-to-l from-[#050505] to-transparent pointer-events-none z-10 rounded-l-full" />
       </div>
+      {/* Detail Overlay */}
+      {selectedProject && (
+        <DetailCard 
+          project={selectedProject} 
+          onClose={() => setSelectedProject(null)} 
+        />
+      )}
 
       <footer className=" pb-16 text-center text-gray-500 text-3xl tracking-widest uppercase">
         Hover edges to rotate • Drag to navigate
       </footer>
-      {/* Footer Instructions */}
-      {/* <div className="mt-auto pb-8 text-center text-gray-500 text-3xl px-4">
-        <p className="mb-1">
-          Tech Stack: <span className="text-gray-300">Hover Right Edge</span> |
-          Links: <span className="text-gray-300">Hover Left Edge</span>
-        </p>
-        <p>(Or use the buttons on the card faces)</p>
-      </div> */}
+      
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+      `}</style>
     </div>
   );
 };

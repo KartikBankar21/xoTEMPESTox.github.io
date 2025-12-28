@@ -109,7 +109,7 @@ const musicAPI = [
 ];
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
@@ -355,11 +355,11 @@ function App() {
   return (
     <>
       <style>{customStyles}</style>
-      {/* <audio
+      <audio
         ref={currentAudio}
         onTimeUpdate={handleAudioUpdate}
         onEnded={handleNextSong} // Auto-play next track when current one ends
-      /> */}
+      />
       <div className="App" style={{ position: "relative", minHeight: "100vh" }}>
         {/* 1. Background is ALWAYS mounted so the video can load */}
         <div
