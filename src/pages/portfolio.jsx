@@ -225,7 +225,8 @@ const rawPortfolioData = [
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
-   const realCount = rawPortfolioData.length;
+  const realCount = rawPortfolioData.length;
+  
   const cubeList = useMemo(() => {
     const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
     const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
@@ -251,6 +252,7 @@ const Portfolio = () => {
   const isHoveringRef = useRef(false);
 
   useEffect(() => {
+    // This width now refers to the constrained 860px container
     const handleResize = () => containerRef.current && setWrapperWidth(containerRef.current.clientWidth);
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -319,19 +321,24 @@ const Portfolio = () => {
     if (!isHoveringRef.current) startAutoSlide();
   };
 
-
   return (
-    <div className="page-section">
+    <div className="page-section  font-sans">
       {/* Header */}
-      <header className="pt-12 pb-0 text-center px-4 relative z-10">
-        <p className="text-8xl md:text-9xl font-black mb-2 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/40 uppercase">
-          Portfolio
-        </p>
+      <header className="pt-12 pb-8 text-center px-4 z-10 flex justify-center items-center">
+        <div className="bg-black/50 backdrop-blur-sm rounded-2xl w-fit p-6 md:p-12 border border-white/5">
+          <p className="text-6xl md:text-8xl lg:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/20 uppercase">
+            Portfolio
+          </p>
+        </div>
       </header>
 
+      {/* Main Container for 3-Cube View
+        max-w-[860px]: Restricts view to roughly 3 cubes width
+        overflow-hidden: Hides the side cubes
+      */}
       <div 
         ref={containerRef}
-        className="w-full h-[400px] relative flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing overflow-visible"
+        className="w-full max-w-[860px] mx-auto h-[400px] relative flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden rounded-xl border-x border-white/5"
         style={{ perspective: '1200px' }}
         onMouseEnter={() => { isHoveringRef.current = true; stopAutoSlide(); }}
         onMouseLeave={(e) => { 
@@ -353,7 +360,8 @@ const Portfolio = () => {
             transform: `translateX(${getTranslation(activeIndex)}px)`,
             gap: `${GAP_WIDTH}px`,
             transition: isTransitioning ? 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
-            transformStyle: 'preserve-3d'
+            transformStyle: 'preserve-3d',
+            // perspective:'1000px'
           }}
         >
           {cubeList.map((item, index) => (
@@ -361,9 +369,8 @@ const Portfolio = () => {
           ))}
         </div>
 
-        <div className="absolute inset-y-0 -left-16 w-32 bg-gradient-to-r from-[#050505] to-transparent pointer-events-none z-10 rounded-r-full" />
-        <div className="absolute inset-y-0 -right-16 w-32 bg-gradient-to-l from-[#050505] to-transparent pointer-events-none z-10 rounded-l-full" />
       </div>
+
       {/* Detail Overlay */}
       {selectedProject && (
         <DetailCard 
@@ -372,7 +379,7 @@ const Portfolio = () => {
         />
       )}
 
-      <footer className=" pb-16 text-center text-gray-500 text-3xl tracking-widest uppercase">
+      <footer className="pb-16 pt-8 text-center text-gray-500 text-xl md:text-3xl tracking-widest uppercase opacity-60">
         Hover edges to rotate • Drag to navigate
       </footer>
       

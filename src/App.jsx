@@ -14,6 +14,8 @@ import {
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoader from "./components/SvgLoader";
+import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
+import SvgLoaderNaturalWrite from "./components/SvgLoaderNaturalWrite";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -384,7 +386,7 @@ function App() {
     onTransitionEnd={() => {
       if (fadeOut) setLoading(false);
     }}>
-            <SvgLoader onFinish={() => setFadeOut(true)} />
+            <SvgLoaderLeftToRight onFinish={() => setFadeOut(true)} />
           </div>
         )}
 

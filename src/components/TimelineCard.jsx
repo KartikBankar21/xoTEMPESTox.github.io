@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const TimelineCard = ({ item, isLeft, progressRatio }) => {
+const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThreshold }) => {
   const cardRef = useRef(null);
-  // The card is active if the scroll is past its position, 
-// BUT it fades out if the scroll gets too far past it (e.g., 20% further)
-const isActive = progressRatio >= item.pos && progressRatio <= item.pos + 0.25;
+  // Use the passed "effectivePos" (which handles mobile vs desktop logic)
+  // Use "effectiveThreshold" to determine how long it stays visible
+  const isActive = progressRatio >= effectivePos && progressRatio <= effectivePos + effectiveThreshold;
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -21,17 +21,17 @@ const isActive = progressRatio >= item.pos && progressRatio <= item.pos + 0.25;
   return (
     <div
       className="absolute w-full px-4 md:px-0"
-      style={{ top: `${item.pos * 100}%`, transform: "translateY(-50%)" }}
+      style={{ top: `${effectivePos * 100}%`, transform: "translateY(-50%)" }}
     >
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
-        className={`relative p-8 md:p-10 rounded-3xl border-2 transition-all duration-700 ease-out transform 
+        className={`relative p-8 md:p-10 rounded-3xl border-2 transition-all duration-700 ease-out transform bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit
           ${
             isActive
               ? "opacity-100 translate-y-0 scale-100 "
               : "opacity-0 translate-y-16 scale-95 pointer-events-none "
-          } bg-black/95 border-white/5 hover:border-blue-500/20 `}
+          } bg-black/90 border-white/5 hover:border-sky-400 `}
         style={{
           // Use backgroundImage instead of background
           backgroundImage: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(59, 130, 246, 0.15), transparent 10%)`,

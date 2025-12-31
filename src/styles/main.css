@@ -1118,7 +1118,7 @@ HeaderBackground {
   -ms-transform: scale(1.1);
   transform: scale(1.1);
 }
-
+ 
 .home__info {
   color: #ffffff;
   border-radius: 16px;
@@ -4015,4 +4015,16 @@ progress {
   transition-property: transform;
   transition-property: transform, -webkit-transform;
   width: 100%;
+}
+
+
+@keyframes diagonal-left {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(8px, -8px);
+    opacity: 1;
+  }
 }
