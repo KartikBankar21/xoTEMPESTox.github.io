@@ -151,6 +151,31 @@ const Journey = () => {
   // Helper to get threshold (how long it stays active)
   const getItemThreshold = (item) => isMobile ? (item.mobileThreshold ?? 0.25) : 0.25;
 
+  const [footerVisible, setFooterVisible] = useState(false);
+const footerRef = useRef(null);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      // Toggle state based on visibility
+      if (entry.isIntersecting) {
+        setFooterVisible(true);
+      } else {
+        // Reset the animation when the element leaves the screen
+        setFooterVisible(false);
+      }
+    },
+    { 
+      threshold: 0.1, // Trigger as soon as 10% is visible
+      rootMargin: "0px 0px -50px 0px" // Optional: gives a slight buffer at the bottom
+    }
+  );
+
+  if (footerRef.current) observer.observe(footerRef.current);
+  
+  return () => observer.disconnect();
+}, []);
+
   return (
     <div className="page-section">
       {/* <Timeline/> */}
@@ -285,6 +310,7 @@ const Journey = () => {
                   progressRatio={eduProgress} // Use eduProgress here
                   effectivePos={getItemPos(item)}
                   effectiveThreshold={getItemThreshold(item)}
+                  borderColor={'hover:border-blue-400'}
                 />
               ))}
             </div>
@@ -340,6 +366,7 @@ const Journey = () => {
                   progressRatio={expProgress} // Use expProgress here
                   effectivePos={getItemPos(item)}
                   effectiveThreshold={getItemThreshold(item)}
+                  borderColor={'hover:border-purple-400'}
                 />
               ))}
             </div>
@@ -347,7 +374,12 @@ const Journey = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="mt-60 text-center pb-40">
+        <div ref={footerRef}
+  className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
+    footerVisible 
+      ? "opacity-100 translate-y-0" 
+      : "opacity-0 translate-y-20"
+  }`}>
           <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">
             <div className="bg-black/50 backdrop-blur-sm  p-12 rounded-[calc(1.5rem-1px)] border border-white/5 max-w-2xl">
               <p className="text-3xl font-bold mb-4 text-white">

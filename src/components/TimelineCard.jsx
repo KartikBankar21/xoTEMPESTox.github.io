@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThreshold }) => {
+const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThreshold, borderColor }) => {
   const cardRef = useRef(null);
   // Use the passed "effectivePos" (which handles mobile vs desktop logic)
   // Use "effectiveThreshold" to determine how long it stays visible
@@ -31,7 +31,7 @@ const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThre
             isActive
               ? "opacity-100 translate-y-0 scale-100 "
               : "opacity-0 translate-y-16 scale-95 pointer-events-none "
-          } bg-black/90 border-white/5 hover:border-sky-400 `}
+          } bg-black/90 border-white/5 ${borderColor} `}
         style={{
           // Use backgroundImage instead of background
           backgroundImage: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(59, 130, 246, 0.15), transparent 10%)`,

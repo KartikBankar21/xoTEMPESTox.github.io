@@ -11,7 +11,7 @@ const TechBadge = ({ icon: Icon, label, colorClass, textColor }) => (
     {Icon && <Icon size={12} className={`mr-1.5 ${colorClass}`} />}
     <span>{label}</span>
   </div>
-);
+); 
 
 const Cube = ({ item, isDragging, onViewDetails }) => {
   const [overrideClass, setOverrideClass] = useState("");

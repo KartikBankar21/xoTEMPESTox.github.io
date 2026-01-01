@@ -11,8 +11,19 @@ import {
   Cpu, Layout, Layers, ShieldCheck, Zap, Code
 } from 'lucide-react';
 import "../styles/main.css";
-import Cube from "../components/Cube";
+// import Cube from "../components/Cube";
 import DetailCard from "../components/DetailedCard";
+// import Cube3 from "../components/Cube3";
+import SingleCube from "../components/Cube3";
+// import SingleCube from "../components/Cube";
+
+// --- Configuration Constants ---
+// Base values (Mobile/Tablet)
+const BASE_CUBE_WIDTH = 200;
+const BASE_GAP_WIDTH = 64; 
+
+// Multiplier for Large Screens (lg)
+const LG_MULTIPLIER = 1.5;
 
 // --- Configuration Constants ---
 const CUBE_WIDTH = 200;
@@ -225,6 +236,31 @@ const rawPortfolioData = [
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
+  
+  // --- Responsive Logic ---
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1000);
+  
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate dimensions based on screen size
+  const isLg = windowWidth >= 1265; // Tailwind lg breakpoint
+  const currentScale = isLg ? LG_MULTIPLIER : 1;
+  const cubeWidth = BASE_CUBE_WIDTH * currentScale;
+  const gapWidth = BASE_GAP_WIDTH * currentScale;
+  const itemWidth = cubeWidth + gapWidth;
+
+  // Calculate visible container width: We want exactly 3 items visible.
+  // 3 * itemWidth - gapWidth (to not count the last gap) + padding for safety
+  // Actually simpler: 3 * itemWidth roughly allows 1 center + 2 sides.
+  // Let's make it tightly fit 3 items.
+  // Visual Width = (Cube + Gap) * 2 + Cube = 3 * Cube + 2 * Gap.
+  const visibleContainerWidth = (3 * cubeWidth) + (2 * gapWidth);
+
+
   const realCount = rawPortfolioData.length;
   
   const cubeList = useMemo(() => {
@@ -233,7 +269,6 @@ const Portfolio = () => {
     return [...startClones, ...rawPortfolioData, ...endClones];
   }, []);
 
-  const totalCubes = cubeList.length;
   const realStartIndex = NUM_PHANTOM;
   const realEndIndex = realStartIndex + realCount - 1;
   const initialIndex = realStartIndex + Math.floor(realCount / 2);
@@ -241,31 +276,29 @@ const Portfolio = () => {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
-  const [wrapperWidth, setWrapperWidth] = useState(0);
-  
-  const wrapperRef = useRef(null);
+
+  // We rely on calculated widths, not DOM ref widths for the carousel math now
+  // to ensure server/client match and responsiveness
   const containerRef = useRef(null);
+  const wrapperRef = useRef(null);
   const startXRef = useRef(0);
   const currentTranslateRef = useRef(0);
   const draggingRef = useRef(false);
   const autoSlideRef = useRef(null);
   const isHoveringRef = useRef(false);
 
-  useEffect(() => {
-    // This width now refers to the constrained 860px container
-    const handleResize = () => containerRef.current && setWrapperWidth(containerRef.current.clientWidth);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const getTranslation = useCallback((index) => {
-    if (!wrapperWidth) return 0;
-    return (wrapperWidth / 2) - (index * ITEM_WIDTH + (CUBE_WIDTH / 2));
-  }, [wrapperWidth]);
+    // Center the active index within the visible container
+    // Offset = (ContainerWidth / 2) - (Index * ItemWidth + CubeWidth/2)
+    return (visibleContainerWidth / 2) - (index * itemWidth + (cubeWidth / 2));
+  }, [visibleContainerWidth, itemWidth, cubeWidth]);
 
   const stopAutoSlide = useCallback(() => {
-    if (autoSlideRef.current) { clearInterval(autoSlideRef.current); autoSlideRef.current = null; }
+    if (autoSlideRef.current) {
+      clearInterval(autoSlideRef.current);
+      autoSlideRef.current = null;
+    }
   }, []);
 
   const startAutoSlide = useCallback(() => {
@@ -285,9 +318,15 @@ const Portfolio = () => {
   useEffect(() => {
     if (!isTransitioning) return;
     if (activeIndex > realEndIndex) {
-      setTimeout(() => { setIsTransitioning(false); setActiveIndex(realStartIndex); }, 800);
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setActiveIndex(realStartIndex);
+      }, 800);
     } else if (activeIndex < realStartIndex) {
-      setTimeout(() => { setIsTransitioning(false); setActiveIndex(realEndIndex); }, 800);
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setActiveIndex(realEndIndex);
+      }, 800);
     }
   }, [activeIndex, isTransitioning, realEndIndex, realStartIndex]);
 
@@ -322,73 +361,262 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="page-section  font-sans">
-      {/* Header */}
-      <header className="pt-12 pb-8 text-center px-4 z-10 flex justify-center items-center">
-        <div className="bg-black/50 backdrop-blur-sm rounded-2xl w-fit p-6 md:p-12 border border-white/5">
-          <p className="text-6xl md:text-8xl lg:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/20 uppercase">
-            Portfolio
-          </p>
-        </div>
-      </header>
+    <div className="h-screen w-full  text-white flex flex-col overflow-hidden selection:bg-indigo-500/30">
+      
+      {/* 1. Header (Top) */}
+      <header className=" my-6   text-center px-4 z-20 flex-none">
+         <div className="bg-black/50 backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border border-white/5">
+           <p className="text-6xl md:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/20 uppercase">
+             Portfolio
+           </p>
+         </div>
+       </header>
 
-      {/* Main Container for 3-Cube View
-        max-w-[860px]: Restricts view to roughly 3 cubes width
-        overflow-hidden: Hides the side cubes
+      {/* 2. Main Center Area (Carousel) 
+          - flex-grow takes up remaining space
+          - justify-center centers vertically
+          - pb-[10rem] adds the "safe zone" for the navbar (5rem offset + 5rem height)
       */}
       <div 
-        ref={containerRef}
-        className="w-full max-w-[860px] mx-auto h-[400px] relative flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden rounded-xl border-x border-white/5"
-        style={{ perspective: '1200px' }}
-        onMouseEnter={() => { isHoveringRef.current = true; stopAutoSlide(); }}
-        onMouseLeave={(e) => { 
-          isHoveringRef.current = false; 
-          if (draggingRef.current) handleDragEnd(e.clientX);
-          else startAutoSlide();
-        }}
-        onPointerDown={(e) => {
-          if (e.target.closest('button')) return;
-          handleDragStart(e.clientX);
-        }}
-        onPointerMove={(e) => handleDragMove(e.clientX)}
-        onPointerUp={(e) => handleDragEnd(e.clientX)}
+        className="flex-grow flex flex-col items-center justify-center relative pb-[12rem] "
       >
         <div
-          ref={wrapperRef}
-          className="flex items-center absolute left-0 h-full will-change-transform"
-          style={{
-            transform: `translateX(${getTranslation(activeIndex)}px)`,
-            gap: `${GAP_WIDTH}px`,
-            transition: isTransitioning ? 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
-            transformStyle: 'preserve-3d',
-            // perspective:'1000px'
+          ref={containerRef}
+          className="relative h-full touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden "
+          style={{ 
+            perspective: '750px',
+            // Enforce strictly 3 items visible width
+            width: `${visibleContainerWidth}px`,
+            // Add vertical padding for 3D rotation clearance
+            paddingTop: '2rem',
+            paddingBottom: '2rem'
           }}
+          onMouseEnter={() => { isHoveringRef.current = true; stopAutoSlide(); }}
+          onMouseLeave={(e) => { 
+            isHoveringRef.current = false; 
+            if (draggingRef.current) handleDragEnd(e.clientX);
+            else startAutoSlide();
+          }}
+          onPointerDown={(e) => {
+            if (e.target.closest('button') || e.target.closest('a')) return;
+            handleDragStart(e.clientX);
+          }}
+          onPointerMove={(e) => handleDragMove(e.clientX)}
+          onPointerUp={(e) => handleDragEnd(e.clientX)}
         >
-          {cubeList.map((item, index) => (
-            <Cube key={`${index}-${item.title}`} item={item} isDragging={isDragging} onViewDetails={setSelectedProject} />
-          ))}
-        </div>
+          <div 
+            ref={wrapperRef}
+            className="flex items-center absolute h-full will-change-transform top-0"
+            style={{
+              transform: `translateX(${getTranslation(activeIndex)}px)`,
+              gap: `${gapWidth}px`,
+              transition: isTransitioning ? 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
+              transformStyle: 'preserve-3d',
+              // paddingLeft: `${cubeWidth/2}px` // Initial offset helper
+            }}
+          >
+            {cubeList.map((item, idx) => (
+              <SingleCube 
+                key={`${idx}-${item.id}`} 
+                item={item} 
+                onViewDetails={setSelectedProject}
+                isDragging={isDragging}
+                width={cubeWidth}
+                height={cubeWidth} // Keeping it square
+              />
+            ))}
+          </div>
 
+          {/* Gradient Overlays - Adjusted to strictly mask edges */}
+          {/* <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-slate-950 to-transparent pointer-events-none z-40" />
+          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-slate-950 to-transparent pointer-events-none z-40" /> */}
+        </div>
+        
       </div>
 
-      {/* Detail Overlay */}
-      {selectedProject && (
-        <DetailCard 
-          project={selectedProject} 
-          onClose={() => setSelectedProject(null)} 
-        />
-      )}
+      {/* 3. Bottom Fixed Navbar Simulation 
+         "fixed with 5rem from bottom and 5rem height"
+      */}
+   
 
-      <footer className="pb-16 pt-8 text-center text-gray-500 text-xl md:text-3xl tracking-widest uppercase opacity-60">
-        Hover edges to rotate • Drag to navigate
-      </footer>
-      
+      <DetailCard project={selectedProject} onClose={() => setSelectedProject(null)} />
+
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
       `}</style>
     </div>
   );
 };
 
 export default Portfolio;
+
+// const Portfolio = () => {
+//   const [selectedProject, setSelectedProject] = useState(null);
+//   const realCount = rawPortfolioData.length;
+  
+//   const cubeList = useMemo(() => {
+//     const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
+//     const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
+//     return [...startClones, ...rawPortfolioData, ...endClones];
+//   }, []);
+
+//   const totalCubes = cubeList.length;
+//   const realStartIndex = NUM_PHANTOM;
+//   const realEndIndex = realStartIndex + realCount - 1;
+//   const initialIndex = realStartIndex + Math.floor(realCount / 2);
+
+//   const [activeIndex, setActiveIndex] = useState(initialIndex);
+//   const [isDragging, setIsDragging] = useState(false);
+//   const [isTransitioning, setIsTransitioning] = useState(true);
+//   const [wrapperWidth, setWrapperWidth] = useState(0);
+  
+//   const wrapperRef = useRef(null);
+//   const containerRef = useRef(null);
+//   const startXRef = useRef(0);
+//   const currentTranslateRef = useRef(0);
+//   const draggingRef = useRef(false);
+//   const autoSlideRef = useRef(null);
+//   const isHoveringRef = useRef(false);
+
+//   useEffect(() => {
+//     // This width now refers to the constrained 860px container
+//     const handleResize = () => containerRef.current && setWrapperWidth(containerRef.current.clientWidth);
+//     handleResize();
+//     window.addEventListener('resize', handleResize);
+//     return () => window.removeEventListener('resize', handleResize);
+//   }, []);
+ 
+//   const getTranslation = useCallback((index) => {
+//     if (!wrapperWidth) return 0;
+//     return (wrapperWidth / 2) - (index * ITEM_WIDTH + (CUBE_WIDTH / 2));
+//   }, [wrapperWidth]);
+
+//   const stopAutoSlide = useCallback(() => {
+//     if (autoSlideRef.current) { clearInterval(autoSlideRef.current); autoSlideRef.current = null; }
+//   }, []);
+
+//   const startAutoSlide = useCallback(() => {
+//     stopAutoSlide();
+//     if (isHoveringRef.current) return;
+//     autoSlideRef.current = setInterval(() => {
+//       setActiveIndex(prev => prev + 1);
+//       setIsTransitioning(true);
+//     }, AUTO_SLIDE_DELAY);
+//   }, [stopAutoSlide]);
+
+//   useEffect(() => {
+//     startAutoSlide();
+//     return stopAutoSlide;
+//   }, [startAutoSlide]);
+
+//   useEffect(() => {
+//     if (!isTransitioning) return;
+//     if (activeIndex > realEndIndex) {
+//       setTimeout(() => { setIsTransitioning(false); setActiveIndex(realStartIndex); }, 800);
+//     } else if (activeIndex < realStartIndex) {
+//       setTimeout(() => { setIsTransitioning(false); setActiveIndex(realEndIndex); }, 800);
+//     }
+//   }, [activeIndex, isTransitioning, realEndIndex, realStartIndex]);
+
+//   const handleDragStart = (clientX) => {
+//     stopAutoSlide();
+//     draggingRef.current = true;
+//     setIsDragging(true);
+//     startXRef.current = clientX;
+//     setIsTransitioning(false);
+//     currentTranslateRef.current = getTranslation(activeIndex);
+//   };
+
+//   const handleDragMove = (clientX) => {
+//     if (!draggingRef.current) return;
+//     const delta = clientX - startXRef.current;
+//     if (wrapperRef.current) {
+//       wrapperRef.current.style.transform = `translateX(${currentTranslateRef.current + delta}px)`;
+//     }
+//   };
+
+//   const handleDragEnd = (clientX) => {
+//     if (!draggingRef.current) return;
+//     draggingRef.current = false;
+//     setIsDragging(false);
+//     const delta = clientX - startXRef.current;
+//     let direction = 0;
+//     if (delta < -SWIPE_THRESHOLD) direction = 1;
+//     else if (delta > SWIPE_THRESHOLD) direction = -1;
+//     setIsTransitioning(true);
+//     setActiveIndex(prev => prev + direction);
+//     if (!isHoveringRef.current) startAutoSlide();
+//   };
+
+//   return (
+//     <div className="page-section  font-sans">
+//       {/* Header */}
+//       <header className="pt-12 pb-8 text-center px-4 z-10 flex justify-center items-center">
+//         <div className="bg-black/50 backdrop-blur-sm rounded-2xl w-fit p-6 md:p-12 border border-white/5">
+//           <p className="text-6xl md:text-8xl lg:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/20 uppercase">
+//             Portfolio
+//           </p>
+//         </div>
+//       </header>
+
+//       {/* Main Container for 3-Cube View
+//         max-w-[860px]: Restricts view to roughly 3 cubes width
+//         overflow-hidden: Hides the side cubes
+//       */}
+//       <div 
+//         ref={containerRef}
+//         className="w-full max-w-[860px] mx-auto h-[400px] relative flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden rounded-xl border-x border-white/5"
+//         style={{ perspective: '1200px' }}
+//         onMouseEnter={() => { isHoveringRef.current = true; stopAutoSlide(); }}
+//         onMouseLeave={(e) => { 
+//           isHoveringRef.current = false; 
+//           if (draggingRef.current) handleDragEnd(e.clientX);
+//           else startAutoSlide();
+//         }}
+//         onPointerDown={(e) => {
+//           if (e.target.closest('button')) return;
+//           handleDragStart(e.clientX);
+//         }}
+//         onPointerMove={(e) => handleDragMove(e.clientX)}
+//         onPointerUp={(e) => handleDragEnd(e.clientX)}
+//       >
+//         <div
+//           ref={wrapperRef}
+//           className="flex items-center absolute left-0 h-full will-change-transform"
+//           style={{
+//             transform: `translateX(${getTranslation(activeIndex)}px)`,
+//             gap: `${GAP_WIDTH}px`,
+//             transition: isTransitioning ? 'transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
+//             transformStyle: 'preserve-3d',
+//             // perspective:'1000px'
+//           }}
+//         >
+//           {cubeList.map((item, index) => (
+//             <Cube3 key={`${index}-${item.title}`} item={item} isDragging={isDragging} onViewDetails={setSelectedProject} />
+//           ))}
+//         </div>
+
+//       </div>
+
+//       {/* Detail Overlay */}
+//       {selectedProject && (
+//         <DetailCard 
+//           project={selectedProject} 
+//           onClose={() => setSelectedProject(null)} 
+//         />
+//       )}
+
+//       <footer className="pb-16 pt-8 text-center text-gray-500 text-xl md:text-3xl tracking-widest uppercase opacity-60">
+//         Hover edges to rotate • Drag to navigate
+//       </footer>
+      
+//       <style>{`
+//         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+//         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+//       `}</style>
+//     </div>
+//   );
+// };
+
+// export default Portfolio;
