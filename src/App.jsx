@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import HeaderBackground from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
@@ -102,6 +103,22 @@ function App() {
   const [volume, setVolume] = useState(0.3); // 30% volume
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
+  const location = useLocation();
+
+  // --- DYNAMIC TITLE HANDLER ---
+  useEffect(() => {
+    const titleMap = {
+      "/": "Priyanshu Sah | AI ML Engineer & Full Stack Developer",
+      "/about": "About Me | Priyanshu Sah",
+      "/journey": "My Journey | Priyanshu Sah",
+      "/portfolio": "Portfolio | Priyanshu Sah",
+      "/services": "Services | Priyanshu Sah",
+      "/skills": "Skills | Priyanshu Sah",
+      "/socials": "Blog & Socials | Priyanshu Sah",
+    };
+
+    document.title = titleMap[location.pathname] || "Priyanshu Sah | AI ML Engineer & Full Stack Developer";
+  }, [location]);
 
   // --- AUDIO HANDLERS ---
 

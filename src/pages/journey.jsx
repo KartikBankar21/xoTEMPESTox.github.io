@@ -213,9 +213,9 @@ const Journey = () => {
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
           <div className="text-center mb-6 bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit">
-            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
+            <h1 className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
               Journey
-            </p>
+            </h1>
 
             <div className="flex justify-center gap-16 md:gap-24 mt-8">
               <div className="flex flex-col items-center">
@@ -235,11 +235,10 @@ const Journey = () => {
         </div>
         <div
           ref={indicatorRef}
-          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${
-            isScrolled
+          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${isScrolled
               ? "opacity-0 translate-y-20 pointer-events-none invisible"
               : "opacity-100 translate-y-0"
-          }`}
+            }`}
         >
           <div className="inline-flex flex-col items-center group cursor-pointer">
             <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100 group-hover:text-sky-400">
@@ -317,10 +316,9 @@ const Journey = () => {
                   <div
                     key={`node-edu-${i}`}
                     className={`absolute left-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
-                      ${
-                        eduProgress >= effectivePos
-                          ? "border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-110"
-                          : "border-white/10 grayscale opacity-20 scale-90"
+                      ${eduProgress >= effectivePos
+                        ? "border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-110"
+                        : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
                     style={{ top: `${effectivePos * 100}%` }}
                   >
@@ -377,10 +375,9 @@ const Journey = () => {
                   <div
                     key={`node-exp-${i}`}
                     className={`absolute right-0 translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
-                      ${
-                        expProgress >= effectivePos
-                          ? "border-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] scale-110"
-                          : "border-white/10 grayscale opacity-20 scale-90"
+                      ${expProgress >= effectivePos
+                        ? "border-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] scale-110"
+                        : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
                     style={{ top: `${effectivePos * 100}%` }}
                   >
@@ -411,11 +408,10 @@ const Journey = () => {
         {/* Bottom Footer */}
         <div
           ref={footerRef}
-          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
-            footerVisible
+          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${footerVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-20"
-          }`}
+            }`}
         >
           <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">
             <div className="bg-black/50 backdrop-blur-sm  p-12 rounded-[calc(1.5rem-1px)] border border-white/5 max-w-2xl">

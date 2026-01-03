@@ -440,6 +440,7 @@ const Socials = () => {
 
   return (
     <div className="page-section mt-32">
+      <h1 className="sr-only">Blog & Socials</h1>
       <ul
         id="socials"
         aria-label="Social links"
@@ -483,11 +484,11 @@ const Socials = () => {
               search={search}
               setSearch={setSearch}
               setFilters={setFilters}
-              /* Styling Suggestion for Header:
-           Use text-slate-100 (White/Grey) for titles
-           Use text-slate-400 (Grey) for subtitles
-           Use bg-blue-600 (Blue) for primary buttons 
-        */
+            /* Styling Suggestion for Header:
+         Use text-slate-100 (White/Grey) for titles
+         Use text-slate-400 (Grey) for subtitles
+         Use bg-blue-600 (Blue) for primary buttons 
+      */
             />
 
             <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
@@ -495,9 +496,9 @@ const Socials = () => {
                 <PostList
                   filteredPosts={filteredPosts}
                   onPostClick={handlePostClick}
-                  /* Inside PostList: 
-               Cards should use bg-zinc-900 and hover:border-blue-500/50 
-            */
+                /* Inside PostList: 
+             Cards should use bg-zinc-900 and hover:border-blue-500/50 
+          */
                 />
               </div>
 
