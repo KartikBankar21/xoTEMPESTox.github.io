@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/main.css";
-import { ChevronDown } from 'lucide-react';
-import Timeline from "../components/Timeline";
 import TimelineCard from "../components/TimelineCard";
 
 const educationData = [
@@ -13,9 +11,9 @@ const educationData = [
       "Studying AI and ML with focus on deep learning and systems design. Specializing in neural networks, computer vision, and scalable AI infrastructure.",
     date: "2022 - 2026",
     type: "edu",
-        pos: 0.12, 
-    // Mobile: 0.5 (Centers in the shorter container)
-    mobilePos: 0.5, 
+    pos: 0.12,
+    // Mobile 0.5 (Centers in the shorter container)
+    mobilePos: 0.5,
     // Mobile Threshold: 0.8 (Stays visible for 80% of the section scroll, fixing quick fade)
     mobileThreshold: 0.8,
   },
@@ -77,9 +75,38 @@ const experienceData = [
 const Journey = () => {
   const eduRef = useRef(null);
   const expRef = useRef(null);
+  const indicatorRef = useRef(null);
   const [eduProgress, setEduProgress] = useState(0);
   const [expProgress, setExpProgress] = useState(0);
-   const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Use a simple boolean for the "hidden" state
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Identify the custom scroll container
+    const scrollContainer = document.querySelector(".page-overlay") || window;
+
+    const handleScroll = () => {
+      // Get scroll position from either the container or the window
+      const scrollTop =
+        scrollContainer === window ? window.scrollY : scrollContainer.scrollTop;
+
+      // Trigger fade as soon as 20px are scrolled
+      if (scrollTop > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Check initial state
+    handleScroll();
+
+    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Dynamic Height Calculation
   const ITEM_HEIGHT = 300; // Pixels per item
@@ -90,7 +117,7 @@ const Journey = () => {
   // On mobile, they will use their own calculated heights
   const maxHeight = Math.max(eduHeight, expHeight);
 
-    useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -127,54 +154,56 @@ const Journey = () => {
     };
   }, []);
 
-    const getVisualLineHeight = (data) => {
+  const getVisualLineHeight = (data) => {
     if (isMobile) return "100%"; // On mobile, lines fill their specific container
     if (!data.length) return "0px";
-    
+
     // Find the position of the last item (0.0 to 1.0)
     const lastPos = data[data.length - 1].pos;
-    
+
     // Calculate pixels: (Relative Pos * Container Height) + Padding (150px)
     // The padding ensures the line goes slightly past the last node
-    const pixelHeight = (lastPos * maxHeight) + 150;
-    
+    const pixelHeight = lastPos * maxHeight + 150;
+
     // Ensure we don't exceed the container
-    return Math.min(pixelHeight, maxHeight); 
+    return Math.min(pixelHeight, maxHeight);
   };
 
   const eduVisualHeight = getVisualLineHeight(educationData);
   const expVisualHeight = getVisualLineHeight(experienceData);
 
   // Helper to get item position based on screen size
-  const getItemPos = (item) => isMobile ? (item.mobilePos ?? item.pos) : item.pos;
-  
+  const getItemPos = (item) =>
+    isMobile ? item.mobilePos ?? item.pos : item.pos;
+
   // Helper to get threshold (how long it stays active)
-  const getItemThreshold = (item) => isMobile ? (item.mobileThreshold ?? 0.25) : 0.25;
+  const getItemThreshold = (item) =>
+    isMobile ? item.mobileThreshold ?? 0.25 : 0.25;
 
   const [footerVisible, setFooterVisible] = useState(false);
-const footerRef = useRef(null);
+  const footerRef = useRef(null);
 
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      // Toggle state based on visibility
-      if (entry.isIntersecting) {
-        setFooterVisible(true);
-      } else {
-        // Reset the animation when the element leaves the screen
-        setFooterVisible(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Toggle state based on visibility
+        if (entry.isIntersecting) {
+          setFooterVisible(true);
+        } else {
+          // Reset the animation when the element leaves the screen
+          setFooterVisible(false);
+        }
+      },
+      {
+        threshold: 0.1, // Trigger as soon as 10% is visible
+        rootMargin: "0px 0px -50px 0px", // Optional: gives a slight buffer at the bottom
       }
-    },
-    { 
-      threshold: 0.1, // Trigger as soon as 10% is visible
-      rootMargin: "0px 0px -50px 0px" // Optional: gives a slight buffer at the bottom
-    }
-  );
+    );
 
-  if (footerRef.current) observer.observe(footerRef.current);
-  
-  return () => observer.disconnect();
-}, []);
+    if (footerRef.current) observer.observe(footerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="page-section">
@@ -184,7 +213,7 @@ useEffect(() => {
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
           <div className="text-center mb-6 bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit">
-            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-black/40 uppercase">
+            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
               Journey
             </p>
 
@@ -204,54 +233,52 @@ useEffect(() => {
             </div>
           </div>
         </div>
-       <div className="relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-sm rounded-2xl m-0  w-fit">
-        <div className="inline-flex flex-col items-center group cursor-pointer">
-          {/* Text with subtle glowing letter-spacing animation */}
-          <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100 group-hover:text-sky-400">
-            The Journey Continues
-          </p>
-          
-          {/* Creative Scroll Indicator */}
-          <div className="relative flex flex-col items-center">
-            
-            {/* Custom Mouse / Capsule Icon */}
-            <div className="relative w-8 h-14 rounded-full border-2 border-white/30 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-blue-400 group-hover:shadow-[0_0_20px_rgba(96,165,250,0.3)]">
-              {/* Animated Scroll Wheel Dot */}
-              <div className="w-1.5 h-3 bg-blue-400 rounded-full animate-scroll-dot"></div>
-            </div>
+        <div
+          ref={indicatorRef}
+          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${
+            isScrolled
+              ? "opacity-0 translate-y-20 pointer-events-none invisible"
+              : "opacity-100 translate-y-0"
+          }`}
+        >
+          <div className="inline-flex flex-col items-center group cursor-pointer">
+            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100 group-hover:text-sky-400">
+              The Journey Continues
+            </p>
 
-            {/* The "Path" Line - Vertical connector */}
-            <div className="relative w-px h-24 bg-gradient-to-b from-white/40 via-blue-500/50 to-transparent mt-2 overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-blue-300 to-transparent animate-path-flow"></div>
-            </div>
+            <div className="relative flex flex-col items-center">
+              <div className="relative w-8 h-14 rounded-full border-2 border-white/30 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-blue-400">
+                <div className="w-1.5 h-3 bg-blue-400 rounded-full animate-scroll-dot"></div>
+              </div>
 
-            {/* Precision "Compass" Chevron Design */}
-            <div className="relative -mt-6 flex flex-col items-center ">
-              <svg 
-                viewBox="0 0 24 24" 
-                className="w-12 h-12 fill-none stroke-current text-white/60 transition-colors duration-500 group-hover:text-blue-400"
-                strokeWidth="1.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                {/* Diamond/Needle Head */}
-                <path 
-                  d="M12 22L17 17M12 22L7 17" 
-                  className="animate-pulse"
-                />
-                {/* Secondary trailing pulse line */}
-                <path 
-                  d="M12 16L15 13M12 16L9 13" 
-                  className="opacity-40 animate-bounce"
-                />
-                {/* Central vertical needle */}
-                <line x1="12" y1="22" x2="12" y2="10" className="opacity-20" />
-              </svg>
+              <div className="relative w-px h-24 bg-gradient-to-b from-white/40 via-blue-500/50 to-transparent mt-2 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-blue-300 to-transparent animate-path-flow"></div>
+              </div>
+
+              <div className="relative -mt-6 flex flex-col items-center">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
+                  strokeWidth="1.5"
+                >
+                  <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
+                  <path
+                    d="M12 16L15 13M12 16L9 13"
+                    className="opacity-40 animate-bounce"
+                  />
+                  <line
+                    x1="12"
+                    y1="22"
+                    x2="12"
+                    y2="10"
+                    className="opacity-20"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-        
+
         {/* Timeline Wrapper - Increased Height significantly to prevent overlap */}
         <div className="relative h-auto">
           {/* Grid Layout */}
@@ -266,41 +293,45 @@ useEffect(() => {
               }}
             >
               {/* Progress Lines */}
-              <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white/[0.05]"
-              style={{ 
-                    // On desktop, we want the line on the RIGHT of the left col
-                    // We set explicit height so it doesn't drag to bottom
-                    height: isMobile ? '100%' : `${eduVisualHeight}px`
+              <div
+                className="absolute left-0 top-0 bottom-0 w-[2px] bg-white/[0.05]"
+                style={{
+                  // On desktop, we want the line on the RIGHT of the left col
+                  // We set explicit height so it doesn't drag to bottom
+                  height: isMobile ? "100%" : `${eduVisualHeight}px`,
                 }}
-                ></div>
+              ></div>
               <div
                 className="absolute left-0 top-0 w-[2px] bg-gradient-to-b from-blue-400 to-cyan-400 shadow-[0_0_20px_#3b82f6] transition-all duration-100 ease-out z-10"
-                style={{ height: isMobile 
-                        ? `${eduProgress * 100}%` 
-                        : `${Math.min(eduProgress * maxHeight, eduVisualHeight)}px` }}
+                style={{
+                  height: isMobile
+                    ? `${eduProgress * 100}%`
+                    : `${Math.min(eduProgress * maxHeight, eduVisualHeight)}px`,
+                }}
               ></div>
 
               {/* Nodes on Left Edge */}
               {educationData.map((item, i) => {
                 const effectivePos = getItemPos(item);
                 return (
-                <div
-                  key={`node-edu-${i}`}
-                  className={`absolute left-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
+                  <div
+                    key={`node-edu-${i}`}
+                    className={`absolute left-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
                       ${
                         eduProgress >= effectivePos
                           ? "border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-110"
                           : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
-                  style={{ top: `${effectivePos * 100}%` }}
-                >
-                  <img
-                    src={item.image}
-                    alt="logo"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )})}
+                    style={{ top: `${effectivePos * 100}%` }}
+                  >
+                    <img
+                      src={item.image}
+                      alt="logo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                );
+              })}
 
               {educationData.map((item, i) => (
                 <TimelineCard
@@ -310,7 +341,7 @@ useEffect(() => {
                   progressRatio={eduProgress} // Use eduProgress here
                   effectivePos={getItemPos(item)}
                   effectiveThreshold={getItemThreshold(item)}
-                  borderColor={'hover:border-blue-400'}
+                  borderColor={"hover:border-blue-400"}
                 />
               ))}
             </div>
@@ -324,39 +355,43 @@ useEffect(() => {
               }}
             >
               {/* Progress Lines */}
-              <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/[0.05]" style={{ 
-                    height: isMobile ? '100%' : `${expVisualHeight}px`
-                }}></div>
+              <div
+                className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/[0.05]"
+                style={{
+                  height: isMobile ? "100%" : `${expVisualHeight}px`,
+                }}
+              ></div>
               <div
                 className="absolute right-0 top-0 w-[2px] bg-gradient-to-b from-purple-400 to-fuchsia-400 shadow-[0_0_20px_#a855f7] transition-all duration-100 ease-out z-10"
-                 style={{ 
-                    height: isMobile 
-                        ? `${expProgress * 100}%` 
-                        : `${Math.min(expProgress * maxHeight, expVisualHeight)}px`
+                style={{
+                  height: isMobile
+                    ? `${expProgress * 100}%`
+                    : `${Math.min(expProgress * maxHeight, expVisualHeight)}px`,
                 }}
               ></div>
 
               {/* Nodes on Right Edge */}
               {experienceData.map((item, i) => {
-               const effectivePos = getItemPos(item);
-              return (
-                <div
-                  key={`node-exp-${i}`}
-                  className={`absolute right-0 translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
+                const effectivePos = getItemPos(item);
+                return (
+                  <div
+                    key={`node-exp-${i}`}
+                    className={`absolute right-0 translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
                       ${
                         expProgress >= effectivePos
                           ? "border-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] scale-110"
                           : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
-                  style={{ top: `${effectivePos * 100}%` }}
-                >
-                  <img
-                    src={item.image}
-                    alt="logo"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )})}
+                    style={{ top: `${effectivePos * 100}%` }}
+                  >
+                    <img
+                      src={item.image}
+                      alt="logo"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                );
+              })}
 
               {experienceData.map((item, i) => (
                 <TimelineCard
@@ -366,7 +401,7 @@ useEffect(() => {
                   progressRatio={expProgress} // Use expProgress here
                   effectivePos={getItemPos(item)}
                   effectiveThreshold={getItemThreshold(item)}
-                  borderColor={'hover:border-purple-400'}
+                  borderColor={"hover:border-purple-400"}
                 />
               ))}
             </div>
@@ -374,12 +409,14 @@ useEffect(() => {
         </div>
 
         {/* Bottom Footer */}
-        <div ref={footerRef}
-  className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
-    footerVisible 
-      ? "opacity-100 translate-y-0" 
-      : "opacity-0 translate-y-20"
-  }`}>
+        <div
+          ref={footerRef}
+          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
+            footerVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-20"
+          }`}
+        >
           <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">
             <div className="bg-black/50 backdrop-blur-sm  p-12 rounded-[calc(1.5rem-1px)] border border-white/5 max-w-2xl">
               <p className="text-3xl font-bold mb-4 text-white">
@@ -402,7 +439,9 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @keyframes scroll-dot {
           0% { transform: translateY(0); opacity: 1; }
           100% { transform: translateY(18px); opacity: 0; }
@@ -417,7 +456,13 @@ useEffect(() => {
         .animate-path-flow {
           animation: path-flow 3s linear infinite;
         }
-      `}} />
+         @keyframes flow {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+      `,
+        }}
+      />
     </div>
   );
 };

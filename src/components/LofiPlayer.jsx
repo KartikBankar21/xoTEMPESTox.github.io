@@ -5,105 +5,9 @@ import {
   SkipForward,
   Pause,
   Heart,
-  Volume2,
   ChevronDown,
   ListMusic,
 } from "lucide-react";
-
-// --- Custom CSS & Color Variables ---
-const customStyles = `
-/* Custom Tailwind Configuration (replicated here for self-containment) */
-.lo-fi-config {
-    --lo-fi-bg: #f8f4ff;
-    --lo-fi-ui: #e5d4f9;
-    --lo-fi-accent: #c6aee3;
-    --lo-fi-dark: #5a3d8b;
-}
-
-.icon-btn {
-    /* Base padding is now handled via utility classes in JSX for responsiveness */
-    border-radius: 0.75rem; /* rounded-xl */
-    transition: all 150ms ease-in-out;
-    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* shadow-inner */
-}
-
-/* Base styles for the player states, sizing is handled by Tailwind utility classes */
-.minimized {
-    padding: 0.5rem;
-    border-radius: 1rem; 
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    background-color: #f3eaf8c3;
-    border: 2px solid var(--lo-fi-accent);
-}
-
-.expanded {
-    height: auto;
-    padding: 1rem;
-    border-radius: 2.5rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
-    background-color:#f3eaf8c3;
-}
-
-/* Styles for rotated text/elements in the vertical bar */
-.vertical-text {
-    writing-mode: vertical-rl; /* Rotate text 90 degrees clockwise */
-    transform: rotate(180deg); /* Flip it to read bottom-to-top */
-    white-space: nowrap;
-    text-align: right;
-    line-height: 1.2;
-}
-
-/* Transition class for the elastic effect */
-.elastic-in {
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-/* Specific style for the menu overlay */
-.menu-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    backdrop-filter: blur(5px);
-    background-color: rgba(243, 234, 248, 0.9); /* Semi-transparent background */
-    z-index: 10;
-}
-`;
-
-const TRANSITION_DURATION = 500; // Match CSS 0.5s
-
-// --- Mock Track Data ---
-const TRACKS = [
-  {
-    id: 0,
-    title: "doehli - denial is a river",
-    duration: 232,
-    artist: "Doehli",
-    img: "https://placehold.co/400x533/c6aee3/ffffff?text=Denial",
-  },
-  {
-    id: 1,
-    title: "Daylight - Chill Beats",
-    duration: 180,
-    artist: "Chill Flow",
-    img: "https://placehold.co/400x533/aee3c6/5a3d8b?text=Daylight",
-  },
-  {
-    id: 2,
-    title: "Rainy Cafe - Study Mix",
-    duration: 250,
-    artist: "Aesthetic Sounds",
-    img: "https://placehold.co/400x533/3d8b85/ffffff?text=Rainy+Cafe",
-  },
-  {
-    id: 3,
-    title: "Midnight Drive - Synthwave",
-    duration: 210,
-    artist: "Neon City",
-    img: "https://placehold.co/400x533/3b3e66/aee3c6?text=Synthwave",
-  },
-];
 
 // --- LoFiPlayer Component (Expanded View) ---
 export const LoFiPlayer = ({
@@ -309,4 +213,3 @@ export const LoFiPlayer = ({
     </div>
   );
 };
-

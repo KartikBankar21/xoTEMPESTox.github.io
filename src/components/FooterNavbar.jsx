@@ -12,7 +12,7 @@ const navItems = [
   { to: "/socials", label: "Socials", icon: "linkicon-" },
 ];
 
-const FooterNavbar = () => {
+const FooterNavbar = ({ onNavigate }) => {
   const listRef = useRef(null);
   const [glowPosition, setGlowPosition] = useState({ x: 0, y: 0, opacity: 0 });
 
@@ -59,27 +59,36 @@ const FooterNavbar = () => {
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
     >
-      <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 bg-gray-700/20  media-object group">
+      <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 media-object group">
         {navItems.map((item) => (
-          <>
-            <li key={item.to} className="list-item ">
-              <div class="absolute -inset-2 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none"></div>
-              {/* NavLink for routing and active state */}
-              <NavLink
-                to={item.to}
-                className={({ isActive }) => {
-                  // console.log(`Path: ${item.to}, Active: ${isActive}`); // Add this
-                  return `demo-icon ${item.icon} ${
+          <NavLink
+            key={item.to}
+            to={item.to}
+            onClick={onNavigate} // <--- Trigger the audio here
+            className="relative list-none" // Relative container for the absolute background
+          >
+            {({ isActive }) => (
+              <>
+                {/* 1. Gradient Background: Only visible if isActive is true */}
+                <div
+                  className={`absolute -inset-2 rounded-full blur-lg bg-gradient-to-r from-blue-500/60 to-purple-500/60 pointer-events-none transition-opacity duration-300 ${
+                    isActive ? "opacity-100" : "opacity-0"
+                  }`}
+                ></div>
+
+                {/* 2. The Icon */}
+                <span
+                  className={`demo-icon ${
+                    item.icon
+                  } relative z-10 transition-colors duration-300 ${
                     isActive
-                      ? "text-sky-400"
-                      : "text-gray-300 hover:text-sky-400"
-                  } transition-colors duration-300`;
-                }}
-              >
-                {/* Icon is rendered via the demo-icon class and custom font */}
-              </NavLink>
-            </li>
-          </>
+                      ? "text-white" // Always white if active
+                      : "text-gray-400 group-hover:text-white" // Gray by default, white when nav is hovered
+                  }`}
+                ></span>
+              </>
+            )}
+          </NavLink>
         ))}
       </ul>
 

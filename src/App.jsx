@@ -2,20 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import HeaderBackground from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
-import {
-  Play,
-  SkipBack,
-  SkipForward,
-  Pause,
-  Heart,
-  Volume2,
-  ChevronDown,
-} from "lucide-react";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
-import SvgLoader from "./components/SvgLoader";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
-import SvgLoaderNaturalWrite from "./components/SvgLoaderNaturalWrite";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -89,20 +78,6 @@ const customStyles = `
 const musicAPI = [
   {
     index: 1,
-    title: "Chasing",
-    artist: "NEFFEX",
-    songSrc: "../assets/songs/music1.mp3",
-    img: "../assets/images/music/image1.jpg",
-  },
-  {
-    index: 2,
-    title: "AURORA - Runaway",
-    artist: "Aurora Aksnes",
-    songSrc: "../assets/songs/music2.mp3",
-    img: "../assets/images/music/image2.jpg",
-  },
-  {
-    index: 3,
     title: "Comedy (SPY X FAMILY)",
     artist: "Kayuo. Beats",
     songSrc: "../assets/songs/music3comedy.mp3",
@@ -116,16 +91,16 @@ function App() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0); // Current time in seconds
   const [playbackProgress, setPlaybackProgress] = useState(0); // 0-100% for slider
   const [duration, setDuration] = useState(NaN); // Total duration in seconds
-  const [prevVolume, setPrevVolume] = useState(0.35);
-  const [volume, setVolume] = useState(0.35); // 50% volume
-
+  const [prevVolume, setPrevVolume] = useState(0.3);
+  const [volume, setVolume] = useState(0.3); // 30% volume
+  const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
 
   // --- AUDIO HANDLERS ---
@@ -325,7 +300,29 @@ function App() {
       setIsElastic(false);
     }, TRANSITION_DURATION);
   };
+  const startAudioOnInteraction = () => {
+    // If we've already handled the first interaction, do nothing
+    if (hasInteracted.current) return;
 
+    if (currentAudio.current) {
+      currentAudio.current.muted = false;
+      currentAudio.current.volume = volume;
+
+      currentAudio.current
+        .play()
+        .then(() => {
+          setIsMuted(false);
+          setIsPlaying(true);
+          // Mark as interacted so this block never runs again
+          hasInteracted.current = true;
+          console.log("Audio initialized once.");
+        })
+        .catch((err) => {
+          console.error("Playback failed:", err);
+          // We don't set hasInteracted to true here so it can try again on next click if it failed
+        });
+    }
+  };
   // Responsive Positioning Classes
   let positionClasses;
 
@@ -361,6 +358,8 @@ function App() {
         ref={currentAudio}
         onTimeUpdate={handleAudioUpdate}
         onEnded={handleNextSong} // Auto-play next track when current one ends
+        muted={isMuted} // This will be true initially
+        playsInline
       />
       <div className="App" style={{ position: "relative", minHeight: "100vh" }}>
         {/* 1. Background is ALWAYS mounted so the video can load */}
@@ -377,16 +376,23 @@ function App() {
         >
           <HeaderBackground />
         </div>
- 
+
         {/* 2. Loader overlays everything until animation completes */}
         {loading && (
-          <div className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]
+          <div
+            className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]
       transition-opacity duration-700 ease-in-out
       ${fadeOut ? "opacity-0" : "opacity-100"}`}
-    onTransitionEnd={() => {
-      if (fadeOut) setLoading(false);
-    }}>
-            <SvgLoaderLeftToRight onFinish={() => setFadeOut(true)} />
+            onTransitionEnd={() => {
+              if (fadeOut) setLoading(false);
+            }}
+          >
+            <SvgLoaderLeftToRight
+              onFinish={() => {
+                setFadeOut(true);
+                // handleAudioPlay();
+              }}
+            />
           </div>
         )}
 
@@ -404,8 +410,6 @@ function App() {
             >
               <div className={`${positionClasses} ${containerClasses} z-1200 `}>
                 {isExpanded ? (
-                 
-
                   <LoFiPlayer
                     isExpanded={isExpanded}
                     onCollapse={() => handleToggle(false)}
@@ -423,20 +427,18 @@ function App() {
                     tracks={musicAPI}
                     trackIndex={trackIndex}
                   />
-                 
                 ) : (
-                  <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]"> 
-
-                  <MiniPlayer
-                    onExpand={() => handleToggle(true)}
-                    currentTrack={currentTrack}
-                    isPlaying={isPlaying}
-                    isMuted={isMuted}
-                    setIsMuted={setIsMuted}
-                    handleMuteToggle={handleMuteToggle}
-                    handleAudioPlay={handleAudioPlay}
+                  <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
+                    <MiniPlayer
+                      onExpand={() => handleToggle(true)}
+                      currentTrack={currentTrack}
+                      isPlaying={isPlaying}
+                      isMuted={isMuted}
+                      setIsMuted={setIsMuted}
+                      handleMuteToggle={handleMuteToggle}
+                      handleAudioPlay={handleAudioPlay}
                     />
-                    </div>
+                  </div>
                 )}
               </div>
               <AnimatedOutlet />
@@ -451,7 +453,7 @@ function App() {
                 zIndex: 100,
               }}
             >
-              <FooterNavbar />
+              <FooterNavbar onNavigate={startAudioOnInteraction} />
             </div>
           </>
         )}

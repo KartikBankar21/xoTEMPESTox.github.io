@@ -9,7 +9,6 @@ import Portfolio from './pages/portfolio';
 import Services from './pages/services';
 import Skills from './pages/skills';
 import Socials from './pages/socials';
-import Reviews from './pages/reviews';
 
 
 
@@ -33,10 +32,6 @@ const appRouter = createBrowserRouter([
       {
         path: "/portfolio",
         element: <Portfolio />,
-      },
-      {
-        path: "/reviews",
-        element: <Reviews />,
       },
       {
         path: "/services",

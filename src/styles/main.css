@@ -118,13 +118,7 @@ body {
 
 .page-section {
   flex: 0 0 100vw;
-  /* min-height: calc(100vh - 9rem); Allow it to grow beyond viewport */
-  /* height: auto; Remove fixed height */
 }
-
-/* * {
-  outline: 1px solid red !important;
-} */
 
 ul {
   list-style-type: none;
@@ -808,92 +802,6 @@ section {
   }
 }
 
-/* .socials {
-  align-items: center;
-  background-color: #000000;
-  border: 1px solid #ffffff;
-  border-radius: 1.4rem;
-  color: #ffffff;
-  display: flex;
-  isolation: isolate;
-  justify-content: space-evenly;
-  left: 50%;
-  list-style: none;
-  min-height: 4.4rem;
-  opacity: 1;
-  overflow: hidden;
-  padding: 0.6rem 2.2rem;
-  pointer-events: none;
-  position: fixed;
-  top: 4rem;
-  -webkit-transform: translate(-50%, -1.5rem);
-  -ms-transform: translate(-50%, -1.5rem);
-  transform: translate(-50%, -1.5rem);
-  -webkit-transition: opacity 0.4s ease, -webkit-transform 0.4s ease,
-    background-color 0.2s ease, border-color 0.2s ease;
-  -o-transition: opacity 0.4s ease, transform 0.4s ease,
-    background-color 0.2s ease, border-color 0.2s ease;
-  transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.2s ease,
-    border-color 0.2s ease;
-  width: 20%;
-  z-index: 999999999998;
-}
-
-.socials__item {
-  list-style: none;
-}
-
-.socials__link {
-  align-items: center;
-  border: 1px solid transparent;
-  border-radius: 9999px;
-  color: inherit;
-  display: flex;
-  height: 3.4rem;
-  justify-content: center;
-  -webkit-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out;
-  -o-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out;
-  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out;
-  width: 3.4rem;
-}
-
-.socials__link:hover,
-.socials__link:focus-visible {
-  background-color: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
-  outline: none;
-}
-
-.socials__link svg {
-  height: 2rem;
-  width: 2rem;
-}
-
-@media (max-width: 1023px) {
-  .socials {
-    width: 50%;
-    padding: 0.5rem 1.4rem;
-    top: 3rem;
-    -webkit-transform: translate(-50%, -1.2rem);
-    -ms-transform: translate(-50%, -1.2rem);
-    transform: translate(-50%, -1.2rem);
-  }
-
-  .socials__link {
-    height: 3rem;
-    width: 3rem;
-  }
-
-  .socials__link svg {
-    height: 1.8rem;
-    width: 1.8rem;
-  }
-} */
-
 .list .list-item {
   cursor: pointer;
   /* padding: 0.3rem; */
@@ -1044,7 +952,7 @@ HeaderBackground {
 
 .home {
   background-color: transparent;
-  height: 100%;
+  height: 100vh;
   left: 0;
   opacity: 1;
   /* position: absolute; */
@@ -2272,6 +2180,7 @@ HeaderBackground {
   width: 100%;
   z-index: -1; /* Start behind the circle */
   transition: z-index 0s 0.9s; /* Optional: smooth z-index change */
+  
 }
 
 .services__wrapper__circle {
@@ -2303,9 +2212,9 @@ HeaderBackground {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background: black;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.70);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 1);
   border-radius: 50%;
   cursor: pointer;
@@ -2340,7 +2249,8 @@ HeaderBackground {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background: #000;
+  background: rgba(0, 0, 0, 0.70);
+  backdrop-filter: blur(8px);
   border-radius: 0.7rem;
   content: attr(data-service-name);
   display: -webkit-box;
@@ -2380,12 +2290,11 @@ HeaderBackground {
   visibility: visible;
   color: white;
   border: 1px solid rgba(255, 255, 255, 1);
-  background: #000;
+   background: rgba(0, 0, 0, 0.80);
+  backdrop-filter: blur(8px);
   transform: translateY(-8px) scale(1);
   visibility: visible;
   transition: opacity 0.35s ease, transform 0.35s ease, z-index 0s;
-  /* margin-bottom: 0.8rem; */
-  /* box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6); */
 }
 
 .services__wrapper__icons__item::after {
@@ -2451,8 +2360,11 @@ HeaderBackground {
 }
 
 .services .rounding {
-  background-color: #000000;
+    background: rgba(0, 0, 0, 0.70);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px dashed #ffffff;
+
 }
 
 @-webkit-keyframes rotation-360 {

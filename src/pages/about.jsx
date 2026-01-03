@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import "../styles/main.css";
 
 const About = () => {
-
   useEffect(() => {
     // same behavior as your original JS
     const triggerAboutInfoIntro = () => {
-      if (typeof document === "undefined" || typeof window === "undefined") return;
+      if (typeof document === "undefined" || typeof window === "undefined")
+        return;
 
       const aboutSection = document.getElementById("about");
       if (!aboutSection) return;
@@ -42,7 +42,6 @@ const About = () => {
     };
 
     triggerAboutInfoIntro();
-
   }, []); // runs once on mount
 
   return (
@@ -50,15 +49,18 @@ const About = () => {
       <section className="about" id="about">
         <div className="container">
           <div className="about__layout">
-
             <div className="about__stack about__stack--left">
               <div className="about__info">
                 <span className="about__info__label">Job:</span>
-                <span className="about__info__value">Full Stack AI Engineer</span>
+                <span className="about__info__value">
+                  Full Stack AI Engineer
+                </span>
               </div>
               <div className="about__info">
                 <span className="about__info__label">Degree:</span>
-                <span className="about__info__value">B.Tech Honors CS ( AI & ML )</span>
+                <span className="about__info__value">
+                  B.Tech Honors CS ( AI & ML )
+                </span>
               </div>
               <div className="about__info">
                 <span className="about__info__label">Address:</span>
@@ -93,14 +95,15 @@ const About = () => {
               </div>
               <div className="about__info">
                 <span className="about__info__label">Email:</span>
-                <span className="about__info__value">priyanshu123sah@gmail.com</span>
+                <span className="about__info__value">
+                  priyanshu123sah@gmail.com
+                </span>
               </div>
               <div className="about__info">
                 <span className="about__info__label">Freelance:</span>
                 <span className="about__info__value">Available</span>
               </div>
             </div>
-
           </div>
         </div>
       </section>

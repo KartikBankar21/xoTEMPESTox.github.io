@@ -1,12 +1,9 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, } from "react";
 import {
-  Search,
-  Calendar,
   Clock,
   Eye,
   Heart,
   ArrowLeft,
-  ChevronDown,
 } from "lucide-react";
 
 // --- Markdown Imports (Assumed available in the environment) ---

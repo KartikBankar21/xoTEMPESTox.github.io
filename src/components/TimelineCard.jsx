@@ -41,10 +41,10 @@ const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThre
         }}
       >
         <div className="flex flex-col gap-2">
-          <h3 className="text-white  font-bold text-xl md:text-2xl tracking-tight">
+          <h3 className={`text-white  font-bold text-xl md:text-2xl tracking-tight`}>
             {item.title}
           </h3>
-          <p className="text-blue-500 font-bold text-base md:text-xl">
+          <p className={` font-bold text-base md:text-xl  ${item.type === "edu" ? "text-blue-500" : "text-purple-500"}`}>
             {item.subtitle}
           </p>
           <p className="text-gray-300 text-xl mt-4 leading-relaxed font-normal">
@@ -67,7 +67,7 @@ const TimelineCard = ({ item, isLeft, progressRatio, effectivePos, effectiveThre
                 item.type === "edu" ? "text-blue-500" : "text-purple-500"
               }`}
             >
-              {item.type === "edu" ? "Academic" : "Professional"}
+              {item.type === "edu" ? "Undergrad" : "Internship"}
             </span>
           </div>
         </div>

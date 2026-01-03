@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import "../styles/main.css";
 
 const Home = () => {
-const containerRef = useRef(null);
+  const containerRef = useRef(null);
   useEffect(() => {
-     const container = containerRef.current;
-    
+    const container = containerRef.current;
+
     if (!container) {
       return;
     }
@@ -351,10 +352,9 @@ const containerRef = useRef(null);
     window.addEventListener("pagehide", cancelTyping, { once: true });
     window.addEventListener("beforeunload", cancelTyping, { once: true });
   };
-    initHomeRoleTyper();
+  initHomeRoleTyper();
 
-  // Start the typing effect once the DOM is fully loaded
-  // document.addEventListener("DOMContentLoaded", initHomeRoleTyper);
+
 
   return (
     <div className="page-section">
@@ -381,7 +381,7 @@ const containerRef = useRef(null);
                 </h1>
 
                 <p
-                ref={containerRef}
+                  ref={containerRef}
                   class="home__info__desc my-6"
                   data-roles='["AI/ML Engineer","Full Stack Developer","@Intern at Liferythm Healthcare"]'
                 >

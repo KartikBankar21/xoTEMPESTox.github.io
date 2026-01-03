@@ -1,15 +1,4 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import {
-  Search,
-  Calendar,
-  Clock,
-  Eye,
-  Heart,
-  ArrowLeft,
-  ChevronDown,
-} from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import BlogHeader from "../components/BlogHeader";
 import FilterSidebar from "../components/FilterSidebar";
 import PostList from "../components/PostList";
@@ -166,7 +155,6 @@ Check out this great video on the AGI race:
   },
 ];
 
-const getPostById = (id) => BLOG_POSTS.find((p) => p.id === id);
 
 const Socials = () => {
   const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'detail'
@@ -480,9 +468,9 @@ const Socials = () => {
               rel={link.rel}
               aria-label={link.label}
             >
-              <span className="h-5 w-5 md:h-8 md:w-8 "><div className="[&>svg]:stroke-[2px]"> 
-    {link.icon}
-  </div></span>
+              <span className="h-5 w-5 md:h-8 md:w-8 ">
+                <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
+              </span>
             </a>
           </li>
         ))}

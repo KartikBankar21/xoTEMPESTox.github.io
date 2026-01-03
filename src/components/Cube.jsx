@@ -1,97 +1,137 @@
 import React, { useState, useRef } from "react";
-import { Github, ExternalLink, Activity } from "lucide-react";
+import { Github, ExternalLink } from "lucide-react";
 
-const CUBE_WIDTH = 200;
-const EDGE_THRESHOLD = 0.25; // Only trigger rotation within 25% from edges
+// --- Configuration Constants ---
+const EDGE_THRESHOLD = 0.25;
 
-const TechBadge = ({ icon: Icon, label, colorClass, textColor }) => (
-  <div
-    className={`flex items-center bg-slate-800 ${textColor} text-[11px] font-medium px-2 py-1 rounded-full border border-slate-700`}
-  >
-    {Icon && <Icon size={12} className={`mr-1.5 ${colorClass}`} />}
-    <span>{label}</span>
-  </div>
-); 
+// --- Sub-Components ---
+const TechBadge = ({ label, slug, color, iconColor }) => {
+  // slug is the lowercase name of the tech (e.g., 'googlechrome', 'react')
+  // color is the official hex (e.g., '4285F4')
 
-const Cube = ({ item, isDragging, onViewDetails }) => {
-  const [overrideClass, setOverrideClass] = useState("");
-  const containerRef = useRef(null);
+  return (
+    <div
+      style={{
+        backgroundColor: `#${color}15`, // 15 is ~8% opacity
+        borderColor: `#${color}30`, // 30 is ~20% opacity
+      }}
+      className="flex items-center px-2.5 py-1 rounded-full border backdrop-blur-sm transition-transform hover:scale-105"
+    >
+      <img
+        src={`https://api.iconify.design/${slug}.svg`}
+        alt={label}
+        className={`w-4 h-4 min-[1265px]:w-5 min-[1265px]:h-5 mr-2 ${iconColor}`}
+      />
+      <span
+        style={{ color: `#${color}` }}
+        className="text-[11px] min-[1265px]:text-[13px]  font-semibold"
+      >
+        {label}
+      </span>
+    </div>
+  );
+};
+
+const handleLinkClick = (url) => (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+const Cube = ({ item, onViewDetails, isDragging, width, height }) => {
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const cubeRef = useRef(null);
   const rotationLockRef = useRef(false);
+  const listRef = useRef(null);
+  const [glowPosition, setGlowPosition] = useState({ x: 0, y: 0, opacity: 0 });
+
+  // Handle mouse movement to update the grey glow position
+  const gradientHoverMove = (e) => {
+    if (listRef.current) {
+      const rect = listRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      setGlowPosition({ x, y, opacity: 1 });
+    }
+  };
+
+  // Hide the glow when the mouse leaves
+  const gradientHoverLeave = () => {
+    setGlowPosition({ ...glowPosition, opacity: 0 });
+  };
+
+  // Show the glow when the mouse enters (for initial visibility if moved quickly)
+  const gradientHoverEnter = () => {
+    setGlowPosition((prev) => ({ ...prev, opacity: 1 }));
+  };
+  // We need to adjust the translateZ based on the new width to ensure faces meet correctly
+  // For a cube, translateZ is usually width / 2
+  const translateZ = width / 2;
 
   const handleMouseEnter = (e) => {
-    if (isDragging || !containerRef.current || rotationLockRef.current) return;
+    if (isDragging || !cubeRef.current || rotationLockRef.current) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
+    const rect = cubeRef.current.getBoundingClientRect();
     const entryX = e.clientX - rect.left;
-    const width = rect.width;
+    const currentWidth = rect.width;
 
-    // Calculate position as percentage from left
-    const positionPercent = entryX / width;
+    const positionPercent = entryX / currentWidth;
 
-    // Only rotate if entering from the edges (first 25% or last 25%)
     if (positionPercent < EDGE_THRESHOLD) {
-      // Entered from LEFT EDGE -> Show Face 3 (Links)
-      setOverrideClass("right");
+      setRotation({ x: 0, y: 90 });
       rotationLockRef.current = true;
-    } else if (positionPercent > (1 - EDGE_THRESHOLD)) {
-      // Entered from RIGHT EDGE -> Show Face 2 (Tech)
-      setOverrideClass("left");
+    } else if (positionPercent > 1 - EDGE_THRESHOLD) {
+      setRotation({ x: 0, y: -90 });
       rotationLockRef.current = true;
     }
-    // If entering from middle (25% - 75%), do nothing (stay on Face 1)
   };
 
   const handleMouseLeave = () => {
-    // Reset to Front Face and unlock rotation
-    setOverrideClass("");
+    setRotation({ x: 0, y: 0 });
     rotationLockRef.current = false;
   };
-
-  const handleLinkClick = (url) => (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  const transformStyle =
-    overrideClass === "right"
-      ? "translateZ(-100px) rotateY(90deg)"
-      : overrideClass === "left"
-      ? "translateZ(-100px) rotateY(-90deg)"
-      : "translateZ(-100px) rotateY(0deg)";
 
   const showFront = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setOverrideClass("");
+    setRotation({ x: 0, y: 0 });
     rotationLockRef.current = false;
   };
 
   return (
     <div
-      ref={containerRef}
-      className="relative w-[200px] h-[200px]"
+      ref={cubeRef}
+      className="relative transition-all duration-500 z-10 pointer-events-auto"
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        perspective: "1200px",
+        transformStyle: "preserve-3d",
+      }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ transformStyle: "preserve-3d", pointerEvents: "auto" }}
     >
       <div
-        className="w-full h-full relative transition-transform duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)]"
+        className="w-full h-full relative transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
         style={{
           transformStyle: "preserve-3d",
-          transform: transformStyle,
+          transform: `translateZ(-${translateZ}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
         }}
       >
-        {/* FACE 1: Front (Main Content) */}
+        {/* FRONT FACE */}
         <div
-          className={`absolute inset-0 w-full h-full bg-[#0a0a0a]/90 backdrop-blur-sm text-gray-100 rounded-2xl shadow-2xl flex flex-col p-4 border border-white/10 transition-opacity duration-300 overflow-hidden ${
-            overrideClass === "" ? "opacity-100" : "opacity-0"
+          className={`absolute inset-0 bg-[#0a0a0a]/95 backdrop-blur-sm border border-white/30 rounded-4xl p-5 overflow-hidden flex flex-col  backface-hidden transition-opacity duration-300 ${
+            rotation.y !== 0 ? "opacity-100" : "opacity-100"
           }`}
           style={{
-            transform: "rotateY(0deg) translateZ(100px)",
-            backfaceVisibility: "hidden",
-            pointerEvents: overrideClass === "" ? "auto" : "none",
+            transform: `rotateY(0deg) translateZ(${translateZ}px)`,
+            pointerEvents: rotation.y !== 0 ? "none" : "auto",
           }}
+          ref={listRef}
+          onMouseMove={gradientHoverMove}
+          onMouseLeave={gradientHoverLeave}
+          onMouseEnter={gradientHoverEnter}
         >
           <style>{`
             @keyframes stepped-pulse {
@@ -129,7 +169,10 @@ const Cube = ({ item, isDragging, onViewDetails }) => {
             }
           `}</style>
 
-          <div className="absolute bottom-0 left-0 w-20 h-20 pointer-events-none">
+          <div
+            className="absolute bottom-0 left-0 w-20 h-20 pointer-events-none"
+            onTouchMove={showFront}
+          >
             <div className="stepped-arc origin-bottom-left" />
             <div className="absolute bottom-4 left-4 animate-[chevron-move_2s_infinite]">
               <svg
@@ -171,21 +214,20 @@ const Cube = ({ item, isDragging, onViewDetails }) => {
             </div>
           </div>
 
-          <div className="relative z-10 flex flex-col h-full">
-            <div className="flex items-start justify-between mt-0">
-              <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center mb-3 border border-white/10">
-                <Activity className="w-4 h-4 text-zinc-400" />
-              </div>
-              <div className="self-start px-2 py-1 text-[9px] font-black text-white bg-zinc-800 rounded-bl-md border-l border-b border-white/10 -mt-4 -mr-4 uppercase ">
-                {item.tag}
-              </div>
+          <div className="absolute top-0 right-0 flex items-start justify-end mt-0 mb-6">
+            <div className="text-start px-4 py-1 text-[9px] font-black text-white bg-zinc-800 rounded-bl-md border-l border-b border-white/10 uppercase ">
+              {item.tag}
             </div>
-
-            <div className="mt-2 flex-1">
-              <p className="text-2xl font-bold text-white leading-tight mb-1 uppercase tracking-tight">
+          </div>
+          <div className="relative z-10 flex flex-col h-full">
+            <div className="mt-6 flex-1">
+              <p
+                className="text-2xl min-[1265px]:text-4xl font-bold leading-tight mb-1 uppercase tracking-tight 
+              bg-gradient-to-r from-gray-400 via-white to-gray-500 bg-clip-text text-transparent text-center"
+              >
                 {item.title}
               </p>
-              <p className="text-lg text-zinc-500 leading-snug line-clamp-3">
+              <p className="text-lg min-[1265px]:text-2xl text-zinc-500 leading-snug line-clamp-3 lg:line-clamp-none ">
                 {item.description}
               </p>
             </div>
@@ -201,18 +243,25 @@ const Cube = ({ item, isDragging, onViewDetails }) => {
               <span className="text-3xl">&rarr;</span>
             </button>
           </div>
+
+          {/* Grey Cursor Glow Effect */}
+          <div
+            className="cursor-glow"
+            style={{
+              left: `${glowPosition.x}px`,
+              top: `${glowPosition.y}px`,
+              opacity: glowPosition.opacity,
+              // Tailwind-like style for the glow itself:
+              background:
+                "radial-gradient(circle, rgba(30, 144, 255, 0.2) 0%, rgba(75, 0, 130, 0.1) 70%, transparent 100%)",
+            }}
+          ></div>
         </div>
 
-        {/* FACE 2: Left (Tech Stack) */}
+        {/* LEFT FACE (Tech) */}
         <div
-          className={`absolute inset-0 w-full h-full bg-neutral-900 rounded-2xl shadow-2xl border border-white/20 transition-opacity duration-300 ${
-            overrideClass === "left" ? "opacity-100" : "opacity-0"
-          }`}
-          style={{
-            transform: "rotateY(90deg) translateZ(100px)",
-            backfaceVisibility: "hidden",
-            pointerEvents: overrideClass === "left" ? "auto" : "none",
-          }}
+          className="absolute inset-0 bg-neutral-900 border border-white/30 rounded-4xl p-5 flex flex-col backface-hidden"
+          style={{ transform: `rotateY(90deg) translateZ(${translateZ}px)` }}
         >
           <div className="relative p-4 h-full flex flex-col">
             <h3 className="text-lg font-bold text-white mb-3">Tech Stack</h3>
@@ -221,40 +270,34 @@ const Cube = ({ item, isDragging, onViewDetails }) => {
               {item.techStack.map((tech) => (
                 <TechBadge
                   key={tech.name}
+                  slug={tech.slug}
                   label={tech.name}
-                  icon={tech.icon}
-                  colorClass={tech.color}
-                  textColor={tech.textColor}
+                  iconColor={tech.iconColor}
+                  color={tech.color}
                 />
               ))}
             </div>
 
             <button
               onClick={showFront}
-              className="mt-2 flex items-center text-xs text-neutral-400 hover:text-white transition-colors self-end cursor-pointer"
+              className="mt-2 flex items-baseline text-sm text-neutral-400 hover:text-white transition-colors self-end cursor-pointer"
             >
-              Back &rarr;
+              <span>Back</span>
+              <span className="text-3xl">&rarr;</span>
             </button>
           </div>
         </div>
 
-        {/* FACE 3: Right (Links) */}
+        {/* RIGHT FACE (Links) */}
         <div
-          className={`absolute inset-0 w-full h-full bg-[#0f172a] rounded-2xl shadow-2xl border border-black/90 overflow-hidden flex flex-col items-start justify-end transition-opacity duration-300 ${
-            overrideClass === "right" ? "opacity-100" : "opacity-0"
-          }`}
-          style={{
-            transform: "rotateY(-90deg) translateZ(100px)",
-            backfaceVisibility: "hidden",
-            pointerEvents: overrideClass === "right" ? "auto" : "none",
-          }}
+          className="absolute inset-0 bg-[#0f172a] border border-black/90 rounded-4xl  flex flex items-end justify-between gap-4 backface-hidden backdrop-blur-sm"
+          style={{ transform: `rotateY(-90deg) translateZ(${translateZ}px)` }}
         >
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
+            className="absolute inset-0 bg-cover bg-center opacity-90 rounded-4xl pointer-events-none"
             style={{ backgroundImage: `url(${item.image_url})` }}
           />
-
-          <div className="relative z-[100] flex gap-3 px-4 pt-4 pb-3 bg-zinc-900 rounded-tr-3xl border-t border-r border-white/10">
+          <div className="relative z-[100] flex gap-3 px-4 pt-4 pb-3 bg-zinc-900 rounded-tr-3xl rounded-bl-4xl border-t border-r border-white/10">
             <button
               onClick={handleLinkClick(item.links.github_link)}
               onMouseDown={(e) => e.stopPropagation()}
@@ -282,37 +325,3 @@ const Cube = ({ item, isDragging, onViewDetails }) => {
 };
 
 export default Cube;
-
-{
-  /* FACE 4 */
-}
-{
-  /* <div
-          className="absolute inset-0 w-[200px] h-[200px] backface-hidden bg-[#1a1a2e] flex flex-col items-center justify-center text-center p-4 border border-white/10 rounded-2xl"
-          style={{ transform: "rotateY(180deg) translateZ(100px)" }}
-        >
-          <div className="text-gray-400 text-sm">Repository</div>
-          <div className="text-white text-xs mt-1 font-mono break-all opacity-70">
-            {item.links.github_link.split("/").pop()}
-          </div>
-        </div> */
-}
-{
-  /* FACE 5: Top (Decorative) */
-}
-{
-  /* <div
-          className="absolute inset-0 w-[200px] h-[200px] backface-hidden bg-blue-400 flex items-center justify-center text-blue-900 font-bold opacity-50 rounded-2xl"
-          style={{ transform: "rotateX(-90deg) translateZ(100px)" }}
-        ></div> */
-}
-
-{
-  /* FACE 6: Bottom (Decorative) */
-}
-{
-  /* <div
-          className="absolute inset-0 w-[200px] h-[200px] backface-hidden bg-blue-300 flex items-center justify-center text-blue-900 font-bold opacity-50 rounded-2xl"
-          style={{ transform: "rotateX(90deg) translateZ(100px)" }}
-        ></div> */
-}
