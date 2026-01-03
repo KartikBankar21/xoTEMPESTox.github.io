@@ -119,10 +119,24 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ## Roadmap
 
+### Bugs
+* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e")
+* [ ]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter
+* [ ]  Hide Music player in Socials Tab
+* [ ]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80)
+* [ ]  Enlarge and Strengthen Gradeient effect of hover Both in Product card and Journey Card [img](https://github.com/user-attachments/assets/62bcfdec-99b7-4362-b60e-36c7413fb6a5) , [img](https://github.com/user-attachments/assets/d0e6821c-5026-45e7-9e6d-5ea895f01426)
+* [ ]  Option to Expand on click Image [img](https://github.com/user-attachments/assets/20f038cc-3e94-4188-b06e-7c26ccee9f43)
+* [ ]  Tech stack has different black compared to normal card for Background [img](https://github.com/user-attachments/assets/13e88252-2680-4a04-b068-84566c2f2958) , The Text color is too dark use lighter shade of grey (eg Skill section bar)
+* [ ]  The Loop isn't Seamless , towards the end we see empty cubes , [img](https://github.com/user-attachments/assets/e0443895-5ed6-44fe-a5c2-410025f2b44e)
+* [ ]  In Portfolio card limit Hover rotation to diferent face to bottom left+right Corner , Use "back" button on Tech stack / Image face , "view Details" Need to be smaller button , Remove arrow from "view Details" / "Back"   ,,, **Experiment with keeping the Image Face as Main face and Merging Tech stack + Description into single Face , with option to click and view in more detail. [img](https://github.com/user-attachments/assets/c3d4d8c8-0675-4e2f-86f3-b21f6b14d12d)
 
+### Feature
 * [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
-* [ ] **Add “Wallpaper Selector”**, Use apropriate wallpper version based on dark / light mode
+* [ ] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
+* [ ] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
 * [ ] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
-* [ ] **Implement Dark/Light mode** for user preference based on system mode.
+
+
+
 
 

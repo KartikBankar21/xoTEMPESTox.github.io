@@ -397,7 +397,7 @@ const Home = () => {
                   className="home__info__btn custom-btn mx-auto mt-6 "
                   to="/about"
                 >
-                  read more
+                  <span className="relative z-10">read more</span>
                 </NavLink>
               </div>
             </div>

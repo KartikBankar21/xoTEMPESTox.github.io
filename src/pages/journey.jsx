@@ -10,6 +10,7 @@ const educationData = [
     description:
       "Studying AI and ML with focus on deep learning and systems design. Specializing in neural networks, computer vision, and scalable AI infrastructure.",
     date: "2022 - 2026",
+    tag: "Undergrad",
     type: "edu",
     pos: 0.12,
     // Mobile 0.5 (Centers in the shorter container)
@@ -27,6 +28,7 @@ const experienceData = [
     description:
       "Building AI doctor modules using MedLLMs for workflow automation. Developing secure, HIPAA-compliant interfaces and integrating complex medical knowledge graphs.",
     date: "Jul 2025 - Present",
+    tag: "Internship",
     type: "exp",
     pos: 0.12,
   },
@@ -37,6 +39,7 @@ const experienceData = [
     description:
       "Built an STS chatbot using RAG, agentic AI, and NLP for 1K+ concurrent users. Optimized vector database retrieval speeds by 40%.",
     date: "Mar 2025 – Aug 2025",
+    tag: "Internship",
     type: "exp",
     pos: 0.32,
   },
@@ -47,6 +50,7 @@ const experienceData = [
     description:
       "Delivered a multimodal chatbot with TTS, STT, and document parsing. Integrated blockchain authentication for secure user sessions.",
     date: "Dec 2024 – Feb 2025",
+    tag: "Internship",
     type: "exp",
     pos: 0.52,
   },
@@ -57,6 +61,7 @@ const experienceData = [
     description:
       "Built LangChain+VectorDB trading assistant and tuned SLMs with synthetic Q&A. Focused on financial sentiment analysis and real-time data ingestion.",
     date: "Feb 2024 – Aug 2024",
+    tag: "Internship",
     type: "exp",
     pos: 0.72,
   },
@@ -67,6 +72,7 @@ const experienceData = [
     description:
       "Led AI initiatives with 5+ workshop training 500+ students. Managed a team of 15 developers to build community-driven AI tools.",
     date: "Jul 2024 – Jul 2025",
+    tag: "Leadership",
     type: "exp",
     pos: 0.92,
   },
@@ -213,9 +219,9 @@ const Journey = () => {
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
           <div className="text-center mb-6 bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit">
-            <h1 className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
+            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
               Journey
-            </h1>
+            </p>
 
             <div className="flex justify-center gap-16 md:gap-24 mt-8">
               <div className="flex flex-col items-center">
@@ -236,43 +242,42 @@ const Journey = () => {
         <div
           ref={indicatorRef}
           className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${isScrolled
-              ? "opacity-0 translate-y-20 pointer-events-none invisible"
-              : "opacity-100 translate-y-0"
+            ? "opacity-0 translate-y-20 pointer-events-none invisible"
+            : "opacity-100 translate-y-0"
             }`}
         >
           <div className="inline-flex flex-col items-center group cursor-pointer">
-            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100 group-hover:text-sky-400">
+            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100">
               The Journey Continues
             </p>
 
             <div className="relative flex flex-col items-center">
-              <div className="relative w-8 h-14 rounded-full border-2 border-white/30 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-blue-400">
-                <div className="w-1.5 h-3 bg-blue-400 rounded-full animate-scroll-dot"></div>
+              <div className="relative w-8 h-14 rounded-full border-2 border-white/70 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-white/100">
+                <div className="w-1.5 h-3 bg-white rounded-full animate-scroll-dot"></div>
               </div>
 
-              <div className="relative w-px h-24 bg-gradient-to-b from-white/40 via-blue-500/50 to-transparent mt-2 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-blue-300 to-transparent animate-path-flow"></div>
-              </div>
-
-              <div className="relative -mt-6 flex flex-col items-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
-                  strokeWidth="1.5"
-                >
-                  <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
-                  <path
-                    d="M12 16L15 13M12 16L9 13"
-                    className="opacity-40 animate-bounce"
-                  />
-                  <line
-                    x1="12"
-                    y1="22"
-                    x2="12"
-                    y2="10"
-                    className="opacity-20"
-                  />
-                </svg>
+              <div className="relative w-px h-24 bg-gradient-to-b from-white/70 via-white/35 to-transparent mt-2 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-white/70 to-transparent animate-path-flow"></div>
+                {/* <div className="relative -mt-6 flex flex-col items-center">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
+                    <path
+                      d="M12 16L15 13M12 16L9 13"
+                      className="opacity-40 animate-bounce"
+                    />
+                    <line
+                      x1="12"
+                      y1="22"
+                      x2="12"
+                      y2="10"
+                      className="opacity-20"
+                    />
+                  </svg>
+                </div> */}
               </div>
             </div>
           </div>
@@ -409,8 +414,8 @@ const Journey = () => {
         <div
           ref={footerRef}
           className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${footerVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-20"
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-20"
             }`}
         >
           <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">
@@ -423,13 +428,13 @@ const Journey = () => {
                 engineering projects.
               </p>
               <button
-                onClick={() => (window.location.href = "mailto:your@email.com")}
+                onClick={() => (window.location.href = "mailto:priyanshu123sah@gmail.com")}
                 className="group relative px-10 py-5 bg-white text-black font-black uppercase  rounded-full overflow-hidden transition-all shadow-xl hover:shadow-white/10"
               >
                 <span className="relative z-10 text-xl group-hover:text-white transition-colors rounded-full">
                   Contact for My Next Gig
                 </span>
-                <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
+                <div className="absolute inset-0 bg-grey-hover translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
               </button>
             </div>
           </div>
@@ -447,10 +452,10 @@ const Journey = () => {
           100% { transform: translateY(100%); }
         }
         .animate-scroll-dot {
-          animation: scroll-dot 2s ease-in-out infinite;
+          animation: scroll-dot 2.5s ease-in-out infinite;
         }
         .animate-path-flow {
-          animation: path-flow 3s linear infinite;
+          animation: path-flow 2.5s ease-in-out infinite;
         }
          @keyframes flow {
           0% { transform: translateY(-100%); }
