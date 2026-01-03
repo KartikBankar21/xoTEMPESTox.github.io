@@ -81,8 +81,49 @@ const musicAPI = [
     index: 1,
     title: "Comedy (SPY X FAMILY)",
     artist: "Kayuo. Beats",
-    songSrc: "../assets/songs/music3comedy.mp3",
-    img: "../assets/images/music/comedy.jpeg",
+    songSrc: "../assets/songs/Comedy.mp3",
+    img: "../assets/images/music/Comedy.jpeg",
+    duration: 166.34,
+  },
+  {
+    index: 2,
+    title: "Von (Terror in Resonance)",
+    artist: "Kayou. Beats",
+    songSrc: "../assets/songs/Terror in Resonance.mp3",
+    img: "../assets/images/music/Terror in Resonance.jpeg",
+    duration: 171.12,
+  },
+  {
+    index: 3,
+    title: "Daylight Remix",
+    artist: "X.S Music",
+    songSrc: "../assets/songs/Daylight.mp3",
+    img: "../assets/images/music/Daylight.jpeg",
+    duration: 176.27,
+  },
+  {
+    index: 4,
+    title: "Resonance",
+    artist: "Home",
+    songSrc: "../assets/songs/Resonance.mp3",
+    img: "../assets/images/music/Resonance.jpeg",
+    duration: 212.74,
+  },
+  {
+    index: 5,
+    title: "Solo Leveling (Lofi)",
+    artist: "Kayuo. Beats",
+    songSrc: "../assets/songs/Solo_Leveling.mp3",
+    img: "../assets/images/music/Solo_Leveling.jpeg",
+    duration: 153.05,
+  },
+  {
+    index: 6,
+    title: "Cyberpunk (Lofi)",
+    artist: "Rojs-Fi",
+    songSrc: "../assets/songs/Cyberpunk.mp3",
+    img: "../assets/images/music/Cyberpunk.jpeg",
+    duration: 198.97,
   },
 ];
 
@@ -99,8 +140,8 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0); // Current time in seconds
   const [playbackProgress, setPlaybackProgress] = useState(0); // 0-100% for slider
   const [duration, setDuration] = useState(NaN); // Total duration in seconds
-  const [prevVolume, setPrevVolume] = useState(0.3);
-  const [volume, setVolume] = useState(0.3); // 30% volume
+  const [prevVolume, setPrevVolume] = useState(0.15);
+  const [volume, setVolume] = useState(0.15); // 15% volume
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();

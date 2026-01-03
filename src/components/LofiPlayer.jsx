@@ -30,6 +30,9 @@ export const LoFiPlayer = ({
 
   // Helper for time formatting
   const formatTime = (timeInSeconds) => {
+    if (isNaN(timeInSeconds) || timeInSeconds === null || timeInSeconds === undefined) {
+      return "--:--";
+    }
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
@@ -42,7 +45,7 @@ export const LoFiPlayer = ({
         style={{
           filter: "url(#nnnoise-filter)",
         }}
-        // onClick={onExpand}
+      // onClick={onExpand}
       />
       <div
         id="lofi-player"
@@ -54,9 +57,8 @@ export const LoFiPlayer = ({
   /> */}
         {/* --- Menu Overlay (Hidden/Shown) --- */}
         <div
-          className={`menu-overlay rounded-[2.5rem] p-6 flex flex-col overflow-x-hidden transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
+          className={`menu-overlay rounded-[2.5rem] p-6 flex flex-col overflow-x-hidden transition-opacity duration-300 ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
         >
           <div className="flex justify-between items-center mb-6">
             <p className="font-mono font-bold text-xl md:text-2xl text-[white] uppercase tracking-widest flex items-center mb-0!">
@@ -76,19 +78,17 @@ export const LoFiPlayer = ({
               <li
                 key={track.id}
                 onClick={() => onTrackSelect(index)}
-                className={`p-3 rounded-xl cursor-pointer transition-all border-2 ${
-                  trackIndex != index
+                className={`p-3 rounded-xl cursor-pointer transition-all border-2 ${trackIndex != index
                     ? "bg-[var(--lo-fi-dark)] text-white shadow-xl scale-[1.01]"
                     : "bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] hover:bg-[var(--lo-fi-accent)]/50 border-current text-sky-400"
-                }`}
+                  }`}
               >
                 <div className="font-semibold text-sm md:text-base truncate">
                   {track.title}
                 </div>
                 <div
-                  className={`text-xs ${
-                    trackIndex === index ? "opacity-80" : "opacity-60"
-                  }`}
+                  className={`text-xs ${trackIndex === index ? "opacity-80" : "opacity-60"
+                    }`}
                 >
                   {track.artist} - {formatTime(track.duration)}
                 </div>
