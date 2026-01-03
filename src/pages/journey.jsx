@@ -10,6 +10,7 @@ const educationData = [
     description:
       "Studying AI and ML with focus on deep learning and systems design. Specializing in neural networks, computer vision, and scalable AI infrastructure.",
     date: "2022 - 2026",
+    tag: "Undergrad",
     type: "edu",
     pos: 0.12,
     // Mobile 0.5 (Centers in the shorter container)
@@ -27,6 +28,7 @@ const experienceData = [
     description:
       "Building AI doctor modules using MedLLMs for workflow automation. Developing secure, HIPAA-compliant interfaces and integrating complex medical knowledge graphs.",
     date: "Jul 2025 - Present",
+    tag: "Internship",
     type: "exp",
     pos: 0.12,
   },
@@ -37,6 +39,7 @@ const experienceData = [
     description:
       "Built an STS chatbot using RAG, agentic AI, and NLP for 1K+ concurrent users. Optimized vector database retrieval speeds by 40%.",
     date: "Mar 2025 – Aug 2025",
+    tag: "Internship",
     type: "exp",
     pos: 0.32,
   },
@@ -47,6 +50,7 @@ const experienceData = [
     description:
       "Delivered a multimodal chatbot with TTS, STT, and document parsing. Integrated blockchain authentication for secure user sessions.",
     date: "Dec 2024 – Feb 2025",
+    tag: "Internship",
     type: "exp",
     pos: 0.52,
   },
@@ -57,6 +61,7 @@ const experienceData = [
     description:
       "Built LangChain+VectorDB trading assistant and tuned SLMs with synthetic Q&A. Focused on financial sentiment analysis and real-time data ingestion.",
     date: "Feb 2024 – Aug 2024",
+    tag: "Internship",
     type: "exp",
     pos: 0.72,
   },
@@ -67,6 +72,7 @@ const experienceData = [
     description:
       "Led AI initiatives with 5+ workshop training 500+ students. Managed a team of 15 developers to build community-driven AI tools.",
     date: "Jul 2024 – Jul 2025",
+    tag: "Leadership",
     type: "exp",
     pos: 0.92,
   },
