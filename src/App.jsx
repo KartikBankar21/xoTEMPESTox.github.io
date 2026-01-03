@@ -79,22 +79,6 @@ const customStyles = `
 const musicAPI = [
   {
     index: 1,
-    title: "Comedy (SPY X FAMILY)",
-    artist: "Kayuo. Beats",
-    songSrc: "../assets/songs/Comedy.mp3",
-    img: "../assets/images/music/Comedy.jpeg",
-    duration: 166.34,
-  },
-  {
-    index: 2,
-    title: "Von (Terror in Resonance)",
-    artist: "Kayou. Beats",
-    songSrc: "../assets/songs/Terror in Resonance.mp3",
-    img: "../assets/images/music/Terror in Resonance.jpeg",
-    duration: 171.12,
-  },
-  {
-    index: 3,
     title: "Daylight Remix",
     artist: "X.S Music",
     songSrc: "../assets/songs/Daylight.mp3",
@@ -102,12 +86,28 @@ const musicAPI = [
     duration: 176.27,
   },
   {
-    index: 4,
+    index: 2,
+    title: "Comedy (SPY X FAMILY)",
+    artist: "Kayuo. Beats",
+    songSrc: "../assets/songs/Comedy.mp3",
+    img: "../assets/images/music/Comedy.jpeg",
+    duration: 166.34,
+  },
+  {
+    index: 3,
     title: "Resonance",
     artist: "Home",
     songSrc: "../assets/songs/Resonance.mp3",
     img: "../assets/images/music/Resonance.jpeg",
     duration: 212.74,
+  },
+  {
+    index: 4,
+    title: "Von (Terror in Resonance)",
+    artist: "Kayou. Beats",
+    songSrc: "../assets/songs/Terror in Resonance.mp3",
+    img: "../assets/images/music/Terror in Resonance.jpeg",
+    duration: 171.12,
   },
   {
     index: 5,
