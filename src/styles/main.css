@@ -2268,7 +2268,7 @@ HeaderBackground {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.70);
+  background: rgba(0, 0, 0, 0.50);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 1);
@@ -2296,7 +2296,7 @@ HeaderBackground {
 }
 
 .services__wrapper__icons__item:hover {
-  background: rgba(0, 8, 4, 0.9);
+  background: rgba(0, 8, 4, 0.50);
   /* border-color: rgba(255, 255, 255, 0.3); */
   /* box-shadow: 0 12px 40px 0 rgba(102, 126, 234, 0.4); */
   transform: scale(1.15);
@@ -2308,7 +2308,7 @@ HeaderBackground {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.70);
+  background: rgba(0, 0, 0, 0.50);
   backdrop-filter: blur(8px);
   border-radius: 0.7rem;
   content: attr(data-service-name);
@@ -2351,7 +2351,7 @@ HeaderBackground {
   visibility: visible;
   color: white;
   border: 1px solid rgba(255, 255, 255, 1);
-  background: rgba(0, 0, 0, 0.80);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   transform: translateY(-8px) scale(1);
   visibility: visible;
@@ -2421,7 +2421,7 @@ HeaderBackground {
 }
 
 .services .rounding {
-  background: rgba(0, 0, 0, 0.70);
+  background: rgba(0, 0, 0, 0.50);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border: 1px dashed #ffffff;
