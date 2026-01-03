@@ -81,7 +81,7 @@ const About = () => {
                   loading="lazy"
                 />
               </div>
-              <h3 className="about__title">Priyanshu Sah</h3>
+              <h1 className="about__title">Priyanshu Sah</h1>
             </div>
 
             <div className="about__stack about__stack--right">

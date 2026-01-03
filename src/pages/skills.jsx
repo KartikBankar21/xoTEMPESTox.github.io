@@ -115,7 +115,7 @@ const Skills = () => {
     <div className="page-section">
       <section className="skills" id="skills">
         <div className="container">
-          <h2 className="skills__title text-capitalize">my skills</h2>
+          <h1 className="skills__title text-capitalize">my skills</h1>
           <div className="row justify-content-center gy-0">
 
             {/* COLUMN 1 */}
