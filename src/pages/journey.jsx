@@ -434,7 +434,7 @@ const Journey = () => {
                 <span className="relative z-10 text-xl group-hover:text-white transition-colors rounded-full">
                   Contact for My Next Gig
                 </span>
-                <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
+                <div className="absolute inset-0 bg-grey-hover translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
               </button>
             </div>
           </div>
