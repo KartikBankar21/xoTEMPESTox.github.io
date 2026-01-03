@@ -219,9 +219,9 @@ const Journey = () => {
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
           <div className="text-center mb-6 bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit">
-            <h1 className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
+            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
               Journey
-            </h1>
+            </p>
 
             <div className="flex justify-center gap-16 md:gap-24 mt-8">
               <div className="flex flex-col items-center">
@@ -242,8 +242,8 @@ const Journey = () => {
         <div
           ref={indicatorRef}
           className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${isScrolled
-              ? "opacity-0 translate-y-20 pointer-events-none invisible"
-              : "opacity-100 translate-y-0"
+            ? "opacity-0 translate-y-20 pointer-events-none invisible"
+            : "opacity-100 translate-y-0"
             }`}
         >
           <div className="inline-flex flex-col items-center group cursor-pointer">
@@ -415,8 +415,8 @@ const Journey = () => {
         <div
           ref={footerRef}
           className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${footerVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-20"
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-20"
             }`}
         >
           <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">

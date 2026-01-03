@@ -463,9 +463,9 @@ const Portfolio = () => {
       {/* 1. Header (Top) */}
       <header className=" my-16 md:my-6  text-center px-4 z-20 flex-none">
         <div className="bg-black/50 backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border border-white/5">
-          <h1 className="text-7xl md:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 uppercase">
+          <p className="text-7xl md:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 uppercase">
             Portfolio
-          </h1>
+          </p>
         </div>
       </header>
 
