@@ -247,38 +247,37 @@ const Journey = () => {
             }`}
         >
           <div className="inline-flex flex-col items-center group cursor-pointer">
-            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100 group-hover:text-sky-400">
+            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100">
               The Journey Continues
             </p>
 
             <div className="relative flex flex-col items-center">
-              <div className="relative w-8 h-14 rounded-full border-2 border-white/30 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-blue-400">
-                <div className="w-1.5 h-3 bg-blue-400 rounded-full animate-scroll-dot"></div>
+              <div className="relative w-8 h-14 rounded-full border-2 border-white/70 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-white/100">
+                <div className="w-1.5 h-3 bg-white rounded-full animate-scroll-dot"></div>
               </div>
 
-              <div className="relative w-px h-24 bg-gradient-to-b from-white/40 via-blue-500/50 to-transparent mt-2 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-blue-300 to-transparent animate-path-flow"></div>
-              </div>
-
-              <div className="relative -mt-6 flex flex-col items-center">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
-                  strokeWidth="1.5"
-                >
-                  <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
-                  <path
-                    d="M12 16L15 13M12 16L9 13"
-                    className="opacity-40 animate-bounce"
-                  />
-                  <line
-                    x1="12"
-                    y1="22"
-                    x2="12"
-                    y2="10"
-                    className="opacity-20"
-                  />
-                </svg>
+              <div className="relative w-px h-24 bg-gradient-to-b from-white/70 via-white/35 to-transparent mt-2 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-white/70 to-transparent animate-path-flow"></div>
+                {/* <div className="relative -mt-6 flex flex-col items-center">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
+                    <path
+                      d="M12 16L15 13M12 16L9 13"
+                      className="opacity-40 animate-bounce"
+                    />
+                    <line
+                      x1="12"
+                      y1="22"
+                      x2="12"
+                      y2="10"
+                      className="opacity-20"
+                    />
+                  </svg>
+                </div> */}
               </div>
             </div>
           </div>
@@ -453,10 +452,10 @@ const Journey = () => {
           100% { transform: translateY(100%); }
         }
         .animate-scroll-dot {
-          animation: scroll-dot 2s ease-in-out infinite;
+          animation: scroll-dot 2.5s ease-in-out infinite;
         }
         .animate-path-flow {
-          animation: path-flow 3s linear infinite;
+          animation: path-flow 2.5s ease-in-out infinite;
         }
          @keyframes flow {
           0% { transform: translateY(-100%); }
