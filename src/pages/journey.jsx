@@ -428,7 +428,7 @@ const Journey = () => {
                 engineering projects.
               </p>
               <button
-                onClick={() => (window.location.href = "mailto:your@email.com")}
+                onClick={() => (window.location.href = "mailto:priyanshu123sah@gmail.com")}
                 className="group relative px-10 py-5 bg-white text-black font-black uppercase  rounded-full overflow-hidden transition-all shadow-xl hover:shadow-white/10"
               >
                 <span className="relative z-10 text-xl group-hover:text-white transition-colors rounded-full">
