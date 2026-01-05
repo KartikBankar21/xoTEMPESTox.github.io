@@ -123,7 +123,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e")
 * [ ]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter
 * [ ]  Hide Music player in Socials Tab
-* [ ]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80)
+* [x]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80)
 * [ ]  Enlarge and Strengthen Gradeient effect of hover Both in Product card and Journey Card [img](https://github.com/user-attachments/assets/62bcfdec-99b7-4362-b60e-36c7413fb6a5) , [img](https://github.com/user-attachments/assets/d0e6821c-5026-45e7-9e6d-5ea895f01426)
 * [ ]  Option to Expand on click Image [img](https://github.com/user-attachments/assets/20f038cc-3e94-4188-b06e-7c26ccee9f43)
 * [ ]  Tech stack has different black compared to normal card for Background [img](https://github.com/user-attachments/assets/13e88252-2680-4a04-b068-84566c2f2958) , The Text color is too dark use lighter shade of grey (eg Skill section bar)
