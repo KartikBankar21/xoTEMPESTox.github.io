@@ -484,6 +484,9 @@ function App() {
                     onTrackSelect={handleTrackSelect}
                     tracks={musicAPI}
                     trackIndex={trackIndex}
+                     // Volume Props - FIXED HERE
+      volume={volume} 
+      onVolumeChange={handleVolumeChange} 
                   />
                 ) : (
                   <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
