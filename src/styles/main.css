@@ -546,22 +546,6 @@ section {
   animation: spin 4s linear infinite;
 }
 
-@supports not (background: paint(something)) {
-  .media-object::before {
-    background-image: conic-gradient(#381d6a 80%,
-        #e0d1ff 88%,
-        #e0d1ff 92%,
-        #381d6a 100%);
-  }
-
-  .media-object::after {
-    background-image: conic-gradient(#381d6a 80%,
-        #e0d1ff 88%,
-        #e0d1ff 92%,
-        #381d6a 100%);
-  }
-}
-
 .media-object::after {
   content: " ";
   position: absolute;
