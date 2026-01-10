@@ -227,7 +227,7 @@ const Cube = ({ item, onViewDetails, isDragging, width, height }) => {
               >
                 {item.title}
               </p>
-              <p className="text-lg min-[1265px]:text-2xl text-zinc-500 leading-snug line-clamp-3 lg:line-clamp-none ">
+              <p className="text-lg min-[1265px]:text-2xl text-[#c4c4c4] leading-snug line-clamp-3 lg:line-clamp-none ">
                 {item.description}
               </p>
             </div>
@@ -246,7 +246,7 @@ const Cube = ({ item, onViewDetails, isDragging, width, height }) => {
 
           {/* Grey Cursor Glow Effect */}
           <div
-            className="cursor-glow"
+            className="cursor-glow-portfolio-card"
             style={{
               left: `${glowPosition.x}px`,
               top: `${glowPosition.y}px`,

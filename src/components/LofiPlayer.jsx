@@ -147,24 +147,24 @@ export const LoFiPlayer = ({
               {/* Floating Slider Popup */}
               {showVolume && (
                 <div 
-                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-16 bg-black/60 backdrop-blur-xl p-3 pb-4 rounded-2xl shadow-2xl border border-white/10 z-50 flex flex-col items-center animate-in fade-in zoom-in duration-200 slide-in-from-bottom-4"
+                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-16 bg-black/95 backdrop-blur-sm p-3 pb-4 rounded-2xl shadow-2xl border border-white/10 z-50 flex flex-col items-center animate-in fade-in zoom-in duration-200 slide-in-from-bottom-4"
                   style={{ boxShadow: "0 0 20px rgba(0,0,0,0.5)" }}
                 >
                   {/* Slider Track Area */}
                   <div className="relative h-32 w-full flex justify-center items-center">
                     
                     {/* The Visual Track */}
-                    <div className="absolute w-1.5 h-full bg-white/20 rounded-full overflow-hidden">
+                    <div className="absolute w-1.5 h-full bg-white/60 rounded-full overflow-hidden">
                       {/* The Active Fill */}
                       <div 
-                        className="absolute bottom-0 w-full bg-sky-400 transition-all duration-75"
+                        className="absolute bottom-0 w-full bg-gray-600 transition-all duration-75"
                         style={{ height: `${volumePercentage}%` }}
                       />
                     </div>
 
                     {/* The Knob/Thumb (Visual Only) */}
                     <div 
-                      className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none border-2 border-sky-500 transition-all duration-75"
+                      className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none border-2 border-gray-600 transition-all duration-75"
                       style={{ bottom: `calc(${volumePercentage}% - 8px)` }}
                     />
 
@@ -196,7 +196,7 @@ export const LoFiPlayer = ({
                   </span>
                   
                   {/* Triangle Arrow pointing down */}
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[var(--lo-fi-dark)]/95"></div>
+                  {/* <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[var(--lo-fi-dark)]/95"></div> */}
                 </div>
               )}
 
@@ -205,8 +205,8 @@ export const LoFiPlayer = ({
                 onClick={() => setShowVolume(!showVolume)}
                 className={`icon-btn p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
                   showVolume 
-                    ? 'bg-white text-sky-500 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)]' 
-                    : 'bg-[var(--lo-fi-ui)] text-white hover:bg-[var(--lo-fi-bg)] border border-current'
+                    ? 'bg-white/95 text-sky-500 scale-110 shadow-[0_0_15px_rgba(255,255,255,0.3)] border border-current rounded-full' 
+                    : 'bg-[var(--lo-fi-ui)] text-white hover:text-sky-400 border border-current rounded-full transition-transform active:scale-95'
                 }`}
                 aria-label="Adjust Volume"
               >

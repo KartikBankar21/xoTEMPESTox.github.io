@@ -145,6 +145,7 @@ function App() {
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
+  const isSocialsPage = location.pathname === "/socials"; // Add this line
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -158,10 +159,27 @@ function App() {
       "/socials": "Blog & Socials | Priyanshu Sah",
     };
 
-    document.title = titleMap[location.pathname] || "Priyanshu Sah | AI ML Engineer & Full Stack Developer";
+    document.title =
+      titleMap[location.pathname] ||
+      "Priyanshu Sah | AI ML Engineer & Full Stack Developer";
   }, [location]);
 
+  useEffect(() => {
+    if (location.pathname === "/socials") {
+      setIsExpanded(false);
+    }
+  }, [location.pathname]);
+
   // --- AUDIO HANDLERS ---
+
+  const ensureUnmute = () => {
+    if (isMuted && currentAudio.current) {
+      // Restore to the previous volume level
+      currentAudio.current.volume = prevVolume;
+      setVolume(prevVolume);
+      setIsMuted(false);
+    }
+  };
 
   // Update current time and progress when the audio element fires timeupdate
   const handleAudioUpdate = () => {
@@ -188,6 +206,8 @@ function App() {
 
   const updateTrack = (newIndex) => {
     setTrackIndex(newIndex);
+    // UNMUTE HERE
+    ensureUnmute();
     if (currentAudio.current) {
       currentAudio.current.src = musicAPI[newIndex].songSrc;
       currentAudio.current.load(); // Ensure the new track is loaded
@@ -205,6 +225,8 @@ function App() {
     if (!currentAudio.current) return;
 
     if (currentAudio.current.paused) {
+      // UNMUTE HERE
+      ensureUnmute();
       currentAudio.current
         .play()
         .then(() => {
@@ -466,7 +488,20 @@ function App() {
                 zIndex: 10,
               }}
             >
-              <div className={`${positionClasses} ${containerClasses} z-1200 `}>
+              <div
+                className={`
+    ${positionClasses} 
+    ${containerClasses} 
+    z-1200
+    /* Transition and Opacity Logic */
+    transition-opacity duration-500
+    ${
+      isSocialsPage
+        ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
+        : "opacity-100 pointer-events-auto"
+    }
+  `}
+              >
                 {isExpanded ? (
                   <LoFiPlayer
                     isExpanded={isExpanded}
@@ -484,9 +519,9 @@ function App() {
                     onTrackSelect={handleTrackSelect}
                     tracks={musicAPI}
                     trackIndex={trackIndex}
-                     // Volume Props - FIXED HERE
-      volume={volume} 
-      onVolumeChange={handleVolumeChange} 
+                    // Volume Props - FIXED HERE
+                    volume={volume}
+                    onVolumeChange={handleVolumeChange}
                   />
                 ) : (
                   <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
@@ -498,6 +533,8 @@ function App() {
                       setIsMuted={setIsMuted}
                       handleMuteToggle={handleMuteToggle}
                       handleAudioPlay={handleAudioPlay}
+                      onNext={handleNextSong}
+                      onPrev={handlePrevSong}
                     />
                   </div>
                 )}

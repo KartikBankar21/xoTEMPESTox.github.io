@@ -44,7 +44,7 @@ const DetailCard = ({ project, onClose }) => {
                 {project.title}
               </h1>
             </div>
-            <p className="text-lg text-zinc-400 max-w-md">{project.tagline}</p>
+            <p className="text-xl text-[#eaeaea] max-w-md">{project.tagline}</p>
           </div>
           <button
             onClick={onClose}
@@ -56,16 +56,16 @@ const DetailCard = ({ project, onClose }) => {
 
         <div className="p-6 space-y-0 max-h-[50vh] overflow-y-auto custom-scrollbar">
           <section className="p-4!">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
               Description
             </h2>
-            <p className="text-zinc-300 leading-relaxed text-[15px]">
+            <p className="text-[#eaeaea] leading-relaxed text-[15px]">
               {project.description}
             </p>
           </section>
 
           <section className="p-4!">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
               Tech Stack
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -82,7 +82,7 @@ const DetailCard = ({ project, onClose }) => {
           </section>
 
           <section className="p-4!">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-500">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
               Key Highlights
             </h2>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +92,7 @@ const DetailCard = ({ project, onClose }) => {
                   className="flex items-start space-x-3 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/50 group hover:border-zinc-600 transition-all"
                 >
                   <span className="mt-2 h-1 w-1 rounded-full bg-white shrink-0 shadow-[0_0_8px_white]" />
-                  <span className="text-zinc-400 text-lg leading-snug group-hover:text-zinc-200 transition-colors">
+                  <span className="text-[#eaeaea] text-lg leading-snug group-hover:text-white transition-colors">
                     {item}
                   </span>
                 </li>

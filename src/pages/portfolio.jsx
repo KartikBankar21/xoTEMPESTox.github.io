@@ -83,7 +83,7 @@ const rawPortfolioData = [
       {
         name: "Solidity",
         slug: "skill-icons/solidity",
-        color: "363636",
+        color: "FFFFFF",
         iconColor: "",
       },
       {
