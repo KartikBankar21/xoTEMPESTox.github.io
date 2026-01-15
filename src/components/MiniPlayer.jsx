@@ -58,10 +58,10 @@ export const MiniPlayer = ({
               FIX 4: Applied 'truncate' to BOTH the container and the text elements.
           */}
           <div
-            className="w-full flex flex-col items-center justify-center lg:vertical-rl lg:-rotate-90 lg:space-y-1 truncate"
+            className="w-full flex flex-col items-center justify-center lg:vertical-rl lg:-rotate-90 lg:space-y-1 truncate group"
             style={verticalTextStyle}
           >
-            <p className="w-full text-center text-xs text-white opacity-80 lg:text-xl font-bold tracking-wide truncate">
+            <p className="w-full text-center text-xs text-white opacity-80 lg:text-xl font-bold tracking-wide truncate group-hover:opacity-100">
               {currentTrack.title}
             </p>
             <p className="w-full text-center text-[10px] text-white opacity-70 lg:text-lg truncate">
@@ -72,37 +72,50 @@ export const MiniPlayer = ({
 
         {/* Controls: Flex-shrink-0 ensures this block NEVER disappears */}
         <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-x-2 space-x-reverse lg:space-x-0 lg:space-y-4 flex-shrink-0">
-          <button
-            onClick={onPrev}
-            className="group relative p-2 active:scale-95 flex-shrink-0"
-          >
-            <div className="relative z-10">
-              <SkipBack className="text-white group-hover:text-sky-400 w-5 h-5 lg:w-7 lg:h-7 fill-current  rotate-180 lg:rotate-90" />
-            </div>
-          </button>
+  
+  {/* Previous Button */}
+  <button
+    onClick={onPrev}
+    className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
+  >
+    {/* Animated Glow Background */}
+    <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+    
+    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+      <SkipBack className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
+    </div>
+  </button>
 
-          <button
-            onClick={handleAudioPlay}
-            className="group relative p-2 lg:p-3 rounded-full active:scale-95 flex-shrink-0"
-          >
-            <div className="relative z-10">
-              {isPlaying ? (
-                <Pause className="text-white group-hover:text-sky-400 w-6 h-6 lg:w-8 lg:h-8 fill-current" />
-              ) : (
-                <Play className="text-white group-hover:text-sky-400 w-6 h-6 lg:w-8 lg:h-8 fill-current" />
-              )}
-            </div>
-          </button>
+  {/* Play/Pause Button */}
+  <button
+    onClick={handleAudioPlay}
+    className="group relative p-2 lg:p-3 rounded-full active:scale-95 transition-all duration-300 flex-shrink-0"
+  >
+    {/* Subtle Bloom Effect */}
+    <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    
+    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+      {isPlaying ? (
+        <Pause className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+      ) : (
+        <Play className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+      )}
+    </div>
+  </button>
 
-          <button
-            onClick={onNext}
-            className="group relative p-2 active:scale-95 flex-shrink-0"
-          >
-            <div className="relative z-10">
-              <SkipForward className="text-white group-hover:text-sky-400 w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90" />
-            </div>
-          </button>
-        </div>
+  {/* Next Button */}
+  <button
+    onClick={onNext}
+    className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
+  >
+    {/* Animated Glow Background */}
+    <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+    
+    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+      <SkipForward className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
+    </div>
+  </button>
+</div>
       </div>
     </div>
   );
