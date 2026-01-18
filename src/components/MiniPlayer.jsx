@@ -71,51 +71,50 @@ export const MiniPlayer = ({
         </div>
 
         {/* Controls: Flex-shrink-0 ensures this block NEVER disappears */}
-        <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-x-2 space-x-reverse lg:space-x-0 lg:space-y-4 flex-shrink-0">
-  
-  {/* Previous Button */}
-  <button
-    onClick={onPrev}
-    className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
-  >
-    {/* Animated Glow Background */}
-    <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
-    
-    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
-      <SkipBack className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
-    </div>
-  </button>
+        <div className="flex flex-row items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-x-2 lg:space-x-0 lg:space-y-4 flex-shrink-0">
 
-  {/* Play/Pause Button */}
-  <button
-    onClick={handleAudioPlay}
-    className="group relative p-2 lg:p-3 rounded-full active:scale-95 transition-all duration-300 flex-shrink-0"
-  >
-    {/* Subtle Bloom Effect */}
-    <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    
-    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
-      {isPlaying ? (
-        <Pause className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
-      ) : (
-        <Play className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
-      )}
-    </div>
-  </button>
+          {/* Previous Button */}
+          {/* <button
+              onClick={onPrev}
+              className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
+            >
+              <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+              
+              <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+                <SkipBack className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
+              </div>
+          </button> */}
 
-  {/* Next Button */}
-  <button
-    onClick={onNext}
-    className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
-  >
-    {/* Animated Glow Background */}
-    <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
-    
-    <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
-      <SkipForward className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
-    </div>
-  </button>
-</div>
+          {/* Play/Pause Button */}
+          <button
+            onClick={handleAudioPlay}
+            className="group relative p-2 lg:p-3 rounded-full active:scale-95 transition-all duration-300 flex-shrink-0"
+          >
+            {/* Subtle Bloom Effect */}
+            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+              {isPlaying ? (
+                <Pause className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+              ) : (
+                <Play className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+              )}
+            </div>
+          </button>
+
+          {/* Next Button */}
+          <button
+            onClick={onNext}
+            className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
+          >
+            {/* Animated Glow Background */}
+            <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+
+            <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+              <SkipForward className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current lg:rotate-90 transition-colors duration-300" />
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );
