@@ -10,6 +10,7 @@ import "../styles/main.css";
 import DetailCard from "../components/DetailedCard";
 import Cube from "../components/Cube";
 import { X } from "lucide-react";
+import { useTheme } from "../components/HeaderBackground";
 
 
 // --- Configuration Constants ---
@@ -332,6 +333,7 @@ const rawPortfolioData = [
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 const [fullscreenImage, setFullscreenImage] = useState(null);
+const { theme } = useTheme();
   // --- Responsive Logic ---
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1000
@@ -463,11 +465,21 @@ const [fullscreenImage, setFullscreenImage] = useState(null);
     <div className="h-screen w-full flex flex-col overflow-hidden selection:bg-indigo-500/30">
       {/* 1. Header (Top) */}
       <header className=" my-16 md:my-6  text-center px-4 z-20 flex-none">
-        <div className="bg-black/50 backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border border-white/5">
-          <p className="text-7xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 uppercase">
-            Portfolio
-          </p>
-        </div>
+        <div className={`
+  backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
+  ${theme === 'dark' 
+    ? 'bg-black/50 border-white/5' 
+    : 'bg-white/50 border-black/5 shadow-xl'}
+`}>
+  <p className={`
+    text-7xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
+    ${theme === 'dark'
+      ? 'bg-gradient-to-b from-white to-white/50'
+      : 'bg-gradient-to-b from-gray-900 to-gray-500'}
+  `}>
+    Portfolio
+  </p>
+</div>
       </header>
 
       {/* 2. Main Center Area (Carousel) 

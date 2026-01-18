@@ -440,7 +440,7 @@ section {
   -ms-flex-align: center;
   align-items: center;
   border: 1px solid #474646;
-  background-color: #000000;
+  /* background-color: #000000; */
   border-radius: 1.4rem;
   bottom: 4rem;
   color: #ffffff;
@@ -464,6 +464,7 @@ section {
   padding: 0 !important;
 }
 
+/* Base styles */
 .list::before,
 .socials::before {
   border-radius: inherit;
@@ -473,8 +474,30 @@ section {
   pointer-events: none;
   position: absolute;
   z-index: -1;
+  /* Default to dark mode */
+  /* background-color: #000000; */
+  filter: url("#nnnoise-filter");
+  transition: background-color 0.5s ease-in-out;
+}
+
+/* Dark Mode (Default) */
+.list::before {
+  content: " ";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
   background-color: #000000;
   filter: url("#nnnoise-filter");
+}
+
+/* Light Mode Override (No space between attribute and class) */
+[data-theme='light'].list::before {
+  background-color: #ffffff !important;
+  filter: url("#nnnoise-filter-black") !important;
+  opacity: 0.8;
 }
 
 @media (max-width: 767.98px) {
@@ -680,6 +703,30 @@ section {
   animation: spin 4s linear infinite;
 }
 
+/* main.css */
+
+/* DARK MODE - Force background and borders */
+html.dark .minimized,
+html.dark .expanded,
+html[data-theme='dark'] .minimized,
+html[data-theme='dark'] .expanded {
+    background-color: #000000 !important;
+    border-color: #c6aee3 !important;
+}
+
+/* LIGHT MODE - Force background and borders */
+html.light .minimized,
+html.light .expanded,
+html[data-theme='light'] .minimized,
+html[data-theme='light'] .expanded {
+    background-color: #ffffff;
+    border-color: #a193b3 !important;
+}
+
+/* Optional: Handle the text and icon colors here too if needed */
+/* [data-theme='light'] .mini-player p {
+    color: #000000 ;
+} */
 
 .socials-container {
   /* Fixed Positioning and Centering (Desktop/Default) */
@@ -694,8 +741,8 @@ section {
   /* For z-index stacking context */
 
   /* Base Styling: Solid black background and subtle static border */
-  background-color: #000000;
-  border: 1px solid #474646;
+  /* background-color: #000000; */
+  /* border: 1px solid #474646; */
   border-radius: 1.4rem;
   min-height: 4.4rem;
   padding: 0.6rem 2.2rem;
@@ -792,6 +839,87 @@ section {
   outline: none;
 }
 
+/* --- Socials Container Theme Logic --- */
+.socials-container {
+  /* Positioning and Layout - KEPT EXACTLY THE SAME */
+  position: fixed;
+  left: 50%;
+  top: 4rem;
+  transform: translate(-50%, -1.5rem);
+  z-index: 999999999998;
+  isolation: isolate;
+  border-radius: 1.4rem;
+  min-height: 4.4rem;
+  padding: 0.6rem 2.2rem;
+  width: 20%;
+
+  /* Color Transitions */
+  transition: opacity 0.4s ease, transform 0.4s ease, background-color 0.5s ease, border-color 0.5s ease;
+  
+  /* DARK MODE COLORS (Default) */
+  /* background-color: #000000; */
+  /* border: 1px solid #474646; */
+}
+ 
+/* LIGHT MODE COLORS - Only changing the box and its static border */
+
+/* ========================================= */
+/* Animated Trails - COLORS KEPT ORIGINAL    */
+/* ========================================= */
+.socials-container::before,
+.socials-container::after {
+  content: " ";
+  position: absolute;
+  --border-width: 2px;
+  inset: calc(var(--border-width) * -1);
+  z-index: -1;
+  border: var(--border-width) solid transparent;
+  border-radius: inherit;
+  background-origin: border-box;
+  animation: spin 4s linear infinite;
+
+  -webkit-mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+  mask: linear-gradient(black, black), linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Trail 1 - KEPT ORIGINAL COLORS (#e0d1ff, #381d6a) */
+.socials-container::before {
+  background-image: conic-gradient(from var(--angle),
+      transparent 80%,
+      #e0d1ff 88%,
+      #e0d1ff 92%,
+      #381d6a 100%);
+}
+
+/* Trail 2 - KEPT ORIGINAL COLORS (#e0d1ff, #381d6a) */
+.socials-container::after {
+  background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
+      transparent 80%,
+      #e0d1ff 88%,
+      #e0d1ff 92%,
+      #381d6a 100%);
+}
+
+/* Pause on hover */
+.socials-container:hover::before,
+.socials-container:hover::after {
+  animation-play-state: paused;
+}
+
+/* Responsive Logic - KEPT EXACTLY THE SAME */
+@media (max-width: 1023px) {
+  .socials-container {
+    width: 50%;
+    padding: 0.5rem 1.4rem;
+    top: 3rem;
+    transform: translate(-50%, -1.2rem);
+  }
+}
+
 /* Media Queries for Responsiveness (Mobile) */
 @media (max-width: 1023px) {
   .socials-container {
@@ -819,7 +947,7 @@ section {
 }
 
 .list .list-item:before {
-  background-color: #000000;
+  /* background-color: #000000; */
   border: 1px solid #ffffff;
   border-radius: 1.4rem;
   color: #ffffff;
@@ -1439,6 +1567,63 @@ HeaderBackground {
   color: #ffffff;
 }
 
+/* --- Home Section Light Mode Overrides --- */
+
+[data-theme='light'].home .home__img {
+  border-color: #ffffff;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'].home .home__info {
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  color: #0f172a; /* Deep slate */
+}
+
+[data-theme='light'].home .home__info__title {
+  color: #0f172a;
+}
+
+[data-theme='light'].home .home__info__title span {
+  background-color: #000000; /* Blue underline in light mode */
+}
+
+[data-theme='light'].home .home__info__desc {
+  color: #334155; /* Slightly lighter slate for description */
+}
+
+[data-theme='light'].home .home__info__desc .typed-text__cursor {
+  background-color: #000000; /* Blue cursor for light mode */
+}
+
+/* Button Adjustments for Light Mode */
+[data-theme='light'].home .custom-btn {
+  background-color: #0f172a; /* Dark button in light mode */
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+[data-theme='light'].home .home__info__btn:after {
+  background-color: #334155; /* Hover fill color */
+}
+
+[data-theme='light'].home .home__info__btn:hover {
+  color: #ffffff;
+  box-shadow: 0 6px 15px rgba(15, 23, 42, 0.3);
+}
+
+/* Smooth Transitions */
+.home__info, 
+.home__info__title, 
+.home__info__desc, 
+.home__img, 
+.home__info__title span,
+.custom-btn {
+  transition: all 0.5s ease-in-out;
+}
+
 .bg-grey-hover {
   background-color: hsla(0, 0%, 45%, 0.418) !important;
 }
@@ -1705,6 +1890,52 @@ HeaderBackground {
     text-align: center;
     width: min(100%, 26rem);
   }
+}
+
+/* --- Light Mode Color Overrides --- */
+
+.about[data-theme='light'] .about__img {
+  background: rgba(0, 0, 0, 0.05); /* Softer inner shadow for light mode */
+  border-color: #ffffff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.about[data-theme='light'] .about__title {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #0f172a; /* Deep slate instead of white */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.about[data-theme='light'] .about__title:first-letter {
+  color: #64748b; /* Accent color (Blue) for the first letter in light mode */
+}
+
+.about[data-theme='light'] .about__title:before {
+  background-color: #64748b; /* Line accent match */
+}
+
+.about[data-theme='light'] .about__info {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.about[data-theme='light'] .about__info__label {
+  color: #64748b; /* Medium slate for labels */
+}
+
+.about[data-theme='light'] .about__info__value {
+  color: #1e293b; /* Darker slate for values */
+}
+
+/* Ensure smooth transition when switching themes */
+.about__img, 
+.about__title, 
+.about__info, 
+.about__info__label, 
+.about__info__value {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .journey {
@@ -2171,6 +2402,47 @@ HeaderBackground {
   top: 0;
 }
 
+/* =========================================
+   SKILLS LIGHT MODE OVERRIDES
+   ========================================= */
+
+/* 1. Skill Boxes Background and Text */
+.skills[data-theme="light"] .skills__box {
+  background-color: rgba(255, 255, 255, 0.6); /* Frosted white */
+  color: #1e293b; /* Dark slate text */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.skills[data-theme="light"] .skills__box:hover {
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1.1rem 2rem rgba(0, 0, 0, 0.1); /* Softer shadow for light mode */
+}
+
+/* 2. Skills Title */
+.skills[data-theme="light"] .skills__title {
+  color: #1e293b;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.skills[data-theme="light"] .skills__title:before {
+  background-color: #1e293b; /* Darker underline */
+}
+
+/* 3. Progress Bar Container (The empty track) */
+.skills[data-theme="light"] .skills__box__line {
+  background-color: rgba(0, 0, 0, 0.1); /* Light gray track */
+}
+
+/* 4. Progress Bar Fill (The actual percentage) */
+.skills[data-theme="light"] .skills__box__line span {
+  background-color: #334155; /* Darker fill for contrast */
+}
+
+/* 5. Percentage Text and Labels */
+.skills[data-theme="light"] .skills__box__head span {
+  color: #0f172a;
+}
+
 .services {
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -2295,8 +2567,6 @@ HeaderBackground {
 
 .services__wrapper__icons__item:hover {
   background: rgba(0, 8, 4, 0.50);
-  /* border-color: rgba(255, 255, 255, 0.3); */
-  /* box-shadow: 0 12px 40px 0 rgba(102, 126, 234, 0.4); */
   transform: scale(1.15);
 }
 
@@ -2358,7 +2628,7 @@ HeaderBackground {
 
 .services__wrapper__icons__item::after {
   z-index: -1;
-  /* 👈 behind icon */
+
   content: "";
   position: absolute;
   inset: 0;
@@ -2438,6 +2708,74 @@ HeaderBackground {
     -webkit-transform: rotate(1turn);
     transform: rotate(1turn);
   }
+}
+
+
+.services[data-theme="light"] {
+  color: #1e293b; 
+}
+
+
+.services[data-theme="light"] .services__wrapper__title {
+  color: #1e293b;
+}
+
+
+.services[data-theme="light"] .services__wrapper__circle.rounding {
+  background: rgba(255, 255, 255, 0.6); 
+  border-color: #1e293b; 
+}
+
+
+.services[data-theme="light"] .services__wrapper__icons__item {
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.6);
+  border-color: #1e293b;
+}
+
+.services[data-theme="light"] .services__wrapper__icons__item:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.services[data-theme="light"] .services__wrapper__icons__item:before {
+
+  background: rgba(255, 255, 255, 0.5); 
+  color: #1e293b;
+}
+
+.services[data-theme="light"] .services__wrapper__icons__item:hover:before {
+ 
+  background: rgba(255, 255, 255, 0.7); 
+  color: #1e293b;
+  border: 1px solid #1e293b;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+}
+
+
+.services[data-theme="light"] .services__wrapper__icons__item::after {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(200, 200, 200, 0.3) 90deg,   
+    rgba(3, 169, 244, 0.3) 270deg,    
+    transparent 360deg
+  );
+}
+
+
+.services[data-theme="light"] .services__wrapper__icons__item i {
+  color: #0f172a; 
+  position: relative;
+  z-index: 10;
+}
+
+.services__wrapper__icons__item i {
+  position: relative; 
+  z-index: 2; 
+}
+
+.services__wrapper__icons__item::after {
+  z-index: 1; 
 }
 
 .portfolio {
@@ -4015,4 +4353,13 @@ progress {
     transform: translate(8px, -8px);
     opacity: 1;
   }
+}
+
+/* Update your existing theme blocks */
+[data-theme='light'] {
+  --icon-stroke: #0f172a; /* Dark slate for light mode */
+}
+
+[data-theme='dark'] {
+  --icon-stroke: #f8fafc; /* Light slate/white for dark mode */
 }

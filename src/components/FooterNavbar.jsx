@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/main.css"; // We'll put the complex CSS/Animations here
+import { useTheme } from "./HeaderBackground";
 
 const navItems = [
   { to: "/", label: "Home", icon: "homeicon-" },
@@ -14,6 +15,8 @@ const navItems = [
 
 const FooterNavbar = ({ onNavigate }) => {
   const listRef = useRef(null);
+  const { theme } = useTheme();
+  
   const [glowPosition, setGlowPosition] = useState({ x: 0, y: 0, opacity: 0 });
 
   // Handle mouse movement to update the grey glow position
@@ -38,17 +41,17 @@ const FooterNavbar = ({ onNavigate }) => {
   };
 
   // Tailwind classes define the main layout and basic styling
-  const listClasses = `
+const listClasses = `
     padding-zero
     list 
     flex justify-evenly items-center 
     w-[80%] md:w-[64%] max-w-9xl 
     min-h-[5rem] rounded-[1.4rem] 
     text-[2.2rem] sm:text-[2.1rem] 
-    isolation-isolate z-[999999999999] 
+    isolation-isolate z-[999999] 
     overflow-hidden transition-all duration-300
     max-lg:w-[93%] max-lg:bottom-6
-    bg-gray-700/20
+    ${theme === 'light' ? 'bg-white' : 'bg-black'}
   `;
 
   return (
@@ -58,52 +61,57 @@ const FooterNavbar = ({ onNavigate }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
+      data-theme={theme}
     >
       <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 media-object group">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            onClick={onNavigate} // <--- Trigger the audio here
-            className="relative list-none" // Relative container for the absolute background
-          >
-            {({ isActive }) => (
-              <>
-                {/* 1. Gradient Background: Only visible if isActive is true */}
-                <div
-                  className={`absolute -inset-2 rounded-full blur-lg bg-gradient-to-r from-blue-500/60 to-purple-500/60 pointer-events-none transition-opacity duration-300 ${
-                    isActive ? "opacity-100" : "opacity-0"
-                  }`}
-                ></div>
+       {navItems.map((item) => (
+  <NavLink
+    key={item.to}
+    to={item.to}
+    onClick={onNavigate}
+    className="relative list-none"
+  >
+    {({ isActive }) => (
+      <>
+        {/* 1. Gradient Background: Adjusted for Light Mode */}
+        <div
+          className={`absolute -inset-2 rounded-full blur-lg pointer-events-none transition-opacity duration-300 ${
+            isActive ? "opacity-100" : "opacity-0"
+          } ${
+            theme === 'light' 
+              ? "bg-gradient-to-r from-blue-400/40 to-purple-400/40" // Softer for light mode
+              : "bg-gradient-to-r from-blue-500/60 to-purple-500/60"
+          }`}
+        ></div>
 
-                {/* 2. The Icon */}
-                <span
-                  className={`demo-icon ${
-                    item.icon
-                  } relative z-10 transition-colors duration-300 ${
-                    isActive
-                      ? "text-white" // Always white if active
-                      : "text-gray-400 group-hover:text-white" // Gray by default, white when nav is hovered
-                  }`}
-                ></span>
-              </>
-            )}
-          </NavLink>
-        ))}
+        {/* 2. The Icon: Now theme-aware */}
+        <span
+          className={`demo-icon ${item.icon} relative z-10 transition-colors duration-300 ${
+            isActive
+              ? (theme === 'light' ? "text-black" : "text-white") // Blue in light, White in dark
+              : (theme === 'light' 
+                  ? "text-gray-500 group-hover:text-black" 
+                  : "text-gray-400 group-hover:text-white")
+          }`}
+        ></span>
+      </>
+    )}
+  </NavLink>
+))}
       </ul>
 
       {/* Grey Cursor Glow Effect */}
-      <div
-        className="cursor-glow"
-        style={{
-          left: `${glowPosition.x}px`,
-          top: `${glowPosition.y}px`,
-          opacity: glowPosition.opacity,
-          // Tailwind-like style for the glow itself:
-          background:
-            "radial-gradient(circle, rgba(169, 169, 169, 0.4) 0%, transparent 70%)",
-        }}
-      ></div>
+     <div
+  className="cursor-glow"
+  style={{
+    left: `${glowPosition.x}px`,
+    top: `${glowPosition.y}px`,
+    opacity: glowPosition.opacity,
+    background: theme === 'light'
+      ? "radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, transparent 70%)" // Subtle dark glow
+      : "radial-gradient(circle, rgba(169, 169, 169, 0.4) 0%, transparent 70%)", // Light glow
+  }}
+></div>
     </div>
   );
 };

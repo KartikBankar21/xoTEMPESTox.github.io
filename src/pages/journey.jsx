@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/main.css";
 import TimelineCard from "../components/TimelineCard";
+import { useTheme } from "../components/HeaderBackground";
 
 const educationData = [
   {
@@ -85,6 +86,8 @@ const Journey = () => {
   const [eduProgress, setEduProgress] = useState(0);
   const [expProgress, setExpProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const { theme } = useTheme(); 
+  
 
   // Use a simple boolean for the "hidden" state
   const [isScrolled, setIsScrolled] = useState(false);
@@ -218,70 +221,90 @@ const Journey = () => {
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-32 ">
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
-          <div className="text-center mb-6 bg-black/50 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit">
-            <p className=" text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-purple-400 uppercase">
-              Journey
-            </p>
+          <div className={`text-center mb-6 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit transition-all duration-300 ${
+  theme === 'dark' ? 'bg-black/50' : 'bg-white/65 border border-slate-200 shadow-lg'
+}`}>
+  <p className={`text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r uppercase ${
+    theme === 'dark' ? 'from-sky-400 to-purple-400' : 'from-sky-600 to-purple-600'
+  }`}>
+    Journey
+  </p>
 
-            <div className="flex justify-center gap-16 md:gap-24 mt-8">
-              <div className="flex flex-col items-center">
-                <span className="text-sky-400 font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase">
-                  Education
-                </span>
-                <div className="h-[2px] w-20 md:w-40 bg-sky-500 font-bold mt-3 rounded-full shadow-[0_0_15px_#3b82f6]"></div>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-purple-400 font-mono text-lg md:text-3xl tracking-[0.2em] uppercase">
-                  Experience
-                </span>
-                <div className="h-[2px] w-20 md:w-40 bg-purple-500 mt-3 rounded-full shadow-[0_0_15px_#a855f7]"></div>
-              </div>
-            </div>
-          </div>
+  <div className="flex justify-center gap-16 md:gap-24 mt-8">
+    {/* Education Section */}
+    <div className="flex flex-col items-center">
+      <span className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${
+        theme === 'dark' ? 'text-sky-400' : 'text-sky-600'
+      }`}>
+        Education
+      </span>
+      <div className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${
+        theme === 'dark' 
+          ? 'bg-sky-500 shadow-[0_0_15px_#3b82f6]' 
+          : 'bg-sky-600 shadow-[0_2px_8px_rgba(2,132,199,0.4)]'
+      }`}></div>
+    </div>
+
+    {/* Experience Section */}
+    <div className="flex flex-col items-center">
+      <span className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${
+        theme === 'dark' ? 'text-purple-400' : 'text-purple-600'
+      }`}>
+        Experience
+      </span>
+      <div className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${
+        theme === 'dark' 
+          ? 'bg-purple-500 shadow-[0_0_15px_#a855f7]' 
+          : 'bg-purple-600 shadow-[0_2px_8px_rgba(147,51,234,0.4)]'
+      }`}></div>
+    </div>
+  </div>
+</div>
         </div>
         <div
-          ref={indicatorRef}
-          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center bg-black/50 backdrop-blur-md rounded-2xl border border-white/5 transition-all duration-1000 ease-in-out ${isScrolled
-            ? "opacity-0 translate-y-20 pointer-events-none invisible"
-            : "opacity-100 translate-y-0"
-            }`}
-        >
-          <div className="inline-flex flex-col items-center group cursor-pointer">
-            <p className="text-white font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 opacity-90 transition-all duration-700 group-hover:tracking-[0.4em] group-hover:opacity-100">
-              The Journey Continues
-            </p>
+  ref={indicatorRef}
+  className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center backdrop-blur-md rounded-2xl transition-all duration-1000 ease-in-out ${
+    theme === 'dark' 
+      ? "bg-black/50 border-white/5 shadow-2xl" 
+      : "bg-white/60 border border-slate-200 shadow-xl"
+  } ${
+    isScrolled
+      ? "opacity-0 translate-y-20 pointer-events-none invisible"
+      : "opacity-100 translate-y-0"
+  }`}
+>
+  <div className="inline-flex flex-col items-center group cursor-pointer">
+    <p className={`font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 transition-all duration-700 group-hover:tracking-[0.4em] ${
+      theme === 'dark' ? "text-white opacity-90 group-hover:opacity-100" : "text-slate-800 opacity-80 group-hover:opacity-100"
+    }`}>
+      The Journey Continues
+    </p>
 
-            <div className="relative flex flex-col items-center">
-              <div className="relative w-8 h-14 rounded-full border-2 border-white/70 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 group-hover:border-white/100">
-                <div className="w-1.5 h-3 bg-white rounded-full animate-scroll-dot"></div>
-              </div>
+    <div className="relative flex flex-col items-center">
+      {/* Mouse Icon */}
+      <div className={`relative w-8 h-14 rounded-full border-2 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 ${
+        theme === 'dark' 
+          ? "border-white/70 group-hover:border-white" 
+          : "border-slate-400 group-hover:border-slate-900"
+      }`}>
+        <div className={`w-1.5 h-3 rounded-full animate-scroll-dot ${
+          theme === 'dark' ? "bg-white" : "bg-slate-700"
+        }`}></div>
+      </div>
 
-              <div className="relative w-px h-24 bg-gradient-to-b from-white/70 via-white/35 to-transparent mt-2 overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-white/70 to-transparent animate-path-flow"></div>
-                {/* <div className="relative -mt-6 flex flex-col items-center">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="w-12 h-12 fill-none stroke-current text-white/60 group-hover:text-blue-400"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M12 22L17 17M12 22L7 17" className="animate-pulse" />
-                    <path
-                      d="M12 16L15 13M12 16L9 13"
-                      className="opacity-40 animate-bounce"
-                    />
-                    <line
-                      x1="12"
-                      y1="22"
-                      x2="12"
-                      y2="10"
-                      className="opacity-20"
-                    />
-                  </svg>
-                </div> */}
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Vertical Path Line */}
+      <div className={`relative w-px h-24 mt-2 overflow-hidden transition-colors ${
+        theme === 'dark' 
+          ? "bg-gradient-to-b from-white/70 via-white/35 to-transparent" 
+          : "bg-gradient-to-b from-slate-400 via-slate-200 to-transparent"
+      }`}>
+        <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-transparent animate-path-flow ${
+          theme === 'dark' ? "via-white/70" : "via-slate-500"
+        }`}></div>
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Timeline Wrapper - Increased Height significantly to prevent overlap */}
         <div className="relative h-auto">
@@ -412,33 +435,56 @@ const Journey = () => {
 
         {/* Bottom Footer */}
         <div
-          ref={footerRef}
-          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${footerVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-20"
-            }`}
-        >
-          <div className="relative p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent inline-block">
-            <div className="bg-black/50 backdrop-blur-sm  p-12 rounded-[calc(1.5rem-1px)] border border-white/5 max-w-2xl">
-              <p className="text-3xl font-bold mb-4 text-white">
-                Ready for the Next Chapter?
-              </p>
-              <p className="text-gray-400 mb-10 leading-relaxed text-xl">
-                I'm currently available for full-stack AI roles and innovative
-                engineering projects.
-              </p>
-              <button
-                onClick={() => (window.location.href = "mailto:priyanshu123sah@gmail.com")}
-                className="group relative px-10 py-5 bg-white text-black font-black uppercase  rounded-full overflow-hidden transition-all shadow-xl hover:shadow-white/10"
-              >
-                <span className="relative z-10 text-xl group-hover:text-white transition-colors rounded-full">
-                  Contact for My Next Gig
-                </span>
-                <div className="absolute inset-0 bg-grey-hover translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
-              </button>
-            </div>
-          </div>
-        </div>
+  ref={footerRef}
+  className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
+    footerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"
+  }`}
+>
+  <div className={`relative p-[1px] rounded-3xl inline-block transition-all duration-500 ${
+    theme === 'dark' 
+      ? "bg-gradient-to-b from-white/10 to-transparent" 
+      : "bg-gradient-to-b from-slate-200 to-transparent shadow-2xl"
+  }`}>
+    <div className={`backdrop-blur-sm p-12 rounded-[calc(1.5rem-1px)] border max-w-2xl transition-all duration-500 ${
+      theme === 'dark' 
+        ? "bg-black/50 border-white/5" 
+        : "bg-white/50 border-slate-200"
+    }`}>
+      <p className={`text-3xl font-bold mb-4 transition-colors ${
+        theme === 'dark' ? "text-white" : "text-slate-900"
+      }`}>
+        Ready for the Next Chapter?
+      </p>
+      
+      <p className={`mb-10 leading-relaxed text-xl transition-colors ${
+        theme === 'dark' ? "text-gray-400" : "text-slate-600"
+      }`}>
+        I'm currently available for full-stack AI roles and innovative
+        engineering projects.
+      </p>
+
+      <button
+        onClick={() => (window.location.href = "mailto:priyanshu123sah@gmail.com")}
+        className={`group relative px-10 py-5 font-black uppercase rounded-full overflow-hidden transition-all shadow-xl ${
+          theme === 'dark'
+            ? "bg-white text-black hover:shadow-white/10"
+            : "bg-slate-900 text-white hover:shadow-slate-300"
+        }`}
+      >
+        <span className={`relative z-10 text-xl transition-colors ${
+          theme === 'dark' ? "group-hover:text-white" : "group-hover:text-slate-900"
+        }`}>
+          Contact for My Next Gig
+        </span>
+        
+        {/* Hover Background Slide Effect */}
+        <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ${
+          theme === 'dark' ? "bg-zinc-800" : "bg-slate-100"
+        }`}></div>
+      </button>
+    </div>
+  </div>
+</div>
       </div>
       <style
         dangerouslySetInnerHTML={{

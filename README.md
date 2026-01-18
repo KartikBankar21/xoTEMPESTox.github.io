@@ -121,7 +121,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Bugs
 * [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e") (**I have did the changes but regarding Iphone have no idea if it's fixed.**) 
-* [ ]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter (Left for: Blogs page)
+* [x]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter (Left for: Blogs page)
 * [x]  Hide Music player in Socials Tab
 * [x]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80) (**++UPDATE:gradient caused unkown changes in the rendering of the svg so removed and used scale and white gray highlight colors over the icons of mini-player, the main lofi-player theme changed to white, gray, black and purple, reason for purple is it syncs properly with the theme color of 2 light tails on the mini-music player.**)
 * [x]  Enlarge and Strengthen Gradeient effect of hover Both in Product card and Journey Card [img](https://github.com/user-attachments/assets/62bcfdec-99b7-4362-b60e-36c7413fb6a5) , [img](https://github.com/user-attachments/assets/d0e6821c-5026-45e7-9e6d-5ea895f01426)
@@ -132,8 +132,8 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Feature
 * [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
-* [ ] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
-* [ ] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
+* [x] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
+* [x] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
 * [ ] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
 
 

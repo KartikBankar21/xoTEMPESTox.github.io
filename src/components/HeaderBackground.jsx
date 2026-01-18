@@ -1,6 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
-import "../styles/main.css";
-// Constants
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  createContext,
+  useContext,
+} from "react";
+import { Sun, Moon, Image as ImageIcon, X } from "lucide-react";
+
+// -----------------------------------------------------------------------------
+// 1. CONTEXT & HOOKS (Unchanged)
+// -----------------------------------------------------------------------------
+
+const ThemeContext = createContext({
+  theme: "light",
+  setTheme: () => {},
+  allWallpapers: [],
+  currentAsset: null,
+  handleThemeChange: () => {},
+  handleWallpaperSelect: () => {},
+});
+
+export const useTheme = () => useContext(ThemeContext);
+
+// -----------------------------------------------------------------------------
+// 2. CONSTANTS & UTILS (Unchanged)
+// -----------------------------------------------------------------------------
+
 const getBaseUrl = () => {
   try {
     const url = import.meta?.env?.BASE_URL ?? "/";
@@ -11,13 +36,12 @@ const getBaseUrl = () => {
 };
 
 const baseUrl = getBaseUrl();
-
 const backgroundImageBasePath = "assets/images/backgrounds";
 const backgroundVideoBasePath = "assets/videos/backgrounds";
 const videoExtensions = ["mp4", "webm", "ogv", "ogg"];
 const storageKey = "portfolio:lastBackground";
+const themeStorageKey = "portfolio:theme";
 
-// Utility functions
 const withBase = (path) => {
   if (!path) return baseUrl;
   return `${baseUrl}${path.replace(/^\/+/, "")}`;
@@ -32,18 +56,309 @@ const sanitizeBasePath = (value) => {
   return sanitized ? sanitized.replace(/\/+$/, "") : "";
 };
 
-const HeaderComponent = () => {
-  const mainRef = useRef(null);
-  const containerRef = useRef(null);
-  const videoRef = useRef(null);
-  const cleanupRef = useRef(null);
-  const parallaxCleanupRef = useRef(null);
-  const parallaxPositionCache = useRef(new Map());
+const getThemeFromFilename = (filename) => {
+  const lower = filename.toLowerCase();
+  if (lower.includes("-night") || lower.includes("-dark")) return "dark";
+  if (lower.includes("-day") || lower.includes("-light")) return "light";
+  return "neutral";
+};
 
+const createAssetConfig = (entry) => {
+  if (!entry) return null;
+  if (typeof entry === "string") {
+    const sanitizedSrc = sanitizePathValue(entry);
+    if (!sanitizedSrc) return null;
+    const extension = sanitizedSrc.includes(".")
+      ? sanitizedSrc.split(".").pop()
+      : "";
+    const type =
+      extension && videoExtensions.includes(extension.toLowerCase())
+        ? "video"
+        : "image";
+    const basePath =
+      type === "video" ? backgroundVideoBasePath : backgroundImageBasePath;
+    return {
+      src: sanitizedSrc,
+      type,
+      srcBasePath: basePath,
+      poster: null,
+      posterBasePath: backgroundImageBasePath,
+    };
+  }
+  if (typeof entry === "object") {
+    const videoSrc = sanitizePathValue(entry.video);
+    const imageSrc = sanitizePathValue(entry.image);
+    const posterSrc = sanitizePathValue(entry.poster);
+    const rawSrc = sanitizePathValue(entry.src);
+    const declaredType = sanitizePathValue(entry.type).toLowerCase();
+
+    if (videoSrc || declaredType === "video") {
+      const resolvedVideoSrc = videoSrc || rawSrc;
+      if (!resolvedVideoSrc) return null;
+      const basePath =
+        sanitizeBasePath(entry.videoBasePath) ||
+        sanitizeBasePath(entry.basePath) ||
+        backgroundVideoBasePath;
+      const posterCandidate = posterSrc || imageSrc;
+      const posterBase =
+        sanitizeBasePath(entry.imageBasePath) ||
+        sanitizeBasePath(entry.posterBasePath) ||
+        backgroundImageBasePath;
+      return {
+        src: resolvedVideoSrc,
+        type: "video",
+        srcBasePath: basePath,
+        poster: posterCandidate || null,
+        posterBasePath: posterBase || backgroundImageBasePath,
+      };
+    }
+    const resolvedImageSrc = rawSrc || imageSrc || posterSrc;
+    if (!resolvedImageSrc) return null;
+    const imageBase =
+      sanitizeBasePath(entry.imageBasePath) ||
+      sanitizeBasePath(entry.basePath) ||
+      backgroundImageBasePath;
+    return {
+      src: resolvedImageSrc,
+      type: "image",
+      srcBasePath: imageBase || backgroundImageBasePath,
+      poster: null,
+      posterBasePath: backgroundImageBasePath,
+    };
+  }
+  return null;
+};
+
+const normalizeBackgroundAssets = (assets) => {
+  if (!Array.isArray(assets)) return [];
+  return assets
+    .map((asset) => createAssetConfig(asset))
+    .filter((asset) => asset !== null);
+};
+
+const resolveAssetUrl = (src, type, basePath) => {
+  if (!src) return "";
+  if (/^(?:https?:)?\/\//i.test(src)) return src;
+  const normalizedSrc = src.replace(/^\/+/, "");
+  if (normalizedSrc.startsWith("assets/")) return withBase(normalizedSrc);
+  const normalizedBase = (
+    basePath && basePath.length
+      ? basePath
+      : type === "video"
+        ? backgroundVideoBasePath
+        : backgroundImageBasePath
+  ).replace(/\/+$/, "");
+  return withBase(`${normalizedBase}/${normalizedSrc}`);
+};
+
+const serializeBackgroundConfig = (asset) => {
+  if (!asset) return "";
+  let payload;
+  if (asset.type === "video") {
+    payload = {
+      video: asset.src,
+      image: asset.poster || null,
+      videoBasePath: asset.srcBasePath,
+      imageBasePath: asset.posterBasePath,
+    };
+  } else {
+    payload = { image: asset.src, imageBasePath: asset.srcBasePath };
+  }
+  return JSON.stringify(payload);
+};
+
+// -----------------------------------------------------------------------------
+// 3. THEME CONTROLS COMPONENT (Unchanged)
+// -----------------------------------------------------------------------------
+
+export const ThemeControls = ({
+  theme,
+  onThemeChange,
+  wallpapers,
+  currentWallpaper,
+  onWallpaperSelect,
+}) => {
+  const [showWallpaperSelector, setShowWallpaperSelector] = useState(false);
+
+  return (
+    <>
+      {/* Control Buttons Container */}
+      <div className="fixed top-5 left-5 z-[999] flex gap-2.5">
+        <button
+          onClick={onThemeChange}
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
+            theme === "dark"
+              ? "bg-black/50 text-white hover:bg-black/70"
+              : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
+          }`}
+          title={
+            theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"
+          }
+        >
+          {theme === "light" ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+
+        <button
+          onClick={() => setShowWallpaperSelector(!showWallpaperSelector)}
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
+            theme === "dark"
+              ? "bg-black/50 text-white hover:bg-black/70"
+              : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
+          }`}
+          title="Change Wallpaper"
+        >
+          <ImageIcon size={20} />
+        </button>
+      </div>
+
+      {/* Wallpaper Selector Panel */}
+      {showWallpaperSelector && (
+        <div
+          className={`fixed top-24 left-5 mr-5 z-[10000] backdrop-blur-md rounded-2xl p-5 max-w-[400px] max-h-[70vh] shadow-2xl overflow-y-auto transition-all duration-300 border
+    ${
+      theme === "dark"
+        ? "bg-black/60 border-white/10 text-white"
+        : "bg-white/90 border-black/10 text-black"
+    }
+    scrollbar-thin 
+    [&::-webkit-scrollbar]:w-2
+    [&::-webkit-scrollbar-thumb]:rounded-full
+    ${
+      theme === "dark"
+        ? "[&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300"
+        : "[&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-800"
+    }`}
+        >
+          <div className="flex justify-between items-center mb-[15px]">
+            <h3
+              className={`m-0 text-lg font-medium ${theme === "dark" ? "text-white" : "text-black"}`}
+            >
+              Select Wallpaper
+            </h3>
+            <button
+              onClick={() => setShowWallpaperSelector(false)}
+              className={`bg-transparent border-none cursor-pointer p-1 flex items-center transition-colors ${
+                theme === "dark"
+                  ? "text-white hover:text-gray-300"
+                  : "text-black hover:text-gray-600"
+              }`}
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            {wallpapers && wallpapers.length > 0 ? (
+              wallpapers.map((wallpaper, index) => {
+                const wallpaperTheme = getThemeFromFilename(wallpaper.src);
+                const isActive = currentWallpaper?.src === wallpaper.src;
+                const posterUrl = wallpaper.poster
+                  ? withBase(`${wallpaper.posterBasePath}/${wallpaper.poster}`)
+                  : withBase(`${wallpaper.srcBasePath}/${wallpaper.src}`);
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      onWallpaperSelect(wallpaper);
+                      setShowWallpaperSelector(false);
+                    }}
+                    className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-105
+              ${
+                isActive
+                  ? theme === "dark"
+                    ? "border-[3px] border-white"
+                    : "border-[3px] border-purple-600 shadow-lg"
+                  : theme === "dark"
+                    ? "border-2 border-white/20 hover:border-white/50"
+                    : "border-2 border-black/10 hover:border-black/30"
+              }`}
+                  >
+                    <img
+                      src={posterUrl}
+                      alt={`Wallpaper ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1.5 py-0.5 rounded text-[10px] uppercase font-bold">
+                      {wallpaperTheme === "dark"
+                        ? "🌙"
+                        : wallpaperTheme === "light"
+                          ? "☀️"
+                          : "⚪"}
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <p
+                className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"} col-span-2 text-center`}
+              >
+                Loading wallpapers...
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+// -----------------------------------------------------------------------------
+// 4. THEME PROVIDER (Unchanged Logic)
+// -----------------------------------------------------------------------------
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(() => {
+    try {
+      // 1. Check if user has a MANUALLY saved preference
+      const stored = localStorage.getItem(themeStorageKey);
+      if (stored) return stored;
+    } catch (e) {}
+    
+    // 2. Otherwise, use system default
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return "light";
+  });
+
+ // Sync HTML Class
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.classList.add("light");
+      root.classList.remove("dark");
+    }
+    // We REMOVED the localStorage.setItem from here because 
+    // we only want to save it when the user MANUALLY clicks.
+  }, [theme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const handleChange = (e) => {
+      // Only sync if the user hasn't locked in a preference manually
+      const userHasManualPreference = localStorage.getItem(themeStorageKey);
+      if (!userHasManualPreference) {
+        setTheme(e.matches ? "dark" : "light");
+      }
+    };
+
+    // Modern browsers use addEventListener, older use addListener
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // ... (Keep your existing handleThemeChange, handleWallpaperSelect, and asset loading logic)
+
+  const [allWallpapers, setAllWallpapers] = useState([]);
   const [currentAsset, setCurrentAsset] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Helper: Get stored background from localStorage
   const getStoredBackground = () => {
     try {
       return localStorage.getItem(storageKey);
@@ -51,8 +366,6 @@ const HeaderComponent = () => {
       return null;
     }
   };
-
-  // Helper: Set stored background in localStorage
   const setStoredBackground = (value) => {
     try {
       localStorage.setItem(storageKey, value);
@@ -60,728 +373,287 @@ const HeaderComponent = () => {
       console.error("Failed to store background:", error);
     }
   };
-
-  // Helper: Parse stored background
   const parseStoredBackground = (rawValue) => {
     if (!rawValue) return null;
-
     try {
-      const parsed = JSON.parse(rawValue);
-      return createAssetConfig(parsed);
+      return createAssetConfig(JSON.parse(rawValue));
     } catch (error) {
       return createAssetConfig(rawValue);
     }
   };
 
-  // Helper: Create asset config from various input formats
-  const createAssetConfig = (entry) => {
-    if (!entry) return null;
+const handleThemeChange = () => {
+  // 1. Calculate the new theme
+  const newTheme = theme === "light" ? "dark" : "light";
+  
+  // 2. Update the React state
+  setTheme(newTheme);
+  
+  // 3. Persist the choice to localStorage
+  try {
+    localStorage.setItem(themeStorageKey, newTheme);
+  } catch (e) {
+    console.error("Failed to save theme to storage", e);
+  }
 
-    if (typeof entry === "string") {
-      const sanitizedSrc = sanitizePathValue(entry);
-      if (!sanitizedSrc) return null;
+  // Logic for filtering and setting random wallpapers removed
+  // This ensures the current wallpaper stays exactly as it is.
+};
 
-      const extension = sanitizedSrc.includes(".")
-        ? sanitizedSrc.split(".").pop()
-        : "";
-      const type =
-        extension && videoExtensions.includes(extension.toLowerCase())
-          ? "video"
-          : "image";
-      const basePath =
-        type === "video" ? backgroundVideoBasePath : backgroundImageBasePath;
+  const handleWallpaperSelect = (wallpaper) => {
+    setCurrentAsset(wallpaper);
+    setStoredBackground(serializeBackgroundConfig(wallpaper));
 
-      return {
-        src: sanitizedSrc,
-        type,
-        srcBasePath: basePath,
-        poster: null,
-        posterBasePath: backgroundImageBasePath,
-      };
+    const wallpaperTheme = getThemeFromFilename(wallpaper.src);
+    if (wallpaperTheme !== "neutral") {
+      setTheme(wallpaperTheme);
+      try {
+        localStorage.setItem(themeStorageKey, wallpaperTheme);
+      } catch (e) {}
     }
-
-    if (typeof entry === "object") {
-      const videoSrc = sanitizePathValue(entry.video);
-      const imageSrc = sanitizePathValue(entry.image);
-      const posterSrc = sanitizePathValue(entry.poster);
-      const rawSrc = sanitizePathValue(entry.src);
-      const declaredType = sanitizePathValue(entry.type).toLowerCase();
-
-      if (videoSrc || declaredType === "video") {
-        const resolvedVideoSrc = videoSrc || rawSrc;
-        if (!resolvedVideoSrc) return null;
-
-        const basePath =
-          sanitizeBasePath(entry.videoBasePath) ||
-          sanitizeBasePath(entry.basePath) ||
-          backgroundVideoBasePath;
-        const posterCandidate = posterSrc || imageSrc;
-        const posterBase =
-          sanitizeBasePath(entry.imageBasePath) ||
-          sanitizeBasePath(entry.posterBasePath) ||
-          backgroundImageBasePath;
-
-        return {
-          src: resolvedVideoSrc,
-          type: "video",
-          srcBasePath: basePath,
-          poster: posterCandidate || null,
-          posterBasePath: posterBase || backgroundImageBasePath,
-        };
-      }
-
-      const resolvedImageSrc = rawSrc || imageSrc || posterSrc;
-      if (!resolvedImageSrc) return null;
-
-      const imageBase =
-        sanitizeBasePath(entry.imageBasePath) ||
-        sanitizeBasePath(entry.basePath) ||
-        backgroundImageBasePath;
-
-      return {
-        src: resolvedImageSrc,
-        type: "image",
-        srcBasePath: imageBase || backgroundImageBasePath,
-        poster: null,
-        posterBasePath: backgroundImageBasePath,
-      };
-    }
-
-    return null;
   };
 
-  // Helper: Resolve asset URL
-  const resolveAssetUrl = (src, type, basePath) => {
-    if (!src) return "";
-    if (/^(?:https?:)?\/\//i.test(src)) return src;
+  useEffect(() => {
+    const manifestUrl = withBase("assets/images/backgrounds/backgrounds.json");
+    const storedBackgroundRaw = getStoredBackground();
+    const storedBackground = parseStoredBackground(storedBackgroundRaw);
+    let isMounted = true;
 
-    const normalizedSrc = src.replace(/^\/+/, "");
-    if (normalizedSrc.startsWith("assets/")) {
-      return withBase(normalizedSrc);
-    }
+    fetch(manifestUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("Manifest error");
+        return res.json();
+      })
+      .then((assets) => {
+        if (!isMounted) return;
+        const normalizedAssets = normalizeBackgroundAssets(assets);
+        setAllWallpapers(normalizedAssets);
 
-    const normalizedBase = (
-      basePath && basePath.length
-        ? basePath
-        : type === "video"
-        ? backgroundVideoBasePath
-        : backgroundImageBasePath
-    ).replace(/\/+$/, "");
+        if (!normalizedAssets.length) return;
 
-    return withBase(`${normalizedBase}/${normalizedSrc}`);
-  };
-
-  // Helper: Serialize background config
-  const serializeBackgroundConfig = (asset) => {
-    if (!asset) return "";
-
-    let payload;
-    if (asset.type === "video") {
-      payload = {
-        video: asset.src,
-        image: asset.poster || null,
-        videoBasePath: asset.srcBasePath,
-        imageBasePath: asset.posterBasePath,
-      };
-    } else {
-      payload = {
-        image: asset.src,
-        imageBasePath: asset.srcBasePath,
-      };
-    }
-
-    return JSON.stringify(payload);
-  };
-
-  // Helper: Normalize background assets
-  const normalizeBackgroundAssets = (assets) => {
-    if (!Array.isArray(assets)) return [];
-    return assets
-      .map((asset) => createAssetConfig(asset))
-      .filter((asset) => asset !== null);
-  };
-
-  // Helper: Check if parallax should be enabled
-  const shouldEnableParallax = () => {
-    if (
-      typeof window === "undefined" ||
-      typeof window.matchMedia !== "function"
-    ) {
-      return false;
-    }
-
-    const hasTouchInput =
-      (typeof navigator !== "undefined" &&
-        ((navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
-          (navigator.msMaxTouchPoints && navigator.msMaxTouchPoints > 0))) ||
-      "ontouchstart" in window;
-
-    if (hasTouchInput) return false;
-
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return false;
-
-    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-    return hasFinePointer;
-  };
-
-  // Setup parallax effect
-  const enableBackgroundParallax = (asset) => {
-    if (parallaxCleanupRef.current) {
-      parallaxCleanupRef.current();
-      parallaxCleanupRef.current = null;
-    }
-
-    if (!asset || !shouldEnableParallax() || !mainRef.current) {
-      resetParallax(asset);
-      return;
-    }
-
-    const main = mainRef.current;
-    const backgroundContainer =
-      asset.type === "video" ? containerRef.current : null;
-
-    const cacheKey = `${asset.type}|${asset.srcBasePath || ""}|${asset.src}`;
-    const cachedPosition = parallaxPositionCache.current.get(cacheKey);
-
-    const initialPosition = cachedPosition
-      ? {
-          x: Math.min(
-            1,
-            Math.max(
-              0,
-              typeof cachedPosition.x === "number" ? cachedPosition.x : 0.5
-            )
-          ),
-          y: Math.min(
-            1,
-            Math.max(
-              0,
-              typeof cachedPosition.y === "number" ? cachedPosition.y : 0.5
-            )
-          ),
+        let selectedAsset = null;
+        if (storedBackground) {
+          selectedAsset =
+            normalizedAssets.find((a) => a.src === storedBackground.src) ||
+            null;
         }
-      : { x: 0.5, y: 0.5 };
+        if (!selectedAsset) {
+          const themeWallpapers = normalizedAssets.filter((w) => {
+            const wTheme = getThemeFromFilename(w.src);
+            return wTheme === theme || wTheme === "neutral";
+          });
+          selectedAsset =
+            themeWallpapers.length > 0
+              ? themeWallpapers[
+                  Math.floor(Math.random() * themeWallpapers.length)
+                ]
+              : normalizedAssets[0];
+        }
 
-    const state = {
-      target: { x: initialPosition.x, y: initialPosition.y },
-      current: { x: initialPosition.x, y: initialPosition.y },
+        if (selectedAsset) {
+          setCurrentAsset(selectedAsset);
+          setStoredBackground(serializeBackgroundConfig(selectedAsset));
+        }
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      isMounted = false;
     };
+  }, []);
 
-    const smoothingFactor = 0.1;
-    const settleThreshold = 0.00000000001;
-    let animationFrameId = null;
-    let isPointerActive = true; // NEW: Flag to control movement
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        allWallpapers,
+        currentAsset,
+        handleThemeChange,
+        handleWallpaperSelect,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+};
 
-    const applyParallaxOffset = (position) => {
-      const clampedX = Math.min(1, Math.max(0, position.x));
-      const clampedY = Math.min(1, Math.max(0, position.y));
+// -----------------------------------------------------------------------------
+// 5. HEADER BACKGROUND (Updated with Parallax & Fallback Logic)
+// -----------------------------------------------------------------------------
 
-      if (asset.type === "video" && backgroundContainer) {
-        const offsetIntensity = 50;
-        const offsetX = (clampedX - 0.5) * offsetIntensity;
-        const offsetY = (clampedY - 0.5) * offsetIntensity;
+export const HeaderBackground = () => {
+  const { currentAsset, theme } = useTheme();
+  const mainRef = useRef(null);
+  const containerRef = useRef(null); // Container for transform
+  const videoRef = useRef(null);
+  const cleanupRef = useRef(null);
 
-        backgroundContainer.style.setProperty(
-          "--parallax-offset-x",
-          `${offsetX}px`
-        );
-        backgroundContainer.style.setProperty(
-          "--parallax-offset-y",
-          `${offsetY}px`
-        );
-        backgroundContainer.style.setProperty("--parallax-scale", "1.08");
-      } else {
-        const offsetIntensityPercent = 50;
-        const offsetXPercent = (clampedX - 0.5) * offsetIntensityPercent;
-        const offsetYPercent = (clampedY - 0.5) * offsetIntensityPercent;
-        main.style.backgroundPosition = `${50 + offsetXPercent}% ${
-          50 + offsetYPercent
-        }%`;
-      }
-      // ONLY CACHE IF POINTER IS ACTIVE (i.e., not a reset or paused state)
-      if (isPointerActive) {
-        parallaxPositionCache.current.set(cacheKey, {
-          x: clampedX,
-          y: clampedY,
-        });
-      }
-    };
+  // Parallax Refs
+  const requestRef = useRef();
+  const targetPos = useRef({ x: 0, y: 0 }); // Target mouse position
+  const currentPos = useRef({ x: 0, y: 0 }); // Current interpolated position
 
-    const stepAnimation = () => {
-      const deltaX = state.target.x - state.current.x;
-      const deltaY = state.target.y - state.current.y;
-      const remainsActive =
-        Math.abs(deltaX) > settleThreshold ||
-        Math.abs(deltaY) > settleThreshold;
+  // 1. Parallax Animation Loop
+  const animateParallax = () => {
+    // Linear Interpolation (Lerp) for smoothness: 0.05 is the speed/friction
+    currentPos.current.x += (targetPos.current.x - currentPos.current.x) * 0.12;
+    currentPos.current.y += (targetPos.current.y - currentPos.current.y) * 0.12;
 
-      if (remainsActive) {
-        state.current.x += deltaX * smoothingFactor;
-        state.current.y += deltaY * smoothingFactor;
-        animationFrameId = window.requestAnimationFrame(stepAnimation);
-      } else {
-        state.current.x = state.target.x;
-        state.current.y = state.target.y;
-        animationFrameId = null;
-      }
-
-      applyParallaxOffset(state.current);
-    };
-
-    const ensureAnimationRunning = () => {
-      if (animationFrameId === null) {
-        animationFrameId = window.requestAnimationFrame(stepAnimation);
-      }
-    };
-
-    const handlePointerMove = (event) => {
-      if (!isPointerActive) return;
-      const bounds = main.getBoundingClientRect();
-      if (!bounds.width || !bounds.height) return;
-
-      const relativeX = (event.clientX - bounds.left) / bounds.width;
-      const relativeY = (event.clientY - bounds.top) / bounds.height;
-
-      state.target.x = relativeX;
-      state.target.y = relativeY;
-      ensureAnimationRunning();
-    };
-
-    const handlePointerLeave = () => {
-      state.target.x = 0.5;
-      state.target.y = 0.5;
-      ensureAnimationRunning();
-    };
-    const handlePointerEnterWindow = () => {
-      console.log("Pointer entered window/document - Resuming parallax.");
-      isPointerActive = true;
-      // Start the animation step again from the last state.current position
-      ensureAnimationRunning();
-    };
-
-    const handlePointerLeaveWindow = () => {
-      console.log("Pointer left window/document - Pausing parallax movement.");
-      // Stop accepting new target updates from mouse move
-      isPointerActive = false;
-
-      // IMPORTANT: state.target.x/y is NOT reset here.
-      // It stays at the last calculated mouse position.
-      // The stepAnimation will continue to smooth out until state.current = state.target
-    };
-
-    // Replace the old event listeners with the new logic
-    document.addEventListener("mousemove", handlePointerMove);
-    document.addEventListener("mouseenter", handlePointerEnterWindow); // or on document.body
-    document.addEventListener("mouseleave", handlePointerLeaveWindow); // This fires when tabbing out
-
-    applyParallaxOffset(state.current);
-    ensureAnimationRunning();
-
-    parallaxCleanupRef.current = () => {
-      document.removeEventListener("mousemove", handlePointerMove);
-      document.removeEventListener("mouseenter", handlePointerEnterWindow);
-      document.removeEventListener("mouseleave", handlePointerLeaveWindow);
-
-      if (animationFrameId !== null) {
-        window.cancelAnimationFrame(animationFrameId);
-      }
-      resetParallax(asset);
-    };
-  };
-
-  // Reset parallax
-  const resetParallax = (asset) => {
-    if (!asset || !mainRef.current) return;
-
-    if (asset.type === "video") {
-      const target = containerRef.current;
-      if (target) {
-        target.style.removeProperty("--parallax-offset-x");
-        target.style.removeProperty("--parallax-offset-y");
-        target.style.removeProperty("--parallax-scale");
-      }
-    } else {
-      mainRef.current.style.backgroundPosition = "";
+    // Apply Transform
+    if (containerRef.current) {
+      // Limit movement range (e.g., +/- 20px)
+      const xOffset = currentPos.current.x * 70;
+      const yOffset = currentPos.current.y * 70;
+      // Scale slightly to prevent edges showing during movement
+      containerRef.current.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0) scale(1.1)`;
     }
+
+    requestRef.current = requestAnimationFrame(animateParallax);
   };
 
-  // Apply background (video or image)
-  const applyBackground = (asset) => {
-    if (!asset || !mainRef.current) return;
+  useEffect(() => {
+    // Start Animation Loop
+    requestRef.current = requestAnimationFrame(animateParallax);
 
+    const handleMouseMove = (e) => {
+      const { innerWidth, innerHeight } = window;
+      // Normalize to range -1 to 1
+      const x = (e.clientX / innerWidth) * 2 - 1;
+      const y = (e.clientY / innerHeight) * 2 - 1;
+
+      targetPos.current = { x, y };
+    };
+
+    // NOTE: Requirement 2 - We do NOT add a mouseLeave listener that resets targetPos.
+    // By omitting it, the background stays in its last calculated position until mouse enters again.
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(requestRef.current);
+    };
+  }, []);
+
+  // 2. Asset Loading Logic
+  useEffect(() => {
+    if (!currentAsset || !mainRef.current) return;
     const main = mainRef.current;
-    const assetUrl = resolveAssetUrl(asset.src, asset.type, asset.srcBasePath);
 
-    console.log("Applying background:", { asset, assetUrl });
+    // Clear previous video setup
+    if (cleanupRef.current) {
+      cleanupRef.current();
+      cleanupRef.current = null;
+    }
+    if (containerRef.current) containerRef.current.innerHTML = "";
 
-    if (asset.type === "video") {
-      // Clean up previous video if exists
-      if (cleanupRef.current) {
-        cleanupRef.current();
-        cleanupRef.current = null;
-      }
+    const assetUrl = resolveAssetUrl(
+      currentAsset.src,
+      currentAsset.type,
+      currentAsset.srcBasePath,
+    );
 
-      // Clear container
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
+    // Apply Background Image (Backup for video, or primary for image type)
+    let posterUrl = "";
+    if (currentAsset.type === "video" && currentAsset.poster) {
+      posterUrl = resolveAssetUrl(
+        currentAsset.poster,
+        "image",
+        currentAsset.posterBasePath,
+      );
+    } else if (currentAsset.type === "image") {
+      posterUrl = assetUrl;
+    }
 
+    // Always set the static background on the container initially
+    // Requirement 3: This ensures if video fails, image is there.
+    if (posterUrl) {
+      main.style.backgroundImage = `url("${posterUrl}")`;
+    }
+
+    if (currentAsset.type === "video") {
       const video = document.createElement("video");
       video.className = "main__background-media";
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
-      video.autoplay = true; // Add autoplay back
-      video.defaultMuted = true;
-      video.preload = "auto";
-      video.disableRemotePlayback = true;
-      video.setAttribute("muted", "");
-      video.setAttribute("playsinline", "");
-      video.setAttribute("webkit-playsinline", "");
-      video.setAttribute("autoplay", ""); // Add autoplay attribute
-      video.style.backgroundColor = "transparent";
-      video.style.opacity = "0";
-      video.style.transition = "opacity 0.6s ease-in-out";
+      video.autoplay = true;
+      video.style.objectFit = "cover";
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.opacity = "0"; // Start hidden
+      video.style.transition = "opacity 0.8s ease-in-out";
 
-      // Add event listeners for debugging
-      video.addEventListener("loadstart", () => {
-        console.log("🔵 Video load started:", assetUrl);
-      });
+      // Video Fallback Logic
+      video.onerror = () => {
+        console.warn("Background video failed to load, falling back to image.");
+        video.style.display = "none"; // Hide broken video element completely
+        // The main.style.backgroundImage set above remains visible
+      };
 
-      video.addEventListener("progress", () => {
-        console.log("🔵 Video downloading...", assetUrl);
-      });
-
-      video.addEventListener("loadedmetadata", () => {
-        // console.log("✅ Video metadata loaded:", assetUrl, {
-        //   duration: video.duration,
-        //   videoWidth: video.videoWidth,
-        //   videoHeight: video.videoHeight,
-        // });
-      });
-
-      video.addEventListener("loadeddata", () => {
-        // console.log(
-        //   "✅ Video data loaded:",
-        //   assetUrl,
-        //   "readyState:",
-        //   video.readyState
-        // );
-        // Try to play as soon as data is loaded
-        video
-          .play()
-          .then(() => {
-            // console.log("✅ Video started playing (loadeddata)");
-            video.style.opacity = "1";
-            video.classList.add("is-active");
-            setTimeout(() => {
-              main.style.backgroundImage = "";
-            }, 600);
-          })
-          .catch((err) => console.warn("⚠️ Play failed at loadeddata:", err));
-      });
-
-      video.addEventListener("error", (e) => {
-        console.error("❌ Video error:", assetUrl);
-        console.error("❌ Error details:", {
-          error: video.error,
-          code: video.error?.code,
-          message: video.error?.message,
-          networkState: video.networkState,
-          readyState: video.readyState,
-        });
-        // Fallback to image if video fails
-        if (asset.poster) {
-          const posterUrl = resolveAssetUrl(
-            asset.poster,
-            "image",
-            asset.posterBasePath
-          );
-          main.style.backgroundImage = `url("${posterUrl}")`;
-        }
-      });
-
-      video.addEventListener("canplay", () => {
-        // console.log("✅ Video can play:", assetUrl);
-        video
-          .play()
-          .then(() => {
-            // console.log("✅ Video started playing (canplay)");
-            video.style.opacity = "1";
-            video.classList.add("is-active");
-          })
-          .catch((err) => console.warn("⚠️ Play failed at canplay:", err));
-      });
-
-      video.addEventListener("canplaythrough", () => {
-        // console.log("✅ Video can play through:", assetUrl);
-        video.style.opacity = "1";
-        video.classList.add("is-active");
-
-        video
-          .play()
-          .then(() => {
-            // console.log("✅ Video playing successfully");
-            // Clear background image once video is playing
-            setTimeout(() => {
-              main.style.backgroundImage = "";
-            }, 600);
-          })
-          .catch((err) => {
-            console.warn("⚠️ Autoplay failed:", err);
-          });
-      });
-
-      video.addEventListener("playing", () => {
-        // console.log("✅ Video is now playing!", assetUrl);
-      });
-
-      video.addEventListener("stalled", () => {
-        // console.warn("⚠️ Video stalled:", assetUrl);
-      });
-
-      video.addEventListener("waiting", () => {
-        // console.warn("⚠️ Video waiting for data:", assetUrl);
-      });
-
-      video.addEventListener("suspend", () => {
-        console.log("🔵 Video suspended:", assetUrl);
-        console.log(
-          "Network state:",
-          video.networkState,
-          "Ready state:",
-          video.readyState
-        );
-
-        // If suspended and no data after 2 seconds, fallback to image
-        setTimeout(() => {
-          if (video.readyState === 0 || video.networkState === 3) {
-            console.warn(
-              "⚠️ Video failed to load, falling back to poster image"
-            );
-            if (asset.poster) {
-              const posterUrl = resolveAssetUrl(
-                asset.poster,
-                "image",
-                asset.posterBasePath
-              );
-              main.style.backgroundImage = `url("${posterUrl}")`;
-              video.style.display = "none";
-            }
-          }
-        }, 2000);
-      });
-
-      // Set poster image first
-      if (asset.poster) {
-        const posterUrl = resolveAssetUrl(
-          asset.poster,
-          "image",
-          asset.posterBasePath
-        );
-        video.setAttribute("poster", posterUrl);
-        main.style.backgroundImage = `url("${posterUrl}")`;
-      }
-
-      // Append video to container first
-      if (containerRef.current) {
-        containerRef.current.appendChild(video);
-      }
-
-      // Use direct src instead of source element for better compatibility
+      if (posterUrl) video.setAttribute("poster", posterUrl);
       video.src = assetUrl;
-      console.log("Video src directly set to:", video.src);
-      console.log("Video element appended to DOM");
 
-      // Check if video starts loading
-      setTimeout(() => {
-        console.log("Video status after 500ms:", {
-          networkState: video.networkState,
-          readyState: video.readyState,
-          paused: video.paused,
-          src: video.src,
-          currentSrc: video.currentSrc,
-        });
-      }, 500);
+      if (containerRef.current) containerRef.current.appendChild(video);
+
+      // Only fade in video once it is actually playing data
+      video.addEventListener("play", () => {
+        video.style.opacity = "1";
+        // Optional: We can clear the background image to save memory,
+        // OR keep it for safety. Given Req 3, it's safer to keep it
+        // behind the video in case the video freezes or crashes later.
+      });
 
       videoRef.current = video;
 
-      // Store cleanup function
+      // Cleanup for this specific video instance
       cleanupRef.current = () => {
-        try {
-          video.pause();
-          video.src = "";
-          video.load();
-        } catch (e) {
-          console.error("Video cleanup error:", e);
-        }
+        video.pause();
+        video.src = "";
+        video.load();
+        video.remove();
       };
-    } else {
-      // Image background
-      if (cleanupRef.current) {
-        cleanupRef.current();
-        cleanupRef.current = null;
-      }
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-      main.style.backgroundImage = `url("${assetUrl}")`;
-      console.log("Image background set to:", assetUrl);
-    }
 
-    setCurrentAsset(asset);
-    enableBackgroundParallax(asset);
-  };
-
-  // Load and apply stored background placeholder
-  useEffect(() => {
-    const storedBackgroundRaw = getStoredBackground();
-    const storedBackground = parseStoredBackground(storedBackgroundRaw);
-
-    if (storedBackground && mainRef.current) {
-      if (storedBackground.type === "video" && storedBackground.poster) {
-        const posterUrl = resolveAssetUrl(
-          storedBackground.poster,
-          "image",
-          storedBackground.posterBasePath
-        );
-        mainRef.current.style.backgroundImage = `url("${posterUrl}")`;
-      } else if (storedBackground.type === "image") {
-        const imageUrl = resolveAssetUrl(
-          storedBackground.src,
-          "image",
-          storedBackground.srcBasePath
-        );
-        mainRef.current.style.backgroundImage = `url("${imageUrl}")`;
-      }
-    }
-  }, []);
-
-  // Fetch and apply background from manifest
-  useEffect(() => {
-    const manifestUrl = withBase("assets/images/backgrounds/backgrounds.json");
-    const storedBackgroundRaw = getStoredBackground();
-    const storedBackground = parseStoredBackground(storedBackgroundRaw);
-
-    let isMounted = true; // Prevent state updates after unmount
-
-    fetch(manifestUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Unable to load background manifest: ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((assets) => {
-        if (!isMounted) return; // Component unmounted, abort
-
-        const normalizedAssets = normalizeBackgroundAssets(assets);
-
-        if (!normalizedAssets.length) {
-          console.warn("No background assets available.");
-          setIsLoading(false);
-          return;
-        }
-
-        let selectedAsset = null;
-
-        if (!storedBackground && normalizedAssets.length) {
-          selectedAsset = normalizedAssets[0];
-        } else {
-          const lastAssetSrc =
-            storedBackground?.src ||
-            (typeof storedBackgroundRaw === "string"
-              ? storedBackgroundRaw
-              : null);
-
-          const candidateAssets = normalizedAssets.filter(
-            (asset) => asset.src !== lastAssetSrc
-          );
-
-          const selectionPool = candidateAssets.length
-            ? candidateAssets
-            : normalizedAssets;
-
-          selectedAsset =
-            selectionPool[Math.floor(Math.random() * selectionPool.length)];
-        }
-
-        if (!selectedAsset) {
-          selectedAsset = normalizedAssets[0];
-        }
-
-        if (isMounted) {
-          applyBackground(selectedAsset);
-          setStoredBackground(serializeBackgroundConfig(selectedAsset));
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to set background:", error);
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      // Attempt play
+      video.play().catch((e) => {
+        console.warn("Autoplay failed/blocked", e);
+        // Fallback image is already visible
       });
-
-    // Cleanup on unmount
-    return () => {
-      isMounted = false;
-      if (cleanupRef.current) {
-        cleanupRef.current();
-        cleanupRef.current = null;
-      }
-      if (parallaxCleanupRef.current) {
-        parallaxCleanupRef.current();
-        parallaxCleanupRef.current = null;
-      }
-    };
-  }, []); // Empty dependency array - only run once on mount
+    }
+  }, [currentAsset]);
 
   return (
     <div
       ref={mainRef}
       id="main"
       className="main"
+      data-theme={theme}
       style={{
-        position: "relative",
+        position: "fixed",
         width: "100%",
         height: "100vh",
         overflow: "hidden",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        pointerEvents: "none",
+        zIndex: 0,
       }}
     >
       <div
         ref={containerRef}
-        className="main__background"
-        aria-hidden="true"
+        className="main__parallax-container"
         style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: -1,
-          transform: `translate(
-            var(--parallax-offset-x, 0), 
-            var(--parallax-offset-y, 0)
-          ) scale(var(--parallax-scale, 1))`,
-          transformOrigin: "center center",
+          top: -50, // Slight negative top/left to allow for movement without showing edges
+          left: -50,
+          width: "calc(100% + 100px)", // Larger width/height for parallax movement
+          height: "calc(100% + 100px)",
           willChange: "transform",
         }}
       />
-
-      {/* Your other content goes here */}
-      <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Add your header content, navigation, etc. */}
-      </div>
     </div>
   );
 };
 
-export default HeaderComponent;
+export default HeaderBackground;

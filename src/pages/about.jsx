@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import "../styles/main.css";
+import { useTheme } from "../components/HeaderBackground";
+
 
 const About = () => {
+    const { theme } = useTheme(); 
+  
   useEffect(() => {
     // same behavior as your original JS
     const triggerAboutInfoIntro = () => {
@@ -46,7 +50,7 @@ const About = () => {
 
   return (
     <div className="page-section">
-      <section className="about" id="about">
+      <section className="about" id="about" data-theme={theme}>
         <div className="container">
           <div className="about__layout">
             <div className="about__stack about__stack--left">
@@ -54,7 +58,7 @@ const About = () => {
                 <span className="about__info__label">Job:</span>
                 <span className="about__info__value">
                   Full Stack AI Engineer
-                </span>
+                </span> 
               </div>
               <div className="about__info">
                 <span className="about__info__label">Degree:</span>
