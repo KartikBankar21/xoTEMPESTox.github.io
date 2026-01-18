@@ -364,7 +364,7 @@ const { theme } = useTheme();
   const cubeList = useMemo(() => {
     const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
     const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
-    return [...rawPortfolioData, ...endClones];
+    return [...startClones, ...rawPortfolioData, ...endClones];
   }, []);
 
   const realStartIndex = NUM_PHANTOM;
@@ -536,19 +536,19 @@ const { theme } = useTheme();
                 isDragging={isDragging}
                 width={cubeWidth}
                 height={cubeWidth} // Keeping it square
-                 onImageOpen={(project) => setFullscreenImage(project)}
+                onImageOpen={(project) => setFullscreenImage(project)}
               />
             ))}
           </div>
         </div>
       </div>
-       {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
+      {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
       {fullscreenImage && (
         <div
           className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300"
           onClick={() => setFullscreenImage(null)}
         >
-          <div 
+          <div
             className="relative flex flex-col items-center justify-center max-w-[95vw] max-h-[60vh] animate-in zoom-in-95 duration-300 ease-out"
             onClick={(e) => e.stopPropagation()}
           >
@@ -559,7 +559,7 @@ const { theme } = useTheme();
                 alt={fullscreenImage.title}
                 className="h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10"
               />
-              
+
               {/* Close Button UI */}
               <button
                 onClick={() => setFullscreenImage(null)}
