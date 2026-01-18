@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  SkipForward,
+  SkipBack,
+} from "lucide-react";
 
 const verticalTextStyle = {
   writingMode: "vertical-rl",
@@ -12,29 +19,27 @@ export const MiniPlayer = ({
   onExpand,
   currentTrack,
   isPlaying,
-  isMuted,
-  setIsMuted,
-  handleMuteToggle,
   handleAudioPlay,
+  onNext,
+  onPrev,
 }) => {
   return (
-    // Default (Mobile/Tablet): Horizontal (flex-row)
-    // Desktop (lg:): Vertical (lg:flex-col)
-    <div className="relative h-full w-full overflow-hidden group ">
+    <div className="relative h-full w-full overflow-hidden">
       <div
-        className=" absolute inset-0 bg-[#000000] pointer-events-none"
-        style={{
-          filter: "url(#nnnoise-filter)",
-        }}
-        // onClick={onExpand}
+        className="absolute inset-0 bg-[#000000] pointer-events-none"
+        style={{ filter: "url(#nnnoise-filter)" }}
       />
+
+      {/* FIX 1: Added 'items-center' and 'w-full' to ensure children stay centered.
+          FIX 2: Ensure the container is exactly the height/width of the parent.
+      */}
       <div
         id="mini-player-content"
-        className=" flex flex-row items-end justify-center lg:flex-col lg:rotate-180 lg:justify-between lg:items-center h-full w-full px-2 py-1 lg:p-2 text-[var(--lo-fi-dark)] "
+        className="relative flex flex-row items-center justify-between lg:flex-col lg:rotate-180 h-full w-full px-4 lg:p-2"
       >
-        {/* Album Art: Always visible, fixed size */}
+        {/* Album Art: Fixed size, will not shrink */}
         <div
-          className="w-9 h-9 lg:w-16 lg:h-16 rounded-lg lg:-rotate-90 shadow-md flex-shrink-0 overflow-hidden cursor-pointer select-none hover:opacity-100 active:scale-95 transition"
+          className="w-10 h-10 lg:w-16 lg:h-16 rounded-lg lg:-rotate-90 shadow-md flex-shrink-0 overflow-hidden cursor-pointer active:scale-95 transition"
           onClick={onExpand}
         >
           <img
@@ -44,62 +49,71 @@ export const MiniPlayer = ({
           />
         </div>
 
-        {/* Song Info: Horizontal on mobile, Rotated on desktop */}
+        {/* Song Info: Fixed constraints to prevent pushing icons */}
         <div
-          className="flex-grow flex items-center justify-center p-2 cursor-pointer select-none hover:opacity-100 active:scale-95 transition"
+          className="flex-grow flex flex-col items-center justify-center px-4 overflow-hidden cursor-pointer select-none"
           onClick={onExpand}
         >
+          {/* FIX 3: Added 'w-full' and 'text-center' to the container.
+              FIX 4: Applied 'truncate' to BOTH the container and the text elements.
+          */}
           <div
-            className="flex flex-col rotated-text-container lg:vertical-rl lg:-rotate-90 lg:justify-center lg:items-start space-y-0 lg:space-y-1 truncate flex-grow mx-0 lg:mx-0 lg:mt-4 lg:mb-4 text-center"
+            className="w-full flex flex-col items-center justify-center lg:vertical-rl lg:-rotate-90 lg:space-y-1 truncate group"
             style={verticalTextStyle}
           >
-            <p className="text-xs text-white lg:text-xl font-bold tracking-wide truncate max-w-[100px] lg:max-w-none">
+            <p className="w-full text-center text-xs text-white opacity-80 lg:text-xl font-bold tracking-wide truncate group-hover:opacity-100">
               {currentTrack.title}
             </p>
-            {/* Artist visible only on larger screens, including desktop minimized */}
-            <p className="text-lg text-white opacity-70 sm:block lg:block">
+            <p className="w-full text-center text-[10px] text-white opacity-70 lg:text-lg truncate">
               {currentTrack.artist}
             </p>
           </div>
         </div>
 
-        {/* Volume/Mute Icon: Hidden on mobile (lack of space), visible on desktop vertical bar */}
-        <div className="flex flex-row-reverse items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-y-2 flex-shrink-0  ">
+        {/* Controls: Flex-shrink-0 ensures this block NEVER disappears */}
+        <div className="flex flex-row items-center justify-center lg:flex lg:flex-col lg:items-center lg:justify-between lg:rotate-180 space-x-2 lg:space-x-0 lg:space-y-4 flex-shrink-0">
+
+          {/* Previous Button */}
+          {/* <button
+              onClick={onPrev}
+              className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
+            >
+              <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+              
+              <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+                <SkipBack className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current rotate-180 lg:rotate-90 transition-colors duration-300" />
+              </div>
+          </button> */}
+
+          {/* Play/Pause Button */}
           <button
-            onClick={() => {
-              handleAudioPlay();
-              console.log("Play Pause");
-            }}
-            className="bg-[#c6aee3] p-2 lg:p-2 rounded-full  active:scale-95 flex-shrink-0 bg-transparent relative"
-            aria-label="Expand Player"
+            onClick={handleAudioPlay}
+            className="group relative p-2 lg:p-3 rounded-full active:scale-95 transition-all duration-300 flex-shrink-0"
           >
-            <div class="absolute inset-0 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]: bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none "></div>
-            {isPlaying ? (
-              // Icon when playing
-              <Pause className="text-white hover:text-sky-400 w-5 h-5 lg:w-9 lg:h-9 fill-current" />
-            ) : (
-              // Icon when paused
-              <Play className=" text-white hover:text-sky-400  w-5 h-5 lg:w-9 lg:h-9 fill-current" />
-            )}
+            {/* Subtle Bloom Effect */}
+            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+            <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+              {isPlaying ? (
+                <Pause className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+              ) : (
+                <Play className="text-gray-400 group-hover:text-white w-6 h-6 lg:w-8 lg:h-8 fill-current transition-colors duration-300 lg:rotate-90" />
+              )}
+            </div>
           </button>
+
+          {/* Next Button */}
           <button
-            onClick={() => {
-              handleMuteToggle();
-              console.log("hello");
-            }}
-            className="p-2 active:scale-95 flex-shrink-0 bg-transparent text-[var(--lo-fi-dark)] relative"
-            aria-label={isMuted ? "Unmute Volume" : "Mute Volume"}
+            onClick={onNext}
+            className="group relative p-2 active:scale-95 transition-all duration-300 flex-shrink-0"
           >
-            <div class="absolute inset-0 rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]: bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none "></div>
-            {isMuted ? (
-              // Icon when muted
-              <VolumeX className="text-white hover:text-sky-400 w-5 h-5 lg:w-8 lg:h-8 fill-current" />
-            ) : (
-              // Icon when audible
-              <Volume2 className="text-white hover:text-sky-400 w-5 h-5 lg:w-8 lg:h-8 fill-current" />
-            )}
+            {/* Animated Glow Background */}
+            <div className="absolute inset-0 bg-white/10 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-75 group-hover:scale-110" />
+
+            <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+              <SkipForward className="text-gray-400 group-hover:text-white w-5 h-5 lg:w-7 lg:h-7 fill-current lg:rotate-90 transition-colors duration-300" />
+            </div>
           </button>
-          {/* Play/Expand Button: Always visible */}
         </div>
       </div>
     </div>

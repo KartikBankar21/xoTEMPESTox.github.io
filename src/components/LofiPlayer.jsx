@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Play,
   SkipBack,
   SkipForward,
   Pause,
-  Heart,
   ChevronDown,
+  SlidersVertical,
   ListMusic,
+  VolumeX,
 } from "lucide-react";
 
-// --- LoFiPlayer Component (Expanded View) ---
 export const LoFiPlayer = ({
   isExpanded,
   onCollapse,
@@ -25,10 +25,25 @@ export const LoFiPlayer = ({
   onTrackSelect,
   tracks,
   trackIndex,
+  volume,
+  onVolumeChange,
 }) => {
+  const [showVolume, setShowVolume] = useState(false);
+  const volumeRef = useRef(null);
+  
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const volumePercentage = volume * 100;
 
-  // Helper for time formatting
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (volumeRef.current && !volumeRef.current.contains(event.target)) {
+        setShowVolume(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const formatTime = (timeInSeconds) => {
     if (isNaN(timeInSeconds) || timeInSeconds === null || timeInSeconds === undefined) {
       return "--:--";
@@ -42,170 +57,130 @@ export const LoFiPlayer = ({
     <div className="relative h-full w-full rounded-[2.5rem] overflow-hidden p-[1rem]">
       <div
         className="absolute inset-0 bg-[#000000] pointer-events-none"
-        style={{
-          filter: "url(#nnnoise-filter)",
-        }}
-      // onClick={onExpand}
+        style={{ filter: "url(#nnnoise-filter)" }}
       />
-      <div
-        id="lofi-player"
-        className={`w-full bg-transparent rounded-[2.5rem] border-4 border-transparent relative overflow-hidden`}
-      >
-        {/* <div
-    className="absolute inset-0 bg-[black]"
-    style={{ filter: "url(#nnnoise-filter)" }}
-  /> */}
-        {/* --- Menu Overlay (Hidden/Shown) --- */}
-        <div
-          className={`menu-overlay rounded-[2.5rem] p-6 flex flex-col overflow-x-hidden transition-opacity duration-300 ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
-        >
+      
+      <div id="lofi-player" className="w-full bg-transparent rounded-[2.5rem] border-4 border-transparent relative overflow-hidden">
+        
+        {/* --- Menu Overlay --- */}
+        <div className={`menu-overlay z-20 rounded-[2.5rem] p-6 flex flex-col overflow-x-hidden transition-opacity duration-300 bg-black/90 ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}>
           <div className="flex justify-between items-center mb-6">
-            <p className="font-mono font-bold text-xl md:text-2xl text-[white] uppercase tracking-widest flex items-center mb-0!">
-              <ListMusic className="w-8 h-8 mr-2" /> Track List
+            <p className="font-mono font-bold text-xl md:text-2xl text-white uppercase tracking-widest flex items-center mb-0">
+              <ListMusic className="w-8 h-8 mr-2 text-purple-500" /> Track List
             </p>
-            <button
-              onClick={onMenuToggle}
-              className="bg-[white]/5 border border-current text-white hover:text-sky-400 p-2 rounded-full hover:bg-[white]/10 active:scale-95 transition-all shadow-md"
-              aria-label="Close Menu"
-            >
-              <ChevronDown className=" w-5 h-5 rotate-90 rounded-full fill-current " />
+            <button onClick={onMenuToggle} className="bg-white/5 border border-white/20 text-white hover:border-purple-500 p-2 rounded-full hover:bg-white/10 active:scale-95 transition-all shadow-md">
+              <ChevronDown className="w-5 h-5 rotate-90 rounded-full fill-current" />
             </button>
           </div>
-
           <ul className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 pr-2">
             {tracks.map((track, index) => (
               <li
                 key={track.id}
                 onClick={() => onTrackSelect(index)}
-                className={`p-3 rounded-xl cursor-pointer transition-all border-2 ${trackIndex != index
-                    ? "bg-[var(--lo-fi-dark)] text-white shadow-xl scale-[1.01]"
-                    : "bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] hover:bg-[var(--lo-fi-accent)]/50 border-current text-sky-400"
-                  }`}
+                className={`p-3 rounded-xl cursor-pointer transition-all border-2 ${trackIndex !== index ? "bg-white/5 text-white/60 border-transparent" : "bg-white/10 text-white border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.2)]"}`}
               >
-                <div className="font-semibold text-sm md:text-base truncate">
-                  {track.title}
-                </div>
-                <div
-                  className={`text-xs ${trackIndex === index ? "opacity-80" : "opacity-60"
-                    }`}
-                >
+                <div className="font-semibold text-sm md:text-base truncate">{track.title}</div>
+                <div className={`text-xs ${trackIndex === index ? "text-purple-300" : "opacity-60"}`}>
                   {track.artist} - {formatTime(track.duration)}
                 </div>
               </li>
             ))}
           </ul>
         </div>
-        {/* --- End Menu Overlay --- */}
 
-        {/* Header: Title and Top Collapse Button */}
-        <div className="w-full bg-[var(--lo-fi-accent)] rounded-xl rounded-t-[2.5rem] px-4 py-2 mb-3 shadow-md border border-[var(--lo-fi-dark)]/20">
+        {/* Header */}
+        <div className="w-full bg-white/5 rounded-xl rounded-t-[2.5rem] px-4 py-2 mb-3 shadow-md border border-white/10">
           <div className="flex justify-between items-center relative">
-            <div className="w-6 h-6"></div> {/* Left Spacer */}
-            <h1 className="font-mono text-lg md:text-xl text-[white] uppercase tracking-widest text-center flex-1 truncate">
-              {currentTrack.title}
-            </h1>
-            {/* Top Right Minimize Button */}
-            <button
-              onClick={onCollapse}
-              className="bg-[var(--lo-fi-ui)] text-[var(--lo-fi-dark)] p-1 rounded-full hover:bg-[var(--lo-fi-bg)] active:scale-95 transition-all shadow-inner border border-current text-white hover:text-sky-400"
-              aria-label="Minimize Player"
-            >
-              <ChevronDown className=" w-5 h-5" />
+            <div className="w-6 h-6"></div>
+            <h1 className="font-mono text-lg md:text-xl text-white uppercase tracking-widest text-center flex-1 truncate">{currentTrack.title}</h1>
+            <button onClick={onCollapse} className="bg-white/10 text-white p-1 rounded-full hover:bg-white/20 active:scale-95 transition-all shadow-inner border border-white/20 hover:text-white">
+              <ChevronDown className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Main Media Window */}
-        <div className="w-full aspect-[3/4] bg-gray-600 rounded-xl overflow-hidden relative shadow-inner border-2 border-[var(--lo-fi-accent)]/50">
+        <div className="w-full aspect-[3/4] bg-neutral-900 rounded-xl overflow-hidden relative shadow-inner border-2 border-white/5">
           <img
             src={currentTrack.img}
-            alt="Lo-fi animated landscape"
-            className="w-full h-full object-cover opacity-70 transition-opacity duration-500"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src =
-                "https://placehold.co/400x533/c6aee3/ffffff?text=No+Art";
-            }}
+            alt={currentTrack.title}
+            className="w-full h-full object-cover opacity-80 transition-opacity duration-500"
           />
 
-          {/* Faux Playback Bar Area Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-4">
             {/* Progress Bar */}
-            <div className="h-1.5 w-full bg-[var(--lo-fi-dark)]/30 rounded-full mb-2 relative">
-              <div
-                className="h-full bg-white rounded-full transition-all duration-100 ease-linear"
-                style={{ width: `${progressPercent}%` }}
-              ></div>
-              <div
-                className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-[var(--lo-fi-dark)] shadow-xl border-2 border-[var(--lo-fi-bg)] transition-all duration-100 ease-linear"
-                style={{
-                  left: `${progressPercent}%`,
-                  transform: "translateX(-50%)",
-                }}
-              ></div>
+            <div className="h-1.5 w-full bg-white/10 rounded-full mb-2 relative group cursor-pointer">
+              {/* Highlight Gradient Applied Here */}
+              <div 
+                className="h-full bg-gradient-to-r from-white to-purple-500 rounded-full transition-all duration-100 ease-linear shadow-[0_0_10px_rgba(168,85,247,0.5)]" 
+                style={{ width: `${progressPercent}%` }} 
+              />
+              <div className="absolute top-1/2 -mt-1.5 w-3 h-3 rounded-full bg-white shadow-xl transition-all duration-100 ease-linear group-hover:scale-125" style={{ left: `${progressPercent}%`, transform: "translateX(-50%)" }} />
             </div>
 
-            {/* Time/Heart Indicator */}
-            <div className="flex justify-between items-center text-[var(--lo-fi-dark)] text-lg">
-              <span className="font-mono">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-              {/* Reduced padding and icon size for mobile */}
-              <div className="icon-btn bg-[var(--lo-fi-accent)] text-[var(--lo-fi-dark)]/90 p-1 flex items-center justify-center">
-                <Heart className="w-4 h-4 fill-current" />
-              </div>
+            {/* Time Indicator */}
+            <div className="flex justify-between items-center text-white/80 text-lg">
+              <span className="font-mono">{formatTime(currentTime)} / {formatTime(duration)}</span>
             </div>
           </div>
         </div>
 
-        {/* Controls Panel - Optimized for Mobile */}
-        <div className="w-full bg-[var(--lo-fi-accent)] p-3 md:p-4 mt-3 rounded-xl rounded-b-[2.5rem] shadow-md border border-[var(--lo-fi-dark)]/20">
+        {/* Controls Panel */}
+        <div className="w-full bg-white/2 p-3 md:p-4 mt-3 rounded-xl rounded-b-[2.5rem] shadow-md border border-white/10 z-30 relative">
           <div className="flex justify-between items-center">
-            {/* Menu Button: Calls new handler */}
-            <button
-              onClick={onMenuToggle}
-              className="bg-[var(--lo-fi-ui)] icon-btn text-xs md:text-xl font-mono px-2 py-1 md:px-4 md:py-2 shadow-inner border border-current hover:bg-[white]/10 text-white hover:text-sky-400 fill-current"
-              aria-label="Open Track List Menu"
-            >
+            <button onClick={onMenuToggle} className="bg-white/5 icon-btn text-xs md:text-xl font-mono px-2 py-1 md:px-4 md:py-2 shadow-inner border border-white/20 text-white hover:border-purple-500 hover:text-purple-500 font-bold rounded-lg transition-colors">
               Menu
             </button>
 
-            {/* Transport Controls: Functional hooks */}
-            <div className="flex items-center space-x-1 md:space-x-3 ">
-              {/* Skip Back */}
-              <button
-                onClick={onPrev}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400  hover:bg-[white]/10"
-                aria-label="Skip Back"
-              >
-                <SkipBack className=" w-6 h-6 md:w-6 md:h-6 fill-current" />
+            <div className="flex items-center space-x-1 md:space-x-3">
+              <button onClick={onPrev} className="bg-white/5 icon-btn p-1.5 md:p-2 text-white/60 text-white hover:border-purple-500 hover:text-purple-500  border border-white/10 rounded-full transition-transform active:scale-95"><SkipBack className="w-6 h-6 fill-current" /></button>
+              <button onClick={onPlayPause} className="bg-white/5 icon-btn p-1.5 md:p-2 text-white/60 text-white hover:border-purple-500 hover:text-purple-500  border border-white/10 rounded-full transition-transform active:scale-95">
+                {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current" />}
               </button>
-              {/* Play/Pause */}
-              <button
-                onClick={onPlayPause}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400 hover:bg-[white]/10 "
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? (
-                  <Pause className=" w-6 h-6 md:w-6 md:h-6 fill-current" />
-                ) : (
-                  <Play className=" w-6 h-6 md:w-6 md:h-6  fill-current" />
-                )}
-              </button>
-              {/* Skip Forward */}
-              <button
-                onClick={onNext}
-                className="bg-[var(--lo-fi-ui)] icon-btn p-1.5 md:p-2 text-[var(--lo-fi-dark)] shadow-inner border border-current text-white hover:text-sky-400 hover:bg-[white]/10"
-                aria-label="Skip Forward"
-              >
-                <SkipForward className="w-6 h-6 md:w-6 md:h-6  fill-current" />
-              </button>
+              <button onClick={onNext} className="bg-white/5 icon-btn p-1.5 md:p-2 text-white/60 text-white hover:border-purple-500 hover:text-purple-500  border border-white/10 rounded-full transition-transform active:scale-95"><SkipForward className="w-6 h-6 fill-current" /></button>
             </div>
 
-            {/* Heart/Like Icon */}
-            <div className="flex space-x-1 text-white hover:text-sky-400">
-              <Heart className="w-6 h-6 md:w-6 md:h-6  fill-current" />
+            {/* --- VOLUME CONTROLLER --- */}
+            <div className="relative flex items-center" ref={volumeRef}>
+              {showVolume && (
+                <div 
+                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-16 bg-neutral-900/95 backdrop-blur-sm p-3 pb-4 rounded-2xl shadow-2xl border border-white/10 z-50 flex flex-col items-center"
+                >
+                  <div className="relative h-32 w-full flex justify-center items-center">
+                    <div className="absolute w-1.5 h-full bg-white/10 rounded-full overflow-hidden">
+                      {/* Highlight Gradient Applied Here */}
+                      <div 
+                        className="absolute bottom-0 w-full bg-gradient-to-t from-purple-600 to-white transition-all duration-75"
+                        style={{ height: `${volumePercentage}%` }}
+                      />
+                    </div>
+                    <div 
+                      className="absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rounded-full shadow-lg pointer-events-none border-2 border-neutral-800 transition-all duration-75"
+                      style={{ bottom: `calc(${volumePercentage}% - 8px)` }}
+                    />
+                    <input
+                      type="range" min="0" max="1" step="0.01" value={volume}
+                      onChange={onVolumeChange}
+                      className="absolute w-[128px] h-8 opacity-0 cursor-pointer appearance-none -rotate-90 origin-center z-10 focus:outline-none bg-transparent"
+                      style={{ touchAction: 'none' }} 
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-white/70 mt-3 tabular-nums">
+                    {Math.round(volumePercentage)}%
+                  </span>
+                </div>
+              )}
+
+              <button 
+                onClick={() => setShowVolume(!showVolume)}
+                className={`icon-btn p-2 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  showVolume 
+                    ? 'bg-white text-purple-600 scale-110 shadow-[0_0_15px_rgba(168,85,247,0.4)] border border-purple-500' 
+                    : 'bg-white/5 text-white/60 hover:text-white border border-white/10 rounded-full transition-transform active:scale-95'
+                }`}
+              >
+                {volume === 0 ? <VolumeX className="w-5 h-5" /> : <SlidersVertical className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>

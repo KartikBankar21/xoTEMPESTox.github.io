@@ -9,6 +9,7 @@ import React, {
 import "../styles/main.css";
 import DetailCard from "../components/DetailedCard";
 import Cube from "../components/Cube";
+import { X } from "lucide-react";
 
 
 // --- Configuration Constants ---
@@ -83,7 +84,7 @@ const rawPortfolioData = [
       {
         name: "Solidity",
         slug: "skill-icons/solidity",
-        color: "363636",
+        color: "FFFFFF",
         iconColor: "",
       },
       {
@@ -330,7 +331,7 @@ const rawPortfolioData = [
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
-
+  const [fullscreenImage, setFullscreenImage] = useState(null);
   // --- Responsive Logic ---
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1000
@@ -361,7 +362,7 @@ const Portfolio = () => {
   const cubeList = useMemo(() => {
     const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
     const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
-    return [...rawPortfolioData, ...endClones];
+    return [...startClones, ...rawPortfolioData, ...endClones];
   }, []);
 
   const realStartIndex = NUM_PHANTOM;
@@ -463,7 +464,7 @@ const Portfolio = () => {
       {/* 1. Header (Top) */}
       <header className=" my-16 md:my-6  text-center px-4 z-20 flex-none">
         <div className="bg-black/50 backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border border-white/5">
-          <p className="text-7xl md:text-9xl font-black mb-0 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 uppercase">
+          <p className="text-7xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 uppercase">
             Portfolio
           </p>
         </div>
@@ -523,12 +524,50 @@ const Portfolio = () => {
                 isDragging={isDragging}
                 width={cubeWidth}
                 height={cubeWidth} // Keeping it square
+                onImageOpen={(project) => setFullscreenImage(project)}
               />
             ))}
           </div>
         </div>
       </div>
+      {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <div
+            className="relative flex flex-col items-center justify-center max-w-[95vw] max-h-[60vh] animate-in zoom-in-95 duration-300 ease-out"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* The Image - Scaled to 80% screen height */}
+            <div className="relative group">
+              <img
+                src={fullscreenImage.image_url}
+                alt={fullscreenImage.title}
+                className="h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10"
+              />
 
+              {/* Close Button UI */}
+              <button
+                onClick={() => setFullscreenImage(null)}
+                className="absolute -top-12 right-0 flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-widest">Close Preview</span>
+                <div className="w-8 h-8 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all">
+                  <X size={16} />
+                </div>
+              </button>
+            </div>
+
+            {/* Bottom Caption Area */}
+            <div className="mt-6 text-center">
+              <h3 className="text-white font-bold text-2xl font-bold uppercase tracking-tight">{fullscreenImage.title}</h3>
+              <p className="text-zinc-400 text-lg mt-1">{fullscreenImage.tag}</p>
+            </div>
+          </div>
+        </div>
+      )}
       <DetailCard
         project={selectedProject}
         onClose={() => setSelectedProject(null)}
