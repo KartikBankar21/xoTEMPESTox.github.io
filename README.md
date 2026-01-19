@@ -121,14 +121,6 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Bugs
 * [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e") (**I have did the changes but regarding Iphone have no idea if it's fixed.**) 
-* [x]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter (Left for: Blogs page)
-* [x]  Hide Music player in Socials Tab
-* [x]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80) (**++UPDATE:gradient caused unkown changes in the rendering of the svg so removed and used scale and white gray highlight colors over the icons of mini-player, the main lofi-player theme changed to white, gray, black and purple, reason for purple is it syncs properly with the theme color of 2 light tails on the mini-music player.**)
-* [x]  Enlarge and Strengthen Gradeient effect of hover Both in Product card and Journey Card [img](https://github.com/user-attachments/assets/62bcfdec-99b7-4362-b60e-36c7413fb6a5) , [img](https://github.com/user-attachments/assets/d0e6821c-5026-45e7-9e6d-5ea895f01426)
-* [x]  Option to Expand on click Image [img](https://github.com/user-attachments/assets/20f038cc-3e94-4188-b06e-7c26ccee9f43)
-* [x]  Tech stack has different black compared to normal card for Background [img](https://github.com/user-attachments/assets/13e88252-2680-4a04-b068-84566c2f2958) , The Text color is too dark use lighter shade of grey (eg Skill section bar) (**++UPDATE: Tech stack is moved to Top Face below description**)
-* [x]  The Loop isn't Seamless , towards the end we see empty cubes , [img](https://github.com/user-attachments/assets/e0443895-5ed6-44fe-a5c2-410025f2b44e) (**++UPDATE: To indicate the end of the loop the carousel leaves one cube towards the end and repeats the caruosel from this point, so atleast one cube will be visible towards the end of carousel indicating the carousel ends and repeat appearance of cube indicates the carousel has started again.**)
-* [x]  In Portfolio card limit Hover rotation to diferent face to bottom left+right Corner , Use "back" button on Tech stack / Image face , "view Details" Need to be smaller button , Remove arrow from "view Details" / "Back", Experiment with keeping the Image Face as Main face and Merging Tech stack + Description into single Face , with option to click and view in more detail. [img](https://github.com/user-attachments/assets/c3d4d8c8-0675-4e2f-86f3-b21f6b14d12d)
 
 ### Feature
 * [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
