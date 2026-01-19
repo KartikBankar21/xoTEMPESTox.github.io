@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useOutletContext } from "react-router-dom";
 import { useTheme } from "../components/HeaderBackground";
 import "../styles/main.css";
 
 
 const Home = () => {
-    const { theme } = useTheme(); 
-  
+  const { theme } = useTheme();
+  const context = useOutletContext();
+  const startAudioOnInteraction = context?.startAudioOnInteraction;
+
   const containerRef = useRef(null);
-  
+
   useEffect(() => {
     const container = containerRef.current;
 
@@ -24,7 +26,7 @@ const Home = () => {
     // 2. Initialize and capture the cleanup function
     const cancelTyping = initHomeRoleTyper();
 
-    
+
     // --- FIX: Check for existing wrapper before creating new ones ---
     return () => {
       if (cancelTyping) cancelTyping();
@@ -412,6 +414,7 @@ const Home = () => {
                   id="read-more-home"
                   className="home__info__btn custom-btn mx-auto mt-6 "
                   to="/about"
+                  onClick={startAudioOnInteraction}
                 >
                   <span className="relative z-10">read more</span>
                 </NavLink>

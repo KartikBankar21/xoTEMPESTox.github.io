@@ -409,6 +409,7 @@ function App() {
     if (hasInteracted.current) return;
 
     if (currentAudio.current) {
+      currentAudio.current.currentTime = 0; // Restart from beginning
       currentAudio.current.muted = false;
       currentAudio.current.volume = volume;
 
@@ -574,7 +575,7 @@ function App() {
                     </div>
                   )}
                 </div>
-                <AnimatedOutlet />
+                <AnimatedOutlet context={{ startAudioOnInteraction }} />
               </div>
 
               <div
