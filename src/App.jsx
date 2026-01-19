@@ -169,7 +169,7 @@ function App() {
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
-  const isSocialsPage = location.pathname === "/socials"; // Add this line
+  const shouldHidePlayer = location.pathname === "/socials" || location.pathname === "/";
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -189,10 +189,10 @@ function App() {
   }, [location]);
 
   useEffect(() => {
-    if (location.pathname === "/socials") {
+    if (shouldHidePlayer) {
       setIsExpanded(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, shouldHidePlayer]);
 
   // --- AUDIO HANDLERS ---
 
@@ -448,8 +448,8 @@ function App() {
   }
 
   const playerThemeStyle = {
-  "--player-bg": theme === "dark" ? "#000000" : "#FFFFFF",
-};
+    "--player-bg": theme === "dark" ? "#000000" : "#FFFFFF",
+  };
 
   // Combining static, state, and responsive classes
   const containerClasses = [
@@ -464,12 +464,12 @@ function App() {
       <>
         <style>{customStyles}</style>
         <audio
-        ref={currentAudio}
-        onTimeUpdate={handleAudioUpdate}
-        onEnded={handleNextSong} // Auto-play next track when current one ends
-        muted={isMuted} // This will be true initially
-        playsInline
-      />
+          ref={currentAudio}
+          onTimeUpdate={handleAudioUpdate}
+          onEnded={handleNextSong} // Auto-play next track when current one ends
+          muted={isMuted} // This will be true initially
+          playsInline
+        />
         <div
           className="App"
           style={{ position: "relative", minHeight: "100vh" }}
@@ -528,12 +528,11 @@ function App() {
 
     z-1200
     /* Transition and Opacity Logic */
-    transition-opacity duration-500
-    ${
-      isSocialsPage
-        ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
-        : "opacity-100 pointer-events-auto"
-    }
+    transition-all duration-500 ease-in-out
+    ${shouldHidePlayer
+                      ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
+                      : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
+                    }
 
     
   `}
