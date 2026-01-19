@@ -13,11 +13,11 @@ import { Sun, Moon, Image as ImageIcon, X } from "lucide-react";
 
 const ThemeContext = createContext({
   theme: "light",
-  setTheme: () => {},
+  setTheme: () => { },
   allWallpapers: [],
   currentAsset: null,
-  handleThemeChange: () => {},
-  handleWallpaperSelect: () => {},
+  handleThemeChange: () => { },
+  handleWallpaperSelect: () => { },
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -179,6 +179,25 @@ export const ThemeControls = ({
   onWallpaperSelect,
 }) => {
   const [showWallpaperSelector, setShowWallpaperSelector] = useState(false);
+  const panelRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showWallpaperSelector &&
+        panelRef.current &&
+        !panelRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setShowWallpaperSelector(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showWallpaperSelector]);
 
   return (
     <>
@@ -186,11 +205,10 @@ export const ThemeControls = ({
       <div className="fixed top-5 left-5 z-[999] flex gap-2.5">
         <button
           onClick={onThemeChange}
-          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
-            theme === "dark"
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${theme === "dark"
               ? "bg-black/50 text-white hover:bg-black/70"
               : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
-          }`}
+            }`}
           title={
             theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"
           }
@@ -199,12 +217,12 @@ export const ThemeControls = ({
         </button>
 
         <button
+          ref={buttonRef}
           onClick={() => setShowWallpaperSelector(!showWallpaperSelector)}
-          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
-            theme === "dark"
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${theme === "dark"
               ? "bg-black/50 text-white hover:bg-black/70"
               : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
-          }`}
+            }`}
           title="Change Wallpaper"
         >
           <ImageIcon size={20} />
@@ -212,93 +230,92 @@ export const ThemeControls = ({
       </div>
 
       {/* Wallpaper Selector Panel */}
-      {showWallpaperSelector && (
-        <div
-          className={`fixed top-24 left-5 mr-5 z-[10000] backdrop-blur-md rounded-2xl p-5 max-w-[400px] max-h-[70vh] shadow-2xl overflow-y-auto transition-all duration-300 border
-    ${
-      theme === "dark"
-        ? "bg-black/60 border-white/10 text-white"
-        : "bg-white/90 border-black/10 text-black"
-    }
+      <div
+        ref={panelRef}
+        className={`fixed top-24 left-5 mr-5 z-[10000] backdrop-blur-md rounded-2xl p-5 max-w-[400px] max-h-[70vh] shadow-2xl overflow-y-auto transition-all duration-300 border
+          ${showWallpaperSelector
+            ? "opacity-100 translate-y-0 scale-100 pointer-events-auto visible"
+            : "opacity-0 -translate-y-2 scale-95 pointer-events-none invisible"
+          }
+    ${theme === "dark"
+            ? "bg-black/60 border-white/10 text-white"
+            : "bg-white/90 border-black/10 text-black"
+          }
     scrollbar-thin 
     [&::-webkit-scrollbar]:w-2
     [&::-webkit-scrollbar-thumb]:rounded-full
-    ${
-      theme === "dark"
-        ? "[&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300"
-        : "[&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-800"
-    }`}
-        >
-          <div className="flex justify-between items-center mb-[15px]">
-            <h3
-              className={`m-0 text-lg font-medium ${theme === "dark" ? "text-white" : "text-black"}`}
-            >
-              Select Wallpaper
-            </h3>
-            <button
-              onClick={() => setShowWallpaperSelector(false)}
-              className={`bg-transparent border-none cursor-pointer p-1 flex items-center transition-colors ${
-                theme === "dark"
-                  ? "text-white hover:text-gray-300"
-                  : "text-black hover:text-gray-600"
+    ${theme === "dark"
+            ? "[&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300"
+            : "[&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-800"
+          }`}
+      >
+        <div className="flex justify-between items-center mb-[15px]">
+          <h3
+            className={`m-0 text-lg font-medium ${theme === "dark" ? "text-white" : "text-black"}`}
+          >
+            Select Wallpaper
+          </h3>
+          <button
+            onClick={() => setShowWallpaperSelector(false)}
+            className={`bg-transparent border-none cursor-pointer p-1 flex items-center transition-colors ${theme === "dark"
+                ? "text-white hover:text-gray-300"
+                : "text-black hover:text-gray-600"
               }`}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5">
-            {wallpapers && wallpapers.length > 0 ? (
-              wallpapers.map((wallpaper, index) => {
-                const wallpaperTheme = getThemeFromFilename(wallpaper.src);
-                const isActive = currentWallpaper?.src === wallpaper.src;
-                const posterUrl = wallpaper.poster
-                  ? withBase(`${wallpaper.posterBasePath}/${wallpaper.poster}`)
-                  : withBase(`${wallpaper.srcBasePath}/${wallpaper.src}`);
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      onWallpaperSelect(wallpaper);
-                      setShowWallpaperSelector(false);
-                    }}
-                    className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-105
-              ${
-                isActive
-                  ? theme === "dark"
-                    ? "border-[3px] border-white"
-                    : "border-[3px] border-purple-600 shadow-lg"
-                  : theme === "dark"
-                    ? "border-2 border-white/20 hover:border-white/50"
-                    : "border-2 border-black/10 hover:border-black/30"
-              }`}
-                  >
-                    <img
-                      src={posterUrl}
-                      alt={`Wallpaper ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1.5 py-0.5 rounded text-[10px] uppercase font-bold">
-                      {wallpaperTheme === "dark"
-                        ? "🌙"
-                        : wallpaperTheme === "light"
-                          ? "☀️"
-                          : "⚪"}
-                    </div>
-                  </button>
-                );
-              })
-            ) : (
-              <p
-                className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"} col-span-2 text-center`}
-              >
-                Loading wallpapers...
-              </p>
-            )}
-          </div>
+          >
+            <X size={20} />
+          </button>
         </div>
-      )}
+
+        <div className="grid grid-cols-2 gap-2.5">
+          {wallpapers && wallpapers.length > 0 ? (
+            wallpapers.map((wallpaper, index) => {
+              const wallpaperTheme = getThemeFromFilename(wallpaper.src);
+              const isActive = currentWallpaper?.src === wallpaper.src;
+              const posterUrl = wallpaper.poster
+                ? withBase(`${wallpaper.posterBasePath}/${wallpaper.poster}`)
+                : withBase(`${wallpaper.srcBasePath}/${wallpaper.src}`);
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    onWallpaperSelect(wallpaper);
+                    setShowWallpaperSelector(false);
+                  }}
+                  className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-105
+              ${isActive
+                      ? theme === "dark"
+                        ? "border-[3px] border-white"
+                        : "border-[3px] border-purple-600 shadow-lg"
+                      : theme === "dark"
+                        ? "border-2 border-white/20 hover:border-white/50"
+                        : "border-2 border-black/10 hover:border-black/30"
+                    }`}
+                >
+                  <img
+                    src={posterUrl}
+                    alt={`Wallpaper ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1.5 py-0.5 rounded text-[10px] uppercase font-bold">
+                    {wallpaperTheme === "dark"
+                      ? "🌙"
+                      : wallpaperTheme === "light"
+                        ? "☀️"
+                        : "⚪"}
+                  </div>
+                </button>
+              );
+            })
+          ) : (
+            <p
+              className={`${theme === "dark" ? "text-gray-400" : "text-gray-500"} col-span-2 text-center`}
+            >
+              Loading wallpapers...
+            </p>
+          )}
+        </div>
+      </div>
     </>
   );
 };
@@ -313,8 +330,8 @@ export const ThemeProvider = ({ children }) => {
       // 1. Check if user has a MANUALLY saved preference
       const stored = localStorage.getItem(themeStorageKey);
       if (stored) return stored;
-    } catch (e) {}
-    
+    } catch (e) { }
+
     // 2. Otherwise, use system default
     if (typeof window !== "undefined" && window.matchMedia) {
       return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -324,7 +341,7 @@ export const ThemeProvider = ({ children }) => {
     return "light";
   });
 
- // Sync HTML Class
+  // Sync HTML Class
   useEffect(() => {
     const root = window.document.documentElement;
     if (theme === "dark") {
@@ -340,7 +357,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    
+
     const handleChange = (e) => {
       // Only sync if the user hasn't locked in a preference manually
       const userHasManualPreference = localStorage.getItem(themeStorageKey);
@@ -382,23 +399,23 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-const handleThemeChange = () => {
-  // 1. Calculate the new theme
-  const newTheme = theme === "light" ? "dark" : "light";
-  
-  // 2. Update the React state
-  setTheme(newTheme);
-  
-  // 3. Persist the choice to localStorage
-  try {
-    localStorage.setItem(themeStorageKey, newTheme);
-  } catch (e) {
-    console.error("Failed to save theme to storage", e);
-  }
+  const handleThemeChange = () => {
+    // 1. Calculate the new theme
+    const newTheme = theme === "light" ? "dark" : "light";
 
-  // Logic for filtering and setting random wallpapers removed
-  // This ensures the current wallpaper stays exactly as it is.
-};
+    // 2. Update the React state
+    setTheme(newTheme);
+
+    // 3. Persist the choice to localStorage
+    try {
+      localStorage.setItem(themeStorageKey, newTheme);
+    } catch (e) {
+      console.error("Failed to save theme to storage", e);
+    }
+
+    // Logic for filtering and setting random wallpapers removed
+    // This ensures the current wallpaper stays exactly as it is.
+  };
 
   const handleWallpaperSelect = (wallpaper) => {
     setCurrentAsset(wallpaper);
@@ -409,7 +426,7 @@ const handleThemeChange = () => {
       setTheme(wallpaperTheme);
       try {
         localStorage.setItem(themeStorageKey, wallpaperTheme);
-      } catch (e) {}
+      } catch (e) { }
     }
   };
 
@@ -445,8 +462,8 @@ const handleThemeChange = () => {
           selectedAsset =
             themeWallpapers.length > 0
               ? themeWallpapers[
-                  Math.floor(Math.random() * themeWallpapers.length)
-                ]
+              Math.floor(Math.random() * themeWallpapers.length)
+              ]
               : normalizedAssets[0];
         }
 
