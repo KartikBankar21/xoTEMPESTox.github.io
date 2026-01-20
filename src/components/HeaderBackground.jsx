@@ -202,7 +202,7 @@ export const ThemeControls = ({
   return (
     <>
       {/* Control Buttons Container */}
-      <div className="fixed top-5 left-5 z-[999] flex gap-2.5">
+      <div className={`fixed top-5 left-5 z-[999] flex gap-2.5 `}>
         <button
           onClick={onThemeChange}
           className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${theme === "dark"

@@ -130,7 +130,7 @@ const musicAPI = [
   },
 ];
 
-function ThemeControlsWrapper() {
+function ThemeControlsWrapper({ shouldHideUI }) {
   const {
     theme,
     handleThemeChange,
@@ -139,6 +139,9 @@ function ThemeControlsWrapper() {
     handleWallpaperSelect,
   } = useTheme();
 
+  if (shouldHideUI) {
+    return null;
+  }
   return (
     <ThemeControls
       theme={theme}
@@ -151,7 +154,7 @@ function ThemeControlsWrapper() {
 }
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
@@ -169,7 +172,12 @@ function App() {
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
-  const shouldHidePlayer = location.pathname === "/socials" || location.pathname === "/";
+  const shouldHidePlayer =
+    location.pathname === "/socials" || location.pathname === "/";
+  const isSocialsPage = location.pathname === "/socials";
+
+  // Use this boolean for both your player and your theme controls
+  const shouldHideUI = isSocialsPage;
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -461,16 +469,16 @@ function App() {
     isElastic ? "elastic-in" : "ease-in-out",
   ].join(" ");
   return (
-    <ThemeProvider >
+    <ThemeProvider>
       <>
         <style>{customStyles}</style>
-        <audio
+        {/* <audio
           ref={currentAudio}
           onTimeUpdate={handleAudioUpdate}
           onEnded={handleNextSong} // Auto-play next track when current one ends
           muted={isMuted} // This will be true initially
           playsInline
-        />
+        /> */}
         <div
           className="App"
           style={{ position: "relative", minHeight: "100vh" }}
@@ -490,7 +498,9 @@ function App() {
           >
             <HeaderBackground />
           </div>
-          <ThemeControlsWrapper />
+
+          {!shouldHideUI && <ThemeControlsWrapper />}
+
           {/* 2. Loader overlays everything until animation completes */}
           {loading && (
             <div
@@ -530,10 +540,11 @@ function App() {
     z-1200
     /* Transition and Opacity Logic */
     transition-all duration-500 ease-in-out
-    ${shouldHidePlayer
-                      ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
-                      : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
-                    }
+    ${
+      shouldHidePlayer
+        ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
+        : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
+    }
 
     
   `}

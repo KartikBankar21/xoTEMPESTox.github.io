@@ -464,7 +464,7 @@ const { theme } = useTheme();
   return (
     <div className="h-screen w-full flex flex-col overflow-hidden selection:bg-indigo-500/30">
       {/* 1. Header (Top) */}
-      <header className=" my-16 md:my-6  text-center px-4 z-20 flex-none">
+      <header className=" mt-26 md:my-6  text-center px-4 z-20 flex-none">
         <div className={`
   backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
   ${theme === 'dark' 
@@ -472,7 +472,7 @@ const { theme } = useTheme();
     : 'bg-white/50 border-black/5 shadow-xl'}
 `}>
   <p className={`
-    text-7xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
+    text-8xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
     ${theme === 'dark'
       ? 'bg-gradient-to-b from-white to-white/50'
       : 'bg-gradient-to-b from-gray-900 to-gray-500'}

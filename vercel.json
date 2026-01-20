@@ -1,4 +1,15 @@
 {
+  "redirects": [
+    {
+      "source": "/linkedin",
+      "destination": "https://www.linkedin.com/in/priyanshu123sah",
+      "permanent": true
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/xoTEMPESTox",
+      "permanent": true
+    }],
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]
