@@ -50,7 +50,7 @@ const rawPortfolioData = [
       {
         name: "OpenAI",
         slug: "logos/openai-icon",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "invert",
       },
       { name: "React", slug: "logos/react", color: "61DAFB", iconColor: "" },
@@ -85,13 +85,13 @@ const rawPortfolioData = [
       {
         name: "Solidity",
         slug: "skill-icons/solidity",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "",
       },
       {
         name: "Ethereum",
         slug: "logos/ethereum",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "",
       },
       {
@@ -138,7 +138,7 @@ const rawPortfolioData = [
       {
         name: "Ethers.js",
         slug: "logos/ethereum",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "",
       },
       {
@@ -171,7 +171,7 @@ const rawPortfolioData = [
       {
         name: "Socket.io",
         slug: "logos/socket-io",
-        color: "ffffff",
+        color: "888888",
         iconColor: "",
       },
       {
@@ -183,7 +183,7 @@ const rawPortfolioData = [
       {
         name: "Solidity",
         slug: "skill-icons/solidity",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "",
       },
     ],
@@ -211,7 +211,7 @@ const rawPortfolioData = [
       {
         name: "ESP32",
         slug: "simple-icons/espressif",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "invert",
       },
       {
@@ -313,7 +313,7 @@ const rawPortfolioData = [
       {
         name: "Pandas",
         slug: "logos/pandas-icon",
-        color: "FFFFFF",
+        color: "888888",
         iconColor: "",
       },
       {

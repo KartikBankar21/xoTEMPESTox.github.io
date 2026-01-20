@@ -1,11 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/mail",
-      "destination": "mailto:priyanshu123sah@gmail.com",
-      "permanent": false
-    },
-    {
       "source": "/portfolio",
       "destination": "https://priyanshusah.com",
       "permanent": true
@@ -61,6 +56,7 @@
       "permanent": true
     }],
   "rewrites": [
+    { "source": "/mail", "destination": "/redirects/mail/index.html" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

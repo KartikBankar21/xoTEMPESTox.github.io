@@ -154,7 +154,7 @@ function ThemeControlsWrapper({ shouldHideUI }) {
 }
 
 function App() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isElastic, setIsElastic] = useState(false);
@@ -472,13 +472,13 @@ function App() {
     <ThemeProvider>
       <>
         <style>{customStyles}</style>
-        {/* <audio
+        <audio
           ref={currentAudio}
           onTimeUpdate={handleAudioUpdate}
           onEnded={handleNextSong} // Auto-play next track when current one ends
           muted={isMuted} // This will be true initially
           playsInline
-        /> */}
+        />
         <div
           className="App"
           style={{ position: "relative", minHeight: "100vh" }}
