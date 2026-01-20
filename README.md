@@ -126,7 +126,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
 * [x] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
 * [x] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
-* [ ] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
+* [x] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
 
 
 
