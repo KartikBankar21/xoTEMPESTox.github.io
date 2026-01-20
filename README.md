@@ -119,16 +119,19 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ## Roadmap
 
-### Bugs
-* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e") (**I have did the changes but regarding Iphone have no idea if it's fixed.**) 
+### Issue
+* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c)
+* [ ]  Skill Section hidden behind music player on a spcific width for my laptop other Devices are okay , [img](https://github.com/user-attachments/assets/5324a0d9-d77f-4a9b-a2da-9d3b0723c84b)
+* [ ]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
+* [ ]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
+* [ ]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
+* [ ]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
+* [ ]  Remove White Opacity layer infront of images for White mode in porfolio card
+* [ ]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
+* [ ]  White Mode opacity Similar to Dark Mode opacity for background blocks (*might need to discuss*).
+* [ ]  *Not sure about this , Need to discuss* Shade of Purple in Music Player Higlight and White for music volume on slected
+* [ ]  *Need to discuss* , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
+
 
 ### Feature
-* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
-* [x] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
-* [x] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
-* [x] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
-
-
-
-
-
+* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.
