@@ -126,6 +126,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
 * [ ]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
 * [ ]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
+* [ ]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (*need to discuss*)
 * [ ]  Remove White Opacity layer infront of images for White mode in porfolio card
 * [ ]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
 * [ ]  White Mode opacity Similar to Dark Mode opacity for background blocks (*might need to discuss*).
