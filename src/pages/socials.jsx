@@ -4,6 +4,7 @@ import FilterSidebar from "../components/FilterSidebar";
 import PostList from "../components/PostList";
 import DetailView from "../components/DetailView";
 import "../styles/main.css";
+import { useTheme } from "../components/HeaderBackground";
 
 // --- 1. DATA (Now using Markdown for post body) ---
 const BLOG_POSTS = [
@@ -155,11 +156,12 @@ Check out this great video on the AGI race:
   },
 ];
 
-
 const Socials = () => {
   const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'detail'
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [search, setSearch] = useState("");
+  const { theme } = useTheme();
+
   // --- NEW: State for merged posts ---
   const [posts, setPosts] = useState(BLOG_POSTS);
   const [isLoading, setIsLoading] = useState(true);
@@ -213,7 +215,7 @@ const Socials = () => {
     // 1. Filtering by Tags
     if (filters.tags.length > 0) {
       currentPosts = currentPosts.filter((post) =>
-        filters.tags.some((tag) => post.tags.includes(tag))
+        filters.tags.some((tag) => post.tags.includes(tag)),
       );
     }
 
@@ -224,7 +226,7 @@ const Socials = () => {
         (post) =>
           post.title.toLowerCase().includes(searchLower) ||
           post.excerpt.toLowerCase().includes(searchLower) ||
-          post.tags.some((tag) => tag.toLowerCase().includes(searchLower))
+          post.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
       );
     }
 
@@ -254,7 +256,7 @@ const Socials = () => {
   // Use 'posts' state to find the selected post so it has updated likes/views
   const selectedPost = useMemo(
     () => posts.find((p) => p.id === selectedPostId),
-    [posts, selectedPostId]
+    [posts, selectedPostId],
   );
 
   // Inside your Socials component
@@ -277,8 +279,8 @@ const Socials = () => {
         // Update local state so the UI reflects the new view count immediately
         setPosts((prevPosts) =>
           prevPosts.map((p) =>
-            p.id === id ? { ...p, views: updatedData.views } : p
-          )
+            p.id === id ? { ...p, views: updatedData.views } : p,
+          ),
         );
       }
     } catch (err) {
@@ -439,31 +441,46 @@ const Socials = () => {
   ];
 
   return (
-    <div className="page-section mt-32">
+    <div className="page-section mt-32" data-theme={theme}>
       <h1 className="sr-only">Blog & Socials</h1>
       <ul
         id="socials"
         aria-label="Social links"
         // Combine custom class for positioning/border and Tailwind for flex layout/colors
-        className="socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group"
+        className={`socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group transition-all duration-500 border ${
+    theme === "dark" 
+      ? "bg-black border-white/10 shadow-2xl shadow-black/50" 
+      : "bg-white border-white/90 shadow-lg shadow-gray-200"
+  }`}
       >
         <div className="absolute overflow-hidden h-[100%] w-[100%] pointer-events-none ">
           <div
-            className="absolute inset-0 bg-[#000000] pointer-events-none"
+            className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+              theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+            }`}
             style={{
-              filter: "url(#nnnoise-filter)",
+              filter:
+                theme === "dark"
+                  ? "url(#nnnoise-filter)"
+                  : "url(#nnnoise-filter-black)",
             }}
           />
         </div>
         {socialLinks.map((link, index) => (
-          <li key={index}>
-            <div class="absolute h-[3.4rem] w-[3.4rem] rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none z-0 "></div>
+          <li key={index} className=" hover:scale-125">
+            {/* <div
+              class={`absolute h-[3.4rem] w-[3.4rem] rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none z-0 `}
+            ></div> */}
             <a
-              className="socials-link border border-transparent rounded-full 
+              className={`socials-link border border-transparent rounded-full 
                                 flex items-center justify-center 
                                 h-[3.4rem] w-[3.4rem] z-10
-                                transition-all duration-200 ease-in-out text-white
-                                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white hover:text-sky-400 transition-transform duration-200 hover:scale-125"
+                                transition-all duration-200 ease-in-out 
+                                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white hover:text-sky-400 transition-transform duration-200  ${
+                                  theme === "dark"
+                                    ? "text-white  "
+                                    : "text-slate-900  "
+                                }`}
               href={link.href}
               target={link.target}
               rel={link.rel}
@@ -476,7 +493,13 @@ const Socials = () => {
           </li>
         ))}
       </ul>
-      <div className="max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto bg-zinc-950 border border-blue-900/30 p-6 md:p-12 rounded-[2.5rem] shadow-[0_20px_50px_rgba(00,0,0.5),0_0_20px_rgba(30,58,138,0.1)] ">
+      <div
+        className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${
+          theme === "dark"
+            ? "bg-zinc-950/70 backdrop-blur-sm border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.02)]"
+            : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
+        }`}
+      >
         {/* LIST VIEW */}
         {currentPage === "list" && (
           <>
@@ -484,7 +507,7 @@ const Socials = () => {
               search={search}
               setSearch={setSearch}
               setFilters={setFilters}
-            /* Styling Suggestion for Header:
+              /* Styling Suggestion for Header:
          Use text-slate-100 (White/Grey) for titles
          Use text-slate-400 (Grey) for subtitles
          Use bg-blue-600 (Blue) for primary buttons 
@@ -496,7 +519,7 @@ const Socials = () => {
                 <PostList
                   filteredPosts={filteredPosts}
                   onPostClick={handlePostClick}
-                /* Inside PostList: 
+                  /* Inside PostList: 
              Cards should use bg-zinc-900 and hover:border-blue-500/50 
           */
                 />

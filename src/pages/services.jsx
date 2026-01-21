@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import '../styles/main.css'
+import { useTheme } from "../components/HeaderBackground";
 
 const Services = () => {
+  const { theme } = useTheme(); 
 
   useEffect(() => {
     const icons = document.querySelectorAll(".services__wrapper__icons__item");
@@ -19,18 +21,18 @@ const Services = () => {
       div.classList.add(classes[index]);
     });
 
-    // Change z-index after animation completes (0.5s transition + 0.4s delay = 0.9s)
     setTimeout(() => {
       if (iconsWrapper) {
         iconsWrapper.style.zIndex = "1";
       }
-    }, 400); // 200ms to account for transition duration + delay
+    }, 400); 
 
   }, []);
 
   return (
     <div className="page-section">
-      <section className="services" id="services">
+      {/* ADDED data-theme HERE */}
+      <section className="services" id="services" data-theme={theme}>
         <div className="services__wrapper">
           <h1 className="services__wrapper__title">Services</h1>
           <div className="services__wrapper__circle rounding"></div>

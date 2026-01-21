@@ -1,9 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useOutletContext } from "react-router-dom";
+import { useTheme } from "../components/HeaderBackground";
 import "../styles/main.css";
 
+
 const Home = () => {
+  const { theme } = useTheme();
+  const context = useOutletContext();
+  const startAudioOnInteraction = context?.startAudioOnInteraction;
+
   const containerRef = useRef(null);
+
   useEffect(() => {
     const container = containerRef.current;
 
@@ -11,14 +18,23 @@ const Home = () => {
       return;
     }
 
-    // --- FIX: Check for existing wrapper before creating new ones ---
+    // 1. Prevent double injection
     if (container.querySelector(".typed-text__wrapper")) {
-      // If the wrapper already exists, we skip initialization to prevent duplicates.
-      // This is the core fix for the double animation issue.
       return;
     }
 
-    initHomeRoleTyper();
+    // 2. Initialize and capture the cleanup function
+    const cancelTyping = initHomeRoleTyper();
+
+
+    // --- FIX: Check for existing wrapper before creating new ones ---
+    return () => {
+      if (cancelTyping) cancelTyping();
+      // Also physically remove the injected elements to keep the DOM clean
+      const wrapper = container.querySelector(".typed-text__wrapper");
+      if (wrapper) wrapper.remove();
+    };
+    // initHomeRoleTyper();
   }, []);
 
   const initHomeRoleTyper = () => {
@@ -351,14 +367,16 @@ const Home = () => {
     // Add event listeners for cleanup on navigation
     window.addEventListener("pagehide", cancelTyping, { once: true });
     window.addEventListener("beforeunload", cancelTyping, { once: true });
+
+    return cancelTyping;
   };
-  initHomeRoleTyper();
+  // initHomeRoleTyper();
 
 
 
   return (
     <div className="page-section">
-      <section className="home" id="home">
+      <section className="home" id="home" data-theme={theme}>
         <div className="container">
           <div className="row align-items-center gx-0 gy-sm-4 mx-auto text-center">
             <div className="col-md-6">
@@ -396,6 +414,7 @@ const Home = () => {
                   id="read-more-home"
                   className="home__info__btn custom-btn mx-auto mt-6 "
                   to="/about"
+                  onClick={startAudioOnInteraction}
                 >
                   <span className="relative z-10">read more</span>
                 </NavLink>

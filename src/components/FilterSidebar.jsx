@@ -3,6 +3,7 @@ import {
   Calendar,
   ChevronDown,
 } from "lucide-react";
+import { useTheme } from "./HeaderBackground";
 
 // --- Markdown Imports (Assumed available in the environment) ---
 // Note: Changed import style to resolve module resolution error in the build environment.
@@ -117,6 +118,8 @@ const ALL_TAGS = [...new Set(BLOG_POSTS.flatMap((post) => post.tags))].sort();
 // Custom component for the glow aesthetic
 
 const FilterSidebar = ({ filters, setFilters }) => {
+      const { theme } = useTheme();
+  
   const toggleSortDirection = useCallback(() => {
     setFilters((prev) => ({
       ...prev,
@@ -148,51 +151,60 @@ const FilterSidebar = ({ filters, setFilters }) => {
 
   return (
     <aside className="md:col-span-1 order-1 md:order-none">
-      <div
-        onClick={toggleSortDirection}
-        className="sort-button w-full cursor-pointer p-4 bg-zinc-950 rounded-xl 
-               shadow-xl border border-blue-900/40 hover:border-blue-500 
-               hover:shadow-blue-500/10 transition-all duration-300 active:scale-[.98] mb-6"
-      >
-        <div className="flex items-center justify-between text-lg font-medium text-slate-100">
-          <div className="flex items-center space-x-3">
-            <Calendar className="w-6 h-6 text-blue-400" />
-            <span id="sort-text" className="tracking-tight">
-              {sortText}
-            </span>
-          </div>
-          <ChevronDown
-            className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${iconRotation}`}
-          />
-        </div>
+  <div
+    onClick={toggleSortDirection}
+    className={`sort-button w-full cursor-pointer p-4 rounded-xl transition-all duration-300 active:scale-[.98] mb-6 border ${
+      theme === 'dark' 
+        ? 'bg-zinc-950 border-zinc-800 shadow-xl hover:border-slate-500 hover:shadow-white/5' 
+        : 'bg-white border-slate-200 shadow-lg hover:border-slate-400 hover:shadow-slate-200'
+    }`}
+  >
+    <div className={`flex items-center justify-between text-lg font-medium transition-colors ${
+      theme === 'dark' ? 'text-slate-100' : 'text-slate-900'
+    }`}>
+      <div className="flex items-center space-x-3">
+        <Calendar className={`w-6 h-6 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-900'}`} />
+        <span id="sort-text" className="tracking-tight">
+          {sortText}
+        </span>
       </div>
+      <ChevronDown
+        className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${iconRotation}`}
+      />
+    </div>
+  </div>
 
-      <div className="mt-12">
-        <h3 className="text-sm uppercase tracking-[0.2em] font-bold mb-6 text-slate-500">
-          Filter by topics
-        </h3>
+  <div className="mt-12">
+    <h3 className="text-sm uppercase tracking-[0.2em] font-bold mb-6 text-slate-500">
+      Filter by topics
+    </h3>
 
-        <div className="flex flex-wrap gap-2.5">
-          {ALL_TAGS.map((tag) => {
-            const isActive = tags.includes(tag);
+    <div className="flex flex-wrap gap-2.5">
+      {ALL_TAGS.map((tag) => {
+        const isActive = tags.includes(tag);
 
-            const activeClass = isActive
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-900/40 border-blue-400 ring-1 ring-blue-400 font-bold"
-              : "bg-zinc-900 text-slate-400 border border-blue-900/20 hover:bg-zinc-800 hover:text-slate-100 hover:border-blue-700";
+        // Conditional classes based on theme and active state
+        const activeClass = isActive
+          ? (theme === 'dark' 
+              ? "bg-slate-100 text-zinc-950 shadow-lg shadow-white/5 border-white ring-1 ring-white font-bold" 
+              : "bg-slate-900 text-white shadow-lg shadow-slate-300 border-slate-900 ring-1 ring-slate-900 font-bold")
+          : (theme === 'dark'
+              ? "bg-zinc-900 text-slate-400 border-zinc-800 hover:bg-zinc-800 hover:text-slate-100 hover:border-slate-500"
+              : "bg-slate-50 text-slate-500 border-slate-200 hover:bg-white hover:text-slate-900 hover:border-slate-400");
 
-            return (
-              <button
-                key={tag}
-                onClick={() => toggleTagFilter(tag)}
-                className={`topic-tag px-4 py-2 text-xs uppercase tracking-wider rounded-md border transition-all duration-300 ${activeClass}`}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </aside>
+        return (
+          <button
+            key={tag}
+            onClick={() => toggleTagFilter(tag)}
+            className={`topic-tag px-4 py-2 text-xs uppercase tracking-wider rounded-md border transition-all duration-300 ${activeClass}`}
+          >
+            {tag}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+</aside>
   );
 };
 

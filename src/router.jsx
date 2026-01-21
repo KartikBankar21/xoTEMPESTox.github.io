@@ -1,15 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import App from "./App";
 import Home from "./pages/home";
-import About from './pages/about';
-import Journey from './pages/journey';
-import Portfolio from './pages/portfolio';
-import Services from './pages/services';
-import Skills from './pages/skills';
-import Socials from './pages/socials';
-
+import About from "./pages/about";
+import Journey from "./pages/journey";
+import Portfolio from "./pages/portfolio";
+import Services from "./pages/services";
+import Skills from "./pages/skills";
+import Socials from "./pages/socials";
+import ExternalRedirect from "./components/ExternalRedirect";
 
 
 const appRouter = createBrowserRouter([
@@ -44,6 +48,14 @@ const appRouter = createBrowserRouter([
       {
         path: "/socials",
         element: <Socials />,
+      },
+      {
+        path: "/mail",
+        element: <ExternalRedirect to="mailto:priyanshu123sah@gmail.com" />,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/" replace />,
       },
     ],
   },

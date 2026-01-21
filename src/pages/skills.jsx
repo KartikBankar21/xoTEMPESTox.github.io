@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import '../styles/main.css';
+import { useTheme } from "../components/HeaderBackground";
+
 
 const Skills = () => {
+    const { theme } = useTheme(); 
+  
 
   useEffect(() => {
     function initSkillBarAnimations() {
@@ -113,7 +117,7 @@ const Skills = () => {
 
   return (
     <div className="page-section">
-      <section className="skills" id="skills">
+      <section className="skills" id="skills" data-theme={theme}>
         <div className="container">
           <h1 className="skills__title text-capitalize">my skills</h1>
           <div className="row justify-content-center gy-0">

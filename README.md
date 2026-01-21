@@ -119,24 +119,20 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ## Roadmap
 
-### Bugs
-* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the actoive highlights , Nav bar one Line Stuck on IOS due to CSS switch to JS . [img](https://github.com/user-attachments/assets/fe425dcd-648b-47dc-a99b-94f57eafa22e") (**I have did the changes but regarding Iphone have no idea if it's fixed.**) 
-* [ ]  Clean up Color Pallet to use Shades of white , black , grey only and withgradient blue + purple as Highlighter (Left for: Blogs page)
-* [x]  Hide Music player in Socials Tab
-* [x]  Blue Highlight collour , might need to use same as nav bar , grey on out of focus and white on focus , With Gradient svg bheind on Hover / selected [img](https://github.com/user-attachments/assets/23f880a2-8115-4342-bbfd-0216a215ea80) (**++UPDATE:gradient caused unkown changes in the rendering of the svg so removed and used scale and white gray highlight colors over the icons of mini-player, the main lofi-player theme changed to white, gray, black and purple, reason for purple is it syncs properly with the theme color of 2 light tails on the mini-music player.**)
-* [x]  Enlarge and Strengthen Gradeient effect of hover Both in Product card and Journey Card [img](https://github.com/user-attachments/assets/62bcfdec-99b7-4362-b60e-36c7413fb6a5) , [img](https://github.com/user-attachments/assets/d0e6821c-5026-45e7-9e6d-5ea895f01426)
-* [x]  Option to Expand on click Image [img](https://github.com/user-attachments/assets/20f038cc-3e94-4188-b06e-7c26ccee9f43)
-* [x]  Tech stack has different black compared to normal card for Background [img](https://github.com/user-attachments/assets/13e88252-2680-4a04-b068-84566c2f2958) , The Text color is too dark use lighter shade of grey (eg Skill section bar) (**++UPDATE: Tech stack is moved to Top Face below description**)
-* [x]  The Loop isn't Seamless , towards the end we see empty cubes , [img](https://github.com/user-attachments/assets/e0443895-5ed6-44fe-a5c2-410025f2b44e) (**++UPDATE: To indicate the end of the loop the carousel leaves one cube towards the end and repeats the caruosel from this point, so atleast one cube will be visible towards the end of carousel indicating the carousel ends and repeat appearance of cube indicates the carousel has started again.**)
-* [x]  In Portfolio card limit Hover rotation to diferent face to bottom left+right Corner , Use "back" button on Tech stack / Image face , "view Details" Need to be smaller button , Remove arrow from "view Details" / "Back", Experiment with keeping the Image Face as Main face and Merging Tech stack + Description into single Face , with option to click and view in more detail. [img](https://github.com/user-attachments/assets/c3d4d8c8-0675-4e2f-86f3-b21f6b14d12d)
+### Issue
+* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c)
+* [ ]  Skill Section hidden behind music player on a spcific width for my laptop other Devices are okay , [img](https://github.com/user-attachments/assets/5324a0d9-d77f-4a9b-a2da-9d3b0723c84b)
+* [ ]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
+* [ ]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
+* [ ]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
+* [ ]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
+* [ ]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (**need to discuss**)
+* [ ]  Remove White Opacity layer infront of images for White mode in porfolio card
+* [ ]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
+* [ ]  White Mode opacity Similar to Dark Mode opacity for background blocks (**might need to discuss**).
+* [ ]  **Not sure about this , Need to discuss** Shade of Purple in Music Player Higlight and White for music volume on slected
+* [ ]  **Need to discuss** , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
+
 
 ### Feature
-* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website (not GitHub).
-* [ ] **Add “Wallpaper Selector”** on left similar to Music Player , Use apropriate wallpper version based on dark / light mode
-* [ ] **Implement Dark/Light mode** on left similar to Music Player for user preference based on system mode.
-* [ ] **Improve fallback and redirect handling** for invalid routes or offline states(Optional / use server side Redirect).
-
-
-
-
-
+* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.

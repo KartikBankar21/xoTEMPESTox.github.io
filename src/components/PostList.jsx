@@ -1,32 +1,37 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import PostCard from "./PostCard";
-// --- Markdown Imports (Assumed available in the environment) ---
-// Note: Changed import style to resolve module resolution error in the build environment.
-// We assume these are globally available or imported via full URLs if necessary.
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm"; // Keeping this structure but knowing the build environment will resolve it.
-
-// --- 3. COMPONENTS ---
-
-// Custom component for the glow aesthetic
+import { useTheme } from "../components/HeaderBackground"; // Assuming this is where your theme hook lives
 
 const PostList = ({ filteredPosts, onPostClick }) => {
+  const { theme } = useTheme();
+
   if (filteredPosts.length === 0) {
     return (
-      <section className="md:col-span-2 order-2 md:order-none pt-0! ">
-        <div className="text-center py-16 border-2 border-gray-800 rounded-xl bg-gray-900 shadow-xl">
-          <p className="text-xl text-gray-500 font-semibold">
+      <section className="md:col-span-2 order-2 md:order-none pt-0!">
+        <div 
+          className={`text-center py-16 border-2 rounded-xl shadow-xl transition-all duration-500 ${
+            theme === 'dark' 
+              ? "border-zinc-800 bg-zinc-950 shadow-black/50" 
+              : "border-slate-100 bg-white shadow-slate-200/50"
+          }`}
+        >
+          <p className={`text-xl font-semibold transition-colors ${
+            theme === 'dark' ? "text-slate-400" : "text-slate-600"
+          }`}>
             No posts found matching your criteria.
           </p>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className={`text-sm mt-2 transition-colors ${
+            theme === 'dark' ? "text-slate-600" : "text-slate-400"
+          }`}>
             Try adjusting your filters or search terms.
           </p>
         </div>
       </section>
     );
   }
+
   return (
-    <section className="md:col-span-2 order-2 md:order-none pt-0! rounded-2xl ">
+    <section className="md:col-span-2 order-2 md:order-none pt-0! rounded-2xl">
       {filteredPosts.map((post) => (
         <PostCard key={post.id} post={post} onPostClick={onPostClick} />
       ))}

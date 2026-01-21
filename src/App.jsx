@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import HeaderBackground from "./components/HeaderBackground";
+import HeaderBackground, {
+  ThemeProvider,
+  ThemeControls,
+  useTheme,
+} from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
 import { MiniPlayer } from "./components/MiniPlayer";
@@ -14,6 +18,7 @@ const customStyles = `
     --lo-fi-ui: #e5d4f9;
     --lo-fi-accent: #c6aee3;
     --lo-fi-dark: #white;
+    --player-bg: #000000;
 }
 
 .icon-btn {
@@ -28,10 +33,9 @@ const customStyles = `
     /* Use custom rounding for the mobile top-right bar shape */
     padding: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    background-color: #000000;
     border: 2px solid var(--lo-fi-accent);
+    background-color: var(--player-bg);
 }
-
 
 .expanded {
     height: auto;
@@ -71,7 +75,6 @@ const customStyles = `
     right: 0;
     bottom: 0;
     backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.95); /* Semi-transparent background */
     z-index: 10;
 }
 `;
@@ -127,6 +130,29 @@ const musicAPI = [
   },
 ];
 
+function ThemeControlsWrapper({ shouldHideUI }) {
+  const {
+    theme,
+    handleThemeChange,
+    allWallpapers,
+    currentAsset,
+    handleWallpaperSelect,
+  } = useTheme();
+
+  if (shouldHideUI) {
+    return null;
+  }
+  return (
+    <ThemeControls
+      theme={theme}
+      onThemeChange={handleThemeChange}
+      wallpapers={allWallpapers}
+      currentWallpaper={currentAsset}
+      onWallpaperSelect={handleWallpaperSelect}
+    />
+  );
+}
+
 function App() {
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
@@ -134,6 +160,7 @@ function App() {
   const [isElastic, setIsElastic] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const { theme } = useTheme();
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -145,7 +172,12 @@ function App() {
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
-  const isSocialsPage = location.pathname === "/socials"; // Add this line
+  const shouldHidePlayer =
+    location.pathname === "/socials" || location.pathname === "/";
+  const isSocialsPage = location.pathname === "/socials";
+
+  // Use this boolean for both your player and your theme controls
+  const shouldHideUI = isSocialsPage;
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -165,10 +197,10 @@ function App() {
   }, [location]);
 
   useEffect(() => {
-    if (location.pathname === "/socials") {
+    if (shouldHidePlayer) {
       setIsExpanded(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, shouldHidePlayer]);
 
   // --- AUDIO HANDLERS ---
 
@@ -236,7 +268,7 @@ function App() {
           // CRITICAL: Log error if autoplay is blocked
           console.error(
             "Playback failed (Autoplay blocked? Browser requires user interaction to start audio).",
-            error
+            error,
           );
           setIsPlaying(false); // Ensure state is correct if play fails
         });
@@ -283,7 +315,7 @@ function App() {
         setDuration(currentAudio.current.duration);
         console.log(
           "Metadata loaded. Duration set:",
-          currentAudio.current.duration
+          currentAudio.current.duration,
         );
       };
 
@@ -305,11 +337,11 @@ function App() {
       // 3. ATTACH LISTENERS
       currentAudio.current.addEventListener(
         "loadedmetadata",
-        handleLoadedMetadata
+        handleLoadedMetadata,
       );
       currentAudio.current.addEventListener(
         "canplaythrough",
-        handleCanPlayThrough
+        handleCanPlayThrough,
       );
 
       // 4. CLEANUP
@@ -317,11 +349,11 @@ function App() {
       return () => {
         currentAudio.current?.removeEventListener(
           "loadedmetadata",
-          handleLoadedMetadata
+          handleLoadedMetadata,
         );
         currentAudio.current?.removeEventListener(
           "canplaythrough",
-          handleCanPlayThrough
+          handleCanPlayThrough,
         );
       };
     }
@@ -385,6 +417,7 @@ function App() {
     if (hasInteracted.current) return;
 
     if (currentAudio.current) {
+      currentAudio.current.currentTime = 0; // Restart from beginning
       currentAudio.current.muted = false;
       currentAudio.current.volume = volume;
 
@@ -423,6 +456,10 @@ function App() {
       " lg:top-1/2 lg:-translate-y-1/2 lg:right-10 lg:w-20 lg:h-126";
   }
 
+  const playerThemeStyle = {
+    "--player-bg": theme === "dark" ? "#000000" : "#FFFFFF",
+  };
+
   // Combining static, state, and responsive classes
   const containerClasses = [
     "transition-all duration-500",
@@ -432,181 +469,241 @@ function App() {
     isElastic ? "elastic-in" : "ease-in-out",
   ].join(" ");
   return (
-    <>
-      <style>{customStyles}</style>
-      <audio
-        ref={currentAudio}
-        onTimeUpdate={handleAudioUpdate}
-        onEnded={handleNextSong} // Auto-play next track when current one ends
-        muted={isMuted} // This will be true initially
-        playsInline
-      />
-      <div className="App" style={{ position: "relative", minHeight: "100vh" }}>
-        {/* 1. Background is ALWAYS mounted so the video can load */}
+    <ThemeProvider>
+      <>
+        <style>{customStyles}</style>
+        <audio
+          ref={currentAudio}
+          onTimeUpdate={handleAudioUpdate}
+          onEnded={handleNextSong} // Auto-play next track when current one ends
+          muted={isMuted} // This will be true initially
+          playsInline
+        />
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 1,
-            pointerEvents: "none", // so loader still reacts normally
-          }}
+          className="App"
+          style={{ position: "relative", minHeight: "100vh" }}
+          data-theme={theme}
         >
-          <HeaderBackground />
-        </div>
-
-        {/* 2. Loader overlays everything until animation completes */}
-        {loading && (
+          {/* 1. Background is ALWAYS mounted so the video can load */}
           <div
-            className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]
-      transition-opacity duration-700 ease-in-out
-      ${fadeOut ? "opacity-0" : "opacity-100"}`}
-            onTransitionEnd={() => {
-              if (fadeOut) setLoading(false);
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 1,
+              pointerEvents: "none", // so loader still reacts normally
             }}
           >
-            <SvgLoaderLeftToRight
-              onFinish={() => {
-                setFadeOut(true);
-                // handleAudioPlay();
-              }}
-            />
+            <HeaderBackground />
           </div>
-        )}
 
-        {/* 3. Main content shows only after loading */}
-        {!loading && (
-          <>
+          {!shouldHideUI && <ThemeControlsWrapper />}
+
+          {/* 2. Loader overlays everything until animation completes */}
+          {loading && (
             <div
-              className="page-overlay"
-              style={{
-                position: "relative",
-                width: "100%",
-                minHeight: "calc(100vh)",
-                zIndex: 10,
+              className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-white z-[9999]
+      transition-opacity duration-700 ease-in-out
+      ${fadeOut ? "opacity-0" : "opacity-100"}`}
+              onTransitionEnd={() => {
+                if (fadeOut) setLoading(false);
               }}
             >
+              <SvgLoaderLeftToRight
+                onFinish={() => {
+                  setFadeOut(true);
+                  // handleAudioPlay();
+                }}
+              />
+            </div>
+          )}
+
+          {/* 3. Main content shows only after loading */}
+          {!loading && (
+            <>
               <div
-                className={`
+                className="page-overlay"
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  minHeight: "calc(100vh)",
+                  zIndex: 10,
+                }}
+              >
+                <div
+                  className={`
     ${positionClasses} 
     ${containerClasses} 
+
     z-1200
     /* Transition and Opacity Logic */
-    transition-opacity duration-500
+    transition-all duration-500 ease-in-out
     ${
-      isSocialsPage
-        ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
-        : "opacity-100 pointer-events-auto"
+      shouldHidePlayer
+        ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
+        : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
     }
+
+    
   `}
-              >
-                {isExpanded ? (
-                  <LoFiPlayer
-                    isExpanded={isExpanded}
-                    onCollapse={() => handleToggle(false)}
-                    currentTrack={currentTrack}
-                    isPlaying={isPlaying}
-                    currentTime={currentTime}
-                    duration={duration}
-                    onPlayPause={handleAudioPlay}
-                    onNext={handleNextSong}
-                    onPrev={handlePrevSong}
-                    // Menu Props
-                    isMenuOpen={isMenuOpen}
-                    onMenuToggle={handleMenuToggle}
-                    onTrackSelect={handleTrackSelect}
-                    tracks={musicAPI}
-                    trackIndex={trackIndex}
-                    // Volume Props - FIXED HERE
-                    volume={volume}
-                    onVolumeChange={handleVolumeChange}
-                  />
-                ) : (
-                  <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
-                    <MiniPlayer
-                      onExpand={() => handleToggle(true)}
+                >
+                  {isExpanded ? (
+                    <LoFiPlayer
+                      isExpanded={isExpanded}
+                      onCollapse={() => handleToggle(false)}
                       currentTrack={currentTrack}
                       isPlaying={isPlaying}
-                      isMuted={isMuted}
-                      setIsMuted={setIsMuted}
-                      handleMuteToggle={handleMuteToggle}
-                      handleAudioPlay={handleAudioPlay}
+                      currentTime={currentTime}
+                      duration={duration}
+                      onPlayPause={handleAudioPlay}
                       onNext={handleNextSong}
                       onPrev={handlePrevSong}
+                      // Menu Props
+                      isMenuOpen={isMenuOpen}
+                      onMenuToggle={handleMenuToggle}
+                      onTrackSelect={handleTrackSelect}
+                      tracks={musicAPI}
+                      trackIndex={trackIndex}
+                      // Volume Props - FIXED HERE
+                      volume={volume}
+                      onVolumeChange={handleVolumeChange}
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
+                      <MiniPlayer
+                        onExpand={() => handleToggle(true)}
+                        currentTrack={currentTrack}
+                        isPlaying={isPlaying}
+                        isMuted={isMuted}
+                        setIsMuted={setIsMuted}
+                        handleMuteToggle={handleMuteToggle}
+                        handleAudioPlay={handleAudioPlay}
+                        onNext={handleNextSong}
+                        onPrev={handlePrevSong}
+                      />
+                    </div>
+                  )}
+                </div>
+                <AnimatedOutlet context={{ startAudioOnInteraction }} />
               </div>
-              <AnimatedOutlet />
-            </div>
 
-            <div
-              style={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 100,
-              }}
+              <div
+                style={{
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 100,
+                }}
+              >
+                <FooterNavbar onNavigate={startAudioOnInteraction} />
+              </div>
+            </>
+          )}
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            position: "absolute",
+            width: 0,
+            height: 0,
+            pointerEvents: "none",
+            visibility: "hidden",
+          }}
+        >
+          <defs>
+            <filter
+              id="nnnoise-filter"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+              filterUnits="objectBoundingBox"
+              primitiveUnits="userSpaceOnUse"
+              colorInterpolationFilters="linearRGB"
             >
-              <FooterNavbar onNavigate={startAudioOnInteraction} />
-            </div>
-          </>
-        )}
-      </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        style={{
-          position: "absolute",
-          width: 0,
-          height: 0,
-          pointerEvents: "none",
-          visibility: "hidden",
-        }}
-      >
-        <defs>
-          <filter
-            id="nnnoise-filter"
-            x="-20%"
-            y="-20%"
-            width="140%"
-            height="140%"
-            filterUnits="objectBoundingBox"
-            primitiveUnits="userSpaceOnUse"
-            colorInterpolationFilters="linearRGB"
-          >
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.2"
-              numOctaves="4"
-              seed="15"
-              stitchTiles="stitch"
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.2"
+                numOctaves="4"
+                seed="15"
+                stitchTiles="stitch"
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                result="turbulence"
+              ></feTurbulence>
+              <feSpecularLighting
+                surfaceScale="15"
+                specularConstant="1.1"
+                specularExponent="20"
+                lightingColor="#a193b3"
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                in="turbulence"
+                result="specularLighting"
+              >
+                <feDistantLight azimuth="3" elevation="62"></feDistantLight>
+              </feSpecularLighting>
+            </filter>
+          </defs>
+        </svg>
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            position: "absolute",
+            width: 0,
+            height: 0,
+            pointerEvents: "none",
+            visibility: "hidden",
+          }}
+        >
+          <defs>
+            <filter
+              id="nnnoise-filter-black"
               x="0%"
               y="0%"
               width="100%"
               height="100%"
-              result="turbulence"
-            ></feTurbulence>
-            <feSpecularLighting
-              surfaceScale="15"
-              specularConstant="1.1"
-              specularExponent="20"
-              lightingColor="#a193b3"
-              x="0%"
-              y="0%"
-              width="100%"
-              height="100%"
-              in="turbulence"
-              result="specularLighting"
             >
-              <feDistantLight azimuth="3" elevation="62"></feDistantLight>
-            </feSpecularLighting>
-          </filter>
-        </defs>
-      </svg>
-    </>
+              <feTurbulence
+                type="turbulence"
+                baseFrequency="0.7" /* Higher number = smaller, tighter dots */
+                numOctaves="4"
+                stitchTiles="stitch"
+                result="raw_noise"
+              />
+
+              <feColorMatrix
+                in="raw_noise"
+                type="matrix"
+                values="0 0 0 0 0
+            0 0 0 0 0
+            0 0 0 0 0
+            0 0 0 1 0"
+                result="black_specks"
+              />
+
+              {/* CHANGE TABLEVALUES HERE FOR DENSITY */}
+              <feComponentTransfer in="black_specks">
+                <feFuncA type="discrete" tableValues="0 0 1 " />
+              </feComponentTransfer>
+
+              {/* ADJUST SLOPE FOR VISIBILITY */}
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.4" />
+              </feComponentTransfer>
+            </filter>
+          </defs>
+        </svg>
+      </>
+    </ThemeProvider>
   );
 }
 

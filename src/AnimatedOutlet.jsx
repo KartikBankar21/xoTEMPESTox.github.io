@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useOutlet } from "react-router-dom";
 
-function AnimatedOutlet() {
+function AnimatedOutlet({ context }) {
   const location = useLocation();
-  const outlet = useOutlet();
+  const outlet = useOutlet(context);
   const prevPathRef = useRef(location.pathname);
   const directionRef = useRef(1); // 1 for right-to-left, -1 for left-to-right
 
