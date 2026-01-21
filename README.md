@@ -129,7 +129,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (**need to discuss**)
 * [ ]  Remove White Opacity layer infront of images for White mode in porfolio card
 * [ ]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
-* [ ]  White Mode opacity Similar to Dark Mode opacity for background blocks (**might need to discuss**).
+* [ ]  Hide Navbar , along with Darkmode+walpaper selector In home page .
 * [ ]  **Not sure about this , Need to discuss** Shade of Purple in Music Player Higlight and White for music volume on slected
 * [ ]  **Need to discuss** , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
 
