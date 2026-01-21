@@ -130,6 +130,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ]  Remove White Opacity layer infront of images for White mode in porfolio card
 * [ ]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
 * [ ]  Hide Navbar , along with Darkmode+walpaper selector In home page ,use the same slide animation as music player , left slide in/out  for wallpaper/theme , bottom slide in/out for navbar .
+* [ ]  Update the Home page readmore button to use either 10/16 from this [link](https://tympanus.net/Development/ButtonHoverStyles/)
 * [ ]  **Not sure about this , Need to discuss** Shade of Purple in Music Player Higlight and White for music volume on slected
 * [ ]  **Need to discuss** , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
 
