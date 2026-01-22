@@ -289,7 +289,7 @@ const Cube = ({
 >
   <div
     className={`absolute inset-0 bg-cover bg-center rounded-4xl cursor-pointer transition-transform hover:scale-105 ${
-      theme === 'dark' ? 'opacity-50' : 'opacity-80'
+      theme === 'dark' ? 'opacity-50' : 'opacity-100'
     }`}
     style={{ backgroundImage: `url(${item.image_url})` }}
     onClick={(e) => {

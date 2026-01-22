@@ -412,11 +412,11 @@ const Home = () => {
 
                 <NavLink
                   id="read-more-home"
-                  className="home__info__btn custom-btn mx-auto mt-6 "
+                  className="mx-auto mt-6 button-read-more button--telesto"
                   to="/about"
                   onClick={startAudioOnInteraction}
                 >
-                  <span className="relative z-10">read more</span>
+                  <span><span>Read More</span></span>
                 </NavLink>
               </div>
             </div>
