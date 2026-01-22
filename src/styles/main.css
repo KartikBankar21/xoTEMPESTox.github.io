@@ -4312,7 +4312,7 @@ progress {
 	display: inline-block;
   border-radius: 1rem;
 }
-
+ 
 .button-read-more::before,
 .button-read-more::after {
 	position: absolute;

@@ -4,12 +4,14 @@ import HeaderBackground, {
   ThemeProvider,
   ThemeControls,
   useTheme,
+  ThemePlayer,
 } from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
+import { motion, AnimatePresence } from 'framer-motion';
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -139,17 +141,21 @@ function ThemeControlsWrapper({ shouldHideUI }) {
     handleWallpaperSelect,
   } = useTheme();
 
-  if (shouldHideUI) {
-    return null;
-  }
+  // if (shouldHideUI) {
+  //   return null;
+  // }
+
   return (
-    <ThemeControls
-      theme={theme}
-      onThemeChange={handleThemeChange}
-      wallpapers={allWallpapers}
-      currentWallpaper={currentAsset}
-      onWallpaperSelect={handleWallpaperSelect}
-    />
+    
+      <ThemePlayer
+        theme={theme}
+        onThemeChange={handleThemeChange}
+        wallpapers={allWallpapers}
+        currentWallpaper={currentAsset}
+        onWallpaperSelect={handleWallpaperSelect}
+        shouldHideUI={shouldHideUI}
+      />
+   
   );
 }
 
@@ -174,10 +180,6 @@ function App() {
   const location = useLocation();
   const shouldHidePlayer =
     location.pathname === "/socials" || location.pathname === "/";
-  const isSocialsPage = location.pathname === "/socials";
-
-  // Use this boolean for both your player and your theme controls
-  const shouldHideUI = isSocialsPage;
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -499,8 +501,8 @@ function App() {
             <HeaderBackground />
           </div>
 
-          {!shouldHideUI && <ThemeControlsWrapper />}
-
+          {/* {!shouldHideUI && } */}
+<ThemeControlsWrapper />
           {/* 2. Loader overlays everything until animation completes */}
           {loading && (
             <div
@@ -589,17 +591,7 @@ function App() {
                 <AnimatedOutlet context={{ startAudioOnInteraction }} />
               </div>
 
-              <div
-                style={{
-                  position: "fixed",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  zIndex: 100,
-                }}
-              >
-                <FooterNavbar onNavigate={startAudioOnInteraction} />
-              </div>
+        <FooterNavbar onNavigate={startAudioOnInteraction} />
             </>
           )}
         </div>

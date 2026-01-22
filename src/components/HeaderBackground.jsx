@@ -5,7 +5,20 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import { Sun, Moon, Image as ImageIcon, X } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Image as ImageIcon,
+  X,
+  Palette,
+  ChevronLeft,
+  Check,
+  Smartphone,
+  Layout,
+  Monitor,
+  ArrowRight,
+} from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 // -----------------------------------------------------------------------------
 // 1. CONTEXT & HOOKS (Unchanged)
@@ -13,11 +26,11 @@ import { Sun, Moon, Image as ImageIcon, X } from "lucide-react";
 
 const ThemeContext = createContext({
   theme: "light",
-  setTheme: () => { },
+  setTheme: () => {},
   allWallpapers: [],
   currentAsset: null,
-  handleThemeChange: () => { },
-  handleWallpaperSelect: () => { },
+  handleThemeChange: () => {},
+  handleWallpaperSelect: () => {},
 });
 
 export const useTheme = () => useContext(ThemeContext);
@@ -205,10 +218,11 @@ export const ThemeControls = ({
       <div className={`fixed top-5 left-5 z-[999] flex gap-2.5 `}>
         <button
           onClick={onThemeChange}
-          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${theme === "dark"
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
+            theme === "dark"
               ? "bg-black/50 text-white hover:bg-black/70"
               : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
-            }`}
+          }`}
           title={
             theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"
           }
@@ -219,10 +233,11 @@ export const ThemeControls = ({
         <button
           ref={buttonRef}
           onClick={() => setShowWallpaperSelector(!showWallpaperSelector)}
-          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${theme === "dark"
+          className={`w-16 h-16 rounded-xl border-none backdrop-blur-sm cursor-pointer flex items-center justify-center transition-all duration-300 ease-in-out shadow-lg ${
+            theme === "dark"
               ? "bg-black/50 text-white hover:bg-black/70"
               : "bg-white/70 text-black hover:bg-white/90 border border-black/5"
-            }`}
+          }`}
           title="Change Wallpaper"
         >
           <ImageIcon size={20} />
@@ -233,21 +248,24 @@ export const ThemeControls = ({
       <div
         ref={panelRef}
         className={`fixed top-24 left-5 mr-5 z-[10000] backdrop-blur-md rounded-2xl p-5 max-w-[400px] max-h-[70vh] shadow-2xl overflow-y-auto transition-all duration-300 border
-          ${showWallpaperSelector
-            ? "opacity-100 translate-y-0 scale-100 pointer-events-auto visible"
-            : "opacity-0 -translate-y-2 scale-95 pointer-events-none invisible"
+          ${
+            showWallpaperSelector
+              ? "opacity-100 translate-y-0 scale-100 pointer-events-auto visible"
+              : "opacity-0 -translate-y-2 scale-95 pointer-events-none invisible"
           }
-    ${theme === "dark"
-            ? "bg-black/60 border-white/10 text-white"
-            : "bg-white/90 border-black/10 text-black"
-          }
+    ${
+      theme === "dark"
+        ? "bg-black/60 border-white/10 text-white"
+        : "bg-white/90 border-black/10 text-black"
+    }
     scrollbar-thin 
     [&::-webkit-scrollbar]:w-2
     [&::-webkit-scrollbar-thumb]:rounded-full
-    ${theme === "dark"
-            ? "[&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300"
-            : "[&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-800"
-          }`}
+    ${
+      theme === "dark"
+        ? "[&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300"
+        : "[&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-600 hover:[&::-webkit-scrollbar-thumb]:bg-gray-800"
+    }`}
       >
         <div className="flex justify-between items-center mb-[15px]">
           <h3
@@ -257,10 +275,11 @@ export const ThemeControls = ({
           </h3>
           <button
             onClick={() => setShowWallpaperSelector(false)}
-            className={`bg-transparent border-none cursor-pointer p-1 flex items-center transition-colors ${theme === "dark"
+            className={`bg-transparent border-none cursor-pointer p-1 flex items-center transition-colors ${
+              theme === "dark"
                 ? "text-white hover:text-gray-300"
                 : "text-black hover:text-gray-600"
-              }`}
+            }`}
           >
             <X size={20} />
           </button>
@@ -283,14 +302,15 @@ export const ThemeControls = ({
                     setShowWallpaperSelector(false);
                   }}
                   className={`relative aspect-video rounded-lg overflow-hidden cursor-pointer bg-transparent p-0 transition-all duration-300 ease-in-out hover:scale-105
-              ${isActive
-                      ? theme === "dark"
-                        ? "border-[3px] border-white"
-                        : "border-[3px] border-purple-600 shadow-lg"
-                      : theme === "dark"
-                        ? "border-2 border-white/20 hover:border-white/50"
-                        : "border-2 border-black/10 hover:border-black/30"
-                    }`}
+              ${
+                isActive
+                  ? theme === "dark"
+                    ? "border-[3px] border-white"
+                    : "border-[3px] border-purple-600 shadow-lg"
+                  : theme === "dark"
+                    ? "border-2 border-white/20 hover:border-white/50"
+                    : "border-2 border-black/10 hover:border-black/30"
+              }`}
                 >
                   <img
                     src={posterUrl}
@@ -321,6 +341,482 @@ export const ThemeControls = ({
 };
 
 // -----------------------------------------------------------------------------
+// 3A. New Component for Wallpaper selector
+
+// Hook to detect click outside (Same as your player)
+function useClickOutside(ref, handler) {
+  useEffect(() => {
+    const listener = (event) => {
+      if (!ref.current || ref.current.contains(event.target)) {
+        return;
+      }
+      handler(event);
+    };
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
+    return () => {
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
+    };
+  }, [ref, handler]);
+}
+
+// --- MiniThemeWidget (Redesigned with Wallpaper Preview) ---
+const MiniThemeWidget = ({
+  onExpand,
+  theme,
+  wallpapers = [],
+  currentWallpaper,
+  onWallpaperSelect,
+}) => {
+  const verticalTextStyle = {
+    writingMode: "vertical-rl",
+    transform: "rotate(180deg)",
+    whiteSpace: "nowrap",
+  };
+
+  // Logic to find next wallpaper
+  const currentIndex = wallpapers.findIndex(
+    (w) => w.src === (currentWallpaper?.src || "")
+  );
+  const nextIndex =
+    currentIndex >= 0 && wallpapers.length > 0
+      ? (currentIndex + 1) % wallpapers.length
+      : 0;
+  const nextWallpaper = wallpapers.length > 0 ? wallpapers[nextIndex] : null;
+
+  const getPosterUrl = (wp) => {
+    if (!wp) return "";
+    const base = wp.posterBasePath || wp.srcBasePath || "";
+    const file = wp.poster || wp.src || "";
+    return base ? `${base}/${file}` : file;
+  };
+
+  return (
+    <div className={`relative h-full w-full overflow-hidden ${
+          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+        }`}>
+      {/* Background - theme-dependent color & noise */}
+      <div
+        className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+        }`}
+        style={{
+          filter:
+            theme === "dark"
+              ? "url(#nnnoise-filter)"
+              : "url(#nnnoise-filter-black)",
+        }}
+      />
+
+      <div className="relative flex flex-row items-center justify-between lg:flex-col h-full w-full px-4 py-2 lg:py-6 lg:px-0 lg:space-y-4">
+        {/* Top: Header/Icon Area (Clickable to Expand) */}
+        <div
+          onClick={onExpand}
+          className="flex flex-row lg:flex-col items-center gap-3 lg:gap-4 cursor-pointer group flex-shrink-0"
+        >
+          <div
+            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl shadow-md flex items-center justify-center transition-all duration-300 ${
+              theme === "dark"
+                ? "bg-white/10 text-white shadow-black group-hover:bg-white/20"
+                : "bg-white text-purple-600 shadow-gray-200 group-hover:bg-purple-50"
+            }`}
+          >
+            <Palette className="w-5 h-5 lg:w-6 lg:h-6" />
+          </div>
+
+          <div
+            className="hidden lg:flex flex-col items-center justify-center space-y-2"
+            style={verticalTextStyle}
+          >
+            <p
+              className={`text-lg font-bold tracking-widest uppercase transition-colors ${
+                theme === "dark" ? "text-white/90" : "text-black/80"
+              }`}
+            >
+              Appearance
+            </p>
+          </div>
+        </div>
+
+        {/* Spacer to push wallpapers to bottom on desktop */}
+        <div className="flex-grow hidden lg:block" onClick={onExpand} />
+
+        {/* Bottom: Wallpaper Previews (The "Next in Line" Logic) */}
+        <div className="flex items-center lg:flex-col gap-3 lg:gap-3">
+          {/* Current Wallpaper (Small Indicator) */}
+          {currentWallpaper && (
+            <div
+              className={`hidden lg:block w-13 h-13 rounded-lg overflow-hidden border-2 opacity-100 grayscale hover:grayscale-0 transition-all ${
+                theme === "dark" ? "border-white/20" : "border-black/10"
+              }`}
+              title="Current Wallpaper"
+            >
+              <img
+                src={getPosterUrl(currentWallpaper)}
+                alt="Current"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Next Wallpaper (Clickable Action) */}
+          {nextWallpaper && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent opening the expanded view
+                onWallpaperSelect(nextWallpaper);
+              }}
+              className="relative w-10 h-10 lg:w-16 lg:h-16 ml-2 lg:ml-0 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group"
+              title="Switch to Next Wallpaper"
+            >
+              <div
+                className={`absolute inset-0 border-2 z-10 rounded-xl pointer-events-none ${
+                  theme === "dark" ? "border-white/10" : "border-white/40"
+                }`}
+              />
+              <img
+                src={getPosterUrl(nextWallpaper)}
+                alt="Next"
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay Icon */}
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <ArrowRight size={16} className="text-white drop-shadow-md" />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- ExpandedThemeWidget (The Phone UI) ---
+const ExpandedThemeWidget = ({
+  onCollapse,
+  theme,
+  onThemeChange,
+  wallpapers,
+  currentWallpaper,
+  onWallpaperSelect,
+}) => {
+  const getPosterUrl = (wp) => {
+    if (!wp) return "";
+    const base = wp.posterBasePath || wp.srcBasePath || "";
+    const file = wp.poster || wp.src || "";
+    return base ? `${base}/${file}` : file;
+  };
+
+  return (
+    <div className={`relative h-full w-full p-[1rem] ${
+          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+        }`}>
+      {/* Background with Noise */}
+      <div
+        className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+        }`}
+        style={{
+          filter:
+            theme === "dark"
+              ? "url(#nnnoise-filter)"
+              : "url(#nnnoise-filter-black)",
+        }}
+      />
+
+      {/* Main Container "Phone Screen" */}
+      <div className="relative w-full h-full flex flex-col z-10">
+        {/* Header */}
+        <div
+          className={`flex items-center justify-between mb-4 p-2 rounded-2xl border transition-colors flex-shrink-0 ${
+            theme === "dark"
+              ? "bg-white/5 border-white/10"
+              : "bg-white/60 border-black/5"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2 rounded-xl ${
+                theme === "dark"
+                  ? "bg-purple-500/20 text-purple-300"
+                  : "bg-purple-100 text-purple-600"
+              }`}
+            >
+              <Layout size={20} />
+            </div>
+            <div>
+              <h2
+                className={`text-lg font-bold leading-none ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              >
+                Display
+              </h2>
+              <span
+                className={`text-[10px] uppercase tracking-wider font-mono ${
+                  theme === "dark" ? "text-white/50" : "text-gray-500"
+                }`}
+              >
+                Personalization
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={onCollapse}
+            className={`p-2 rounded-full border transition-all active:scale-95 ${
+              theme === "dark"
+                ? "bg-white/10 text-white hover:bg-white/20 border-white/10"
+                : "bg-black/5 text-black hover:bg-black/10 border-black/10"
+            }`}
+          >
+            <ChevronLeft size={20} />
+          </button>
+        </div>
+
+        {/* Theme Toggle Section */}
+        <div
+          className={`mb-4 p-4 rounded-3xl border shadow-inner relative overflow-hidden group flex-shrink-0 ${
+            theme === "dark"
+              ? "bg-neutral-900 border-white/5"
+              : "bg-gray-100 border-black/5"
+          }`}
+        >
+          <div className="flex justify-between items-center mb-3">
+            <span
+              className={`font-mono text-xs uppercase tracking-widest ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              System Theme
+            </span>
+            <span
+              className={`text-xs font-bold ${
+                theme === "dark" ? "text-purple-400" : "text-purple-600"
+              }`}
+            >
+              {theme === "dark" ? "Dark Mode" : "Light Mode"}
+            </span>
+          </div>
+
+          {/* Custom Toggle Switch UI */}
+          <div
+            onClick={onThemeChange}
+            className={`relative h-14 w-full rounded-2xl cursor-pointer transition-all duration-500 border-2 ${
+              theme === "dark"
+                ? "bg-black border-white/10 shadow-[inset_0_2px_10px_rgba(0,0,0,1)]"
+                : "bg-white border-purple-100 shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]"
+            }`}
+          >
+            <div className="absolute inset-0 flex justify-between items-center px-4">
+              <Sun
+                className={`w-6 h-6 ${
+                  theme === "dark" ? "text-gray-700" : "text-amber-500"
+                }`}
+              />
+              <Moon
+                className={`w-6 h-6 ${
+                  theme === "dark" ? "text-purple-300" : "text-gray-300"
+                }`}
+              />
+            </div>
+
+            <div
+              className={`absolute top-1 bottom-1 w-1/2 rounded-xl shadow-lg transition-transform duration-500 ease-out flex items-center justify-center border ${
+                theme === "dark"
+                  ? "translate-x-[96%] bg-gray-800 border-white/10"
+                  : "translate-x-[2%] bg-purple-500 border-purple-400"
+              }`}
+            >
+              {theme === "dark" ? (
+                <Moon size={18} className="text-white drop-shadow-md" />
+              ) : (
+                <Sun size={18} className="text-white drop-shadow-md" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Wallpaper Grid Section */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          <div className="flex items-center justify-between mb-3 px-1 flex-shrink-0">
+            <span
+              className={`font-mono text-xs uppercase tracking-widest ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              Wallpapers
+            </span>
+            <ImageIcon
+              size={14}
+              className={theme === "dark" ? "text-gray-500" : "text-gray-400"}
+            />
+          </div>
+
+          <div
+            className={`flex-1 overflow-y-auto rounded-2xl p-2 border 
+            scrollbar-thin 
+            [&::-webkit-scrollbar]:w-1.5
+            [&::-webkit-scrollbar-thumb]:rounded-full
+            ${
+              theme === "dark"
+                ? "bg-white/5 border-white/5 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-gray-500 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400"
+                : "bg-black/5 border-black/5 [&::-webkit-scrollbar-track]:bg-black/5 [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-600"
+            }`}
+          >
+            <div className="grid grid-cols-2 gap-3 relative">
+              {wallpapers && wallpapers.length > 0 ? (
+                wallpapers.map((wallpaper, index) => {
+                  const isActive = currentWallpaper?.src === wallpaper.src;
+                  const posterUrl = getPosterUrl(wallpaper);
+                  const wallpaperTheme = getThemeFromFilename(wallpaper.src);
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => onWallpaperSelect(wallpaper)}
+                      className={`relative group aspect-[9/16] rounded-xl overflow-hidden transition-transform duration-300 border-2 ${
+                        isActive
+                          ? "ring-2 ring-purple-500 ring-offset-1 ring-offset-transparent border-purple-500"
+                          : theme === "dark"
+                          ? "border-transparent hover:border-white/30 hover:scale-[1.02]"
+                          : "border-transparent hover:border-black/20 hover:scale-[1.02]"
+                      }`}
+                    >
+                      <img
+                        src={posterUrl}
+                        alt={`Wallpaper ${index}`}
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* Theme Icon Badge */}
+                      <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1.5 py-0.5 rounded text-[10px] uppercase font-bold shadow-sm z-10">
+                        {wallpaperTheme === "dark"
+                          ? "🌙"
+                          : wallpaperTheme === "light"
+                          ? "☀️"
+                          : "⚪"}
+                      </div>
+
+                      {/* Active Badge (Removed backdrop-blur to fix shifting) */}
+                      {isActive && (
+                        <div className="absolute inset-0 bg-purple-500/20 flex items-center justify-center z-20">
+                          <div className="bg-purple-600 rounded-full p-1 shadow-lg">
+                            <Check size={16} className="text-white" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Hover Overlay */}
+                      <div className="absolute top-0 left-0 right-0 h-full bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    </button>
+                  );
+                })
+              ) : (
+                <div className="col-span-2 flex flex-col items-center justify-center py-10 opacity-50">
+                  <ImageIcon size={30} className="mb-2" />
+                  <span className="text-xs">No Wallpapers</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Main Exported Component ---
+export const ThemePlayer = ({
+  theme,
+  onThemeChange,
+  wallpapers,
+  currentWallpaper,
+  onWallpaperSelect,
+  shouldHideUI, // 1. Receive the prop
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const containerRef = useRef(null);
+
+  // Close when clicking outside
+  useClickOutside(containerRef, () => {
+    if (isExpanded) setIsExpanded(false);
+  });
+
+  // 2. Determine visibility directly inside component
+  const location = useLocation();
+  const isHidden = location.pathname === '/' || location.pathname === '/socials'; // Hide on Home
+
+ // Responsive Positioning Classes
+  let positionClasses;
+
+  if (isExpanded) {
+    // Mobile: Center-ish bottom/middle
+    positionClasses =
+      "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-lg h-[70vh]";
+
+    // Desktop: Left side fixed (Symmetrical to Music Player)
+    positionClasses += " lg:left-10 lg:translate-x-0 lg:w-90 lg:h-[70vh]";
+  } else {
+    // Mobile: Top-Left corner
+    positionClasses = "fixed top-4 left-4 w-auto h-14";
+
+    // Desktop: Left Center vertical strip
+    positionClasses +=
+      " lg:top-1/2 lg:-translate-y-1/2 lg:left-8 lg:w-22 lg:h-[30rem]";
+  }
+
+  // Animation & Container Classes
+  const containerClasses = [
+    "transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999]", // Improved transition
+    isExpanded
+      ? "rounded-[2.5rem] shadow-2xl"
+      : "rounded-xl lg:rounded-[1.4rem] ",
+    theme === "dark" ? "shadow-black/50" : "shadow-xl shadow-purple-900/10",
+    "overflow-hidden",
+    
+    // 3. THE MAGIC FIX:
+    // If hidden, force it off-screen to the left (-200%).
+    // This overrides the 'x' variable but KEEPS the 'y' centering intact.
+    isHidden ? "-translate-x-[250%]" : "" 
+    
+  ].join(" ");
+
+  return (
+    <div
+      ref={containerRef}
+      className={`${positionClasses} ${containerClasses}`}
+
+      // 3. THE MAGIC: Override Tailwind's X-translation variable directly
+      style={{
+        // If hidden, force X to -250% (slide far left). 
+        // If visible, set to undefined (let Tailwind classes controls it).
+        "--tw-translate-x": shouldHideUI ? "-250%" : undefined,
+      }}
+    >
+      {isExpanded ? (
+        <ExpandedThemeWidget
+          onCollapse={() => setIsExpanded(false)}
+          theme={theme}
+          onThemeChange={onThemeChange}
+          wallpapers={wallpapers}
+          currentWallpaper={currentWallpaper}
+          onWallpaperSelect={onWallpaperSelect}
+        />
+      ) : (
+        <MiniThemeWidget
+          onExpand={() => setIsExpanded(true)}
+          theme={theme}
+          wallpapers={wallpapers}
+          currentWallpaper={currentWallpaper}
+          onWallpaperSelect={onWallpaperSelect}
+        />
+      )}
+    </div>
+  );
+};
+
+// -----------------------------------------------------------------------------
 // 4. THEME PROVIDER (Unchanged Logic)
 // -----------------------------------------------------------------------------
 
@@ -330,7 +826,7 @@ export const ThemeProvider = ({ children }) => {
       // 1. Check if user has a MANUALLY saved preference
       const stored = localStorage.getItem(themeStorageKey);
       if (stored) return stored;
-    } catch (e) { }
+    } catch (e) {}
 
     // 2. Otherwise, use system default
     if (typeof window !== "undefined" && window.matchMedia) {
@@ -351,7 +847,7 @@ export const ThemeProvider = ({ children }) => {
       root.classList.add("light");
       root.classList.remove("dark");
     }
-    // We REMOVED the localStorage.setItem from here because 
+    // We REMOVED the localStorage.setItem from here because
     // we only want to save it when the user MANUALLY clicks.
   }, [theme]);
 
@@ -426,7 +922,7 @@ export const ThemeProvider = ({ children }) => {
       setTheme(wallpaperTheme);
       try {
         localStorage.setItem(themeStorageKey, wallpaperTheme);
-      } catch (e) { }
+      } catch (e) {}
     }
   };
 
@@ -462,8 +958,8 @@ export const ThemeProvider = ({ children }) => {
           selectedAsset =
             themeWallpapers.length > 0
               ? themeWallpapers[
-              Math.floor(Math.random() * themeWallpapers.length)
-              ]
+                  Math.floor(Math.random() * themeWallpapers.length)
+                ]
               : normalizedAssets[0];
         }
 

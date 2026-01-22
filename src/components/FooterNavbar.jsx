@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import "../styles/main.css"; // We'll put the complex CSS/Animations here
 import { useTheme } from "./HeaderBackground";
 
@@ -29,6 +29,10 @@ const FooterNavbar = ({ onNavigate }) => {
       setGlowPosition({ x, y, opacity: 1 });
     }
   };
+
+  // 2. Get current route to determine visibility
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   // Hide the glow when the mouse leaves
   const handleMouseLeave = () => {
@@ -62,6 +66,18 @@ const listClasses = `
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
       data-theme={theme}
+      style={{
+        position: 'fixed',
+        left: '50%', // Move to center
+        bottom: '20px', // Spacing from bottom
+        
+        // This handles both Centering (-50% X) AND Hiding (200% Y)
+        transform: isHome 
+          ? 'translate(-50%, 200%)' // Move DOWN off-screen
+          : 'translate(-50%, 0)',   // Move UP to normal position
+          
+        transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)', // Smooth animation
+      }}
     >
       <ul className="flex justify-evenly items-center w-full relative z-10 p-0 m-0 media-object group">
        {navItems.map((item) => (
@@ -79,7 +95,7 @@ const listClasses = `
             isActive ? "opacity-100" : "opacity-0"
           } ${
             theme === 'light' 
-              ? "bg-gradient-to-r from-blue-400/40 to-purple-400/40" // Softer for light mode
+              ? "bg-gradient-to-r from-blue-400 to-purple-400" // Softer for light mode
               : "bg-gradient-to-r from-blue-500/60 to-purple-500/60"
           }`}
         ></div>
