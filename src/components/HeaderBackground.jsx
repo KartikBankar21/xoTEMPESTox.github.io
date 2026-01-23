@@ -768,6 +768,7 @@ export const ThemePlayer = ({
 
   // Animation & Container Classes
   const containerClasses = [
+    "lg:transition-all lg:duration-500",
     "transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999]", // Improved transition
     isExpanded
       ? "rounded-[2.5rem] shadow-2xl"

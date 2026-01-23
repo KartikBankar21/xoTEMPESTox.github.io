@@ -2175,8 +2175,13 @@ HeaderBackground {
   width: 100%;
 }
 
-.skills .container {
+.skills {
   z-index: 300;
+}
+
+.skills-container {
+  z-index: 300;
+
 }
 
 @media (max-width: 575.98px) {
@@ -2185,7 +2190,11 @@ HeaderBackground {
     margin-top: 5%;
   }
 
-  .skills .container {
+  .skills {
+    margin-bottom: 9rem;
+    margin-top: 4rem;
+  }
+  .skills-container {
     margin-bottom: 9rem;
     margin-top: 4rem;
   }
@@ -2365,6 +2374,46 @@ HeaderBackground {
 /* 5. Percentage Text and Labels */
 .skills[data-theme="light"] .skills__box__head span {
   color: #0f172a;
+}
+
+.skills-container {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .skills-container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .skills-container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .skills-container {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .skills-container {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .skills-container {
+    max-width: 1200px;
+  }
 }
 
 .services {

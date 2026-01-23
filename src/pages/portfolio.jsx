@@ -9,7 +9,7 @@ import React, {
 import "../styles/main.css";
 import DetailCard from "../components/DetailedCard";
 import Cube from "../components/Cube";
-import { X } from "lucide-react";
+import { RotateCcw, X, ZoomIn, ZoomOut } from "lucide-react";
 import { useTheme } from "../components/HeaderBackground";
 
 
@@ -330,6 +330,173 @@ const rawPortfolioData = [
   },
 ];
 
+/**
+ * Enhanced Fullscreen Image Modal
+ * Features: Pinch-to-zoom, Drag-to-pan, Wheel-to-zoom
+ * Layout: Strictly adheres to user request
+ */
+const FullscreenZoomableImage = ({ image, onClose }) => {
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  
+  // Refs for gesture handling
+  const startPos = useRef({ x: 0, y: 0 });
+  const startPinchDist = useRef(null);
+  const startScale = useRef(1);
+
+  // Constants
+  const minScale = 1;
+  const maxScale = 4;
+
+  const updateScale = (newScale) => {
+    const clampedScale = Math.min(Math.max(newScale, minScale), maxScale);
+    setScale(clampedScale);
+    
+    // If returning to 1, recenter
+    if (clampedScale <= 1.05) {
+      setPosition({ x: 0, y: 0 });
+    }
+  };
+
+  const handleDoubleClick = (e) => {
+    e.stopPropagation();
+    if (scale > 1.5) {
+      updateScale(1);
+    } else {
+      updateScale(2.5);
+    }
+  };
+
+  // --- MOUSE EVENTS ---
+  const handleWheel = (e) => {
+    e.stopPropagation();
+    const delta = -e.deltaY * 0.002; 
+    updateScale(scale + delta);
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    if (scale <= 1) return;
+    setIsDragging(true);
+    startPos.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const newX = e.clientX - startPos.current.x;
+    const newY = e.clientY - startPos.current.y;
+    setPosition({ x: newX, y: newY });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // --- TOUCH EVENTS (Pinch & Pan) ---
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      // Pinch Start
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      startPinchDist.current = dist;
+      startScale.current = scale;
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Pan Start
+      setIsDragging(true);
+      startPos.current = { 
+        x: e.touches[0].clientX - position.x, 
+        y: e.touches[0].clientY - position.y 
+      };
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    // Prevent default to stop scrolling background while interacting
+    if (scale > 1 || e.touches.length === 2) {
+       // Only prevent default if we are actively interacting with the image logic
+       // otherwise standard scrolling might be desired (though this is a modal)
+       // e.preventDefault(); 
+    }
+
+    if (e.touches.length === 2 && startPinchDist.current) {
+      // Pinch Move
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const zoomFactor = dist / startPinchDist.current;
+      updateScale(startScale.current * zoomFactor);
+    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+      // Pan Move
+      const newX = e.touches[0].clientX - startPos.current.x;
+      const newY = e.touches[0].clientY - startPos.current.y;
+      setPosition({ x: newX, y: newY });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    startPinchDist.current = null;
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300"
+      onClick={onClose}
+    >
+      <div
+        className="relative flex flex-col items-center justify-center max-w-[95vw] max-h-[60vh] animate-in zoom-in-95 duration-300 ease-out"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* The Image - Scaled to 80% screen height */}
+        <div className="relative group">
+          <img
+            src={image.image_url}
+            alt={image.title}
+            className="md:h-[60vh] h-auto w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 touch-none"
+            style={{
+                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                cursor: scale > 1 ? 'grab' : 'zoom-in',
+                transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                zIndex: 10
+            }}
+            // Handlers
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onDoubleClick={handleDoubleClick}
+            draggable={false}
+          />
+        </div>
+        <button
+        onClick={onClose}
+        className="fixed top-6 right-6 z-[10010] flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
+      >
+        <span className="text-[10px] text-white font-bold uppercase tracking-widest">Close Preview</span>
+        <div className="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all backdrop-blur-md">
+          <X size={20} />
+        </div>
+      </button>
+
+        {/* Bottom Caption Area */}
+        <div className="mt-6 text-center">
+          <h3 className="text-white font-bold text-2xl uppercase tracking-tight">{image.title}</h3>
+          <p className="text-zinc-400 text-lg mt-1">{image.tag}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 const [fullscreenImage, setFullscreenImage] = useState(null);
@@ -543,42 +710,12 @@ const { theme } = useTheme();
         </div>
       </div>
       {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
+       {/* RE-ENGINEERED ZOOMABLE MODAL */}
       {fullscreenImage && (
-        <div
-          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300"
-          onClick={() => setFullscreenImage(null)}
-        >
-          <div
-            className="relative flex flex-col items-center justify-center max-w-[95vw] max-h-[60vh] animate-in zoom-in-95 duration-300 ease-out"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* The Image - Scaled to 80% screen height */}
-            <div className="relative group">
-              <img
-                src={fullscreenImage.image_url}
-                alt={fullscreenImage.title}
-                className="h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10"
-              />
-
-              {/* Close Button UI */}
-              <button
-                onClick={() => setFullscreenImage(null)}
-                className="absolute -top-12 right-0 flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
-              >
-                <span className="text-[10px] font-bold uppercase tracking-widest">Close Preview</span>
-                <div className="w-8 h-8 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all">
-                  <X size={16} />
-                </div>
-              </button>
-            </div>
-
-            {/* Bottom Caption Area */}
-            <div className="mt-6 text-center">
-              <h3 className="text-white font-bold text-2xl font-bold uppercase tracking-tight">{fullscreenImage.title}</h3>
-              <p className="text-zinc-400 text-lg mt-1">{fullscreenImage.tag}</p>
-            </div>
-          </div>
-        </div>
+        <FullscreenZoomableImage 
+          image={fullscreenImage} 
+          onClose={() => setFullscreenImage(null)} 
+        />
       )}
       <DetailCard
         project={selectedProject}

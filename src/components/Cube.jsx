@@ -382,29 +382,6 @@ const Cube = ({
           </div>
         )}
       </div>
-
-      {/* Image Modal */}
-      {showImageModal && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={() => setShowImageModal(false)}
-        >
-          <div className="relative max-w-[90vw] max-h-[90vh]">
-            <img
-              src={item.image_url}
-              alt={item.title}
-              className="w-full h-full object-contain rounded-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <button
-              onClick={() => setShowImageModal(false)}
-              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm transition-colors"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };

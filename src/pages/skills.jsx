@@ -118,10 +118,10 @@ const Skills = () => {
   return (
     <div className="page-section">
       <section className="skills" id="skills" data-theme={theme}>
-        <div className="container">
+        <div className="skills-container">
           <h1 className="skills__title text-capitalize">my skills</h1>
           <div className="row justify-content-center gy-0">
-
+ 
             {/* COLUMN 1 */}
             <div className="col-md-6">
               <div className="skills__box">

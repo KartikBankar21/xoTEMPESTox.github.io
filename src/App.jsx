@@ -141,10 +141,6 @@ function ThemeControlsWrapper({ shouldHideUI }) {
     handleWallpaperSelect,
   } = useTheme();
 
-  // if (shouldHideUI) {
-  //   return null;
-  // }
-
   return (
     
       <ThemePlayer
@@ -502,7 +498,7 @@ function App() {
           </div>
 
           {/* {!shouldHideUI && } */}
-<ThemeControlsWrapper />
+
           {/* 2. Loader overlays everything until animation completes */}
           {loading && (
             <div
@@ -589,6 +585,7 @@ function App() {
                   )}
                 </div>
                 <AnimatedOutlet context={{ startAudioOnInteraction }} />
+        <ThemeControlsWrapper />
               </div>
 
         <FooterNavbar onNavigate={startAudioOnInteraction} />

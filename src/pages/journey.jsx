@@ -312,7 +312,7 @@ const Journey = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-4 md:gap-40 relative">
             {/* LEFT COLUMN: Education */}
             <div
-              className="relative h-full ml-4 md:ml-0"
+              className="relative h-full ml-4 md:ml-32"
               ref={eduRef}
               style={{
                 // Mobile: Use its own height | Desktop: Match the taller column
