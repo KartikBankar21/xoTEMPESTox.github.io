@@ -364,6 +364,37 @@ function App() {
     }
   }, [volume]);
 
+  // 3. Pause/Resume audio when tab visibility changes (tab switch, browser minimize)
+  const wasPlayingBeforeHidden = useRef(false);
+  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!currentAudio.current) return;
+
+      if (document.visibilityState === 'hidden') {
+        // Store whether audio was playing before hiding
+        wasPlayingBeforeHidden.current = !currentAudio.current.paused;
+        if (wasPlayingBeforeHidden.current) {
+          currentAudio.current.pause();
+          setIsPlaying(false);
+        }
+      } else if (document.visibilityState === 'visible') {
+        // Only resume if it was playing before the tab was hidden
+        if (wasPlayingBeforeHidden.current) {
+          currentAudio.current.play()
+            .then(() => setIsPlaying(true))
+            .catch(err => console.error('Auto-resume failed:', err));
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   // Get the currently selected track details
   const currentTrack = useMemo(() => musicAPI[trackIndex], [trackIndex]);
 
