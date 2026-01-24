@@ -6,9 +6,14 @@ import { useTheme } from "./HeaderBackground";
 // const EDGE_THRESHOLD = 0.25;
 
 // --- Sub-Components ---
-const TechBadge = ({ label, slug, color, iconColor }) => {
+const TechBadge = React.memo(({ label, slug, color, iconColor, theme }) => {
   // slug is the lowercase name of the tech (e.g., 'googlechrome', 'react')
   // color is the official hex (e.g., '4285F4')
+
+  // Only invert if explicitly requested AND we are in dark mode
+  const finalIconClass = iconColor === 'invert'
+    ? (theme === 'dark' ? 'invert' : '')
+    : iconColor;
 
   return (
     <div
@@ -21,7 +26,8 @@ const TechBadge = ({ label, slug, color, iconColor }) => {
       <img
         src={`https://api.iconify.design/${slug}.svg`}
         alt={label}
-        className={`w-4 h-4 min-[1265px]:w-5 min-[1265px]:h-5 mr-2 ${iconColor}`}
+        decoding="async"
+        className={`w-4 h-4 min-[1265px]:w-5 min-[1265px]:h-5 mr-2 ${finalIconClass}`}
       />
       <span
         style={{ color: `#${color}` }}
@@ -31,7 +37,7 @@ const TechBadge = ({ label, slug, color, iconColor }) => {
       </span>
     </div>
   );
-};
+});
 
 const handleLinkClick = (url) => (e) => {
   e.stopPropagation();
@@ -156,6 +162,7 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
                   label={tech.name}
                   color={tech.color}
                   iconColor={tech.iconColor}
+                  theme={theme}
                 />
               ))}
         </div>
@@ -210,13 +217,15 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
   );
 };
 
-const Cube = ({
+const Cube = React.memo(({
   item,
   onViewDetails,
   isDragging,
+  isScrolling,
   width,
   height,
   onImageOpen,
+  isVisible = true,
 }) => {
   const [isLightOn, setIsLightOn] = useState(false);
   const [isBulbHovered, setIsBulbHovered] = useState(false);
@@ -225,6 +234,13 @@ const Cube = ({
   const [showImageModal, setShowImageModal] = useState(false);
   // interactionReady determines if the 2D overlay should be shown
   const [interactionReady, setInteractionReady] = useState(false);
+
+  // Reset state when not visible
+  useEffect(() => {
+    if (!isVisible && isLightOn) {
+      setIsLightOn(false);
+    }
+  }, [isVisible, isLightOn]);
 
   const toggleLight = () => {
     setIsLightOn(!isLightOn);
@@ -253,15 +269,20 @@ const Cube = ({
 
   const translateZ = width / 2;
 
+  // Optimize: Disable pointer events during scroll/drag to prevent expensive hover calcs
+  const isInteracting = isDragging || isScrolling;
+
   return (
     <>
       <div
         // Note: Removed preserve-3d from here to allow simple 2D stacking for the overlay
-        className="relative transition-all duration-500 pointer-events-none"
+        className="relative transition-all duration-500"
         style={{
           width: `${width}px`,
           height: `${height}px`,
           perspective: "1200px",
+          pointerEvents: isInteracting ? "none" : "auto",
+          willChange: "transform", // Hint browser for optimization
         }}
       >
         {/* The 3D Pivot Container */}
@@ -377,6 +398,6 @@ const Cube = ({
       </div>
     </>
   );
-};
+});
 
 export default Cube;

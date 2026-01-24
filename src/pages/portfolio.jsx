@@ -27,7 +27,6 @@ const GAP_WIDTH = 64; // 4rem
 const ITEM_WIDTH = CUBE_WIDTH + GAP_WIDTH;
 const AUTO_SLIDE_DELAY = 2500;
 const SWIPE_THRESHOLD = 50;
-const NUM_PHANTOM = 3;
 
 // --- Data ---
 const rawPortfolioData = [
@@ -177,8 +176,8 @@ const rawPortfolioData = [
       {
         name: "Unity",
         slug: "skill-icons/unity-dark",
-        color: "ffffff",
-        iconColor: "invert",
+        color: "E64A19",
+        iconColor: "",
       },
       {
         name: "Solidity",
@@ -339,7 +338,7 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  
+
   // Refs for gesture handling
   const startPos = useRef({ x: 0, y: 0 });
   const startPinchDist = useRef(null);
@@ -352,7 +351,7 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
   const updateScale = (newScale) => {
     const clampedScale = Math.min(Math.max(newScale, minScale), maxScale);
     setScale(clampedScale);
-    
+
     // If returning to 1, recenter
     if (clampedScale <= 1.05) {
       setPosition({ x: 0, y: 0 });
@@ -371,7 +370,7 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
   // --- MOUSE EVENTS ---
   const handleWheel = (e) => {
     e.stopPropagation();
-    const delta = -e.deltaY * 0.002; 
+    const delta = -e.deltaY * 0.002;
     updateScale(scale + delta);
   };
 
@@ -407,9 +406,9 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
     } else if (e.touches.length === 1 && scale > 1) {
       // Pan Start
       setIsDragging(true);
-      startPos.current = { 
-        x: e.touches[0].clientX - position.x, 
-        y: e.touches[0].clientY - position.y 
+      startPos.current = {
+        x: e.touches[0].clientX - position.x,
+        y: e.touches[0].clientY - position.y
       };
     }
   };
@@ -417,9 +416,9 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
   const handleTouchMove = (e) => {
     // Prevent default to stop scrolling background while interacting
     if (scale > 1 || e.touches.length === 2) {
-       // Only prevent default if we are actively interacting with the image logic
-       // otherwise standard scrolling might be desired (though this is a modal)
-       // e.preventDefault(); 
+      // Only prevent default if we are actively interacting with the image logic
+      // otherwise standard scrolling might be desired (though this is a modal)
+      // e.preventDefault(); 
     }
 
     if (e.touches.length === 2 && startPinchDist.current) {
@@ -459,10 +458,10 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
             alt={image.title}
             className="md:h-[60vh] h-auto w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 touch-none"
             style={{
-                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-                cursor: scale > 1 ? 'grab' : 'zoom-in',
-                transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                zIndex: 10
+              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+              cursor: scale > 1 ? 'grab' : 'zoom-in',
+              transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              zIndex: 10
             }}
             // Handlers
             onWheel={handleWheel}
@@ -478,14 +477,14 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
           />
         </div>
         <button
-        onClick={onClose}
-        className="fixed top-6 right-6 z-[10010] flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
-      >
-        <span className="text-[10px] text-white font-bold uppercase tracking-widest">Close Preview</span>
-        <div className="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all backdrop-blur-md">
-          <X size={20} />
-        </div>
-      </button>
+          onClick={onClose}
+          className="fixed top-6 right-6 z-[10010] flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
+        >
+          <span className="text-[10px] text-white font-bold uppercase tracking-widest">Close Preview</span>
+          <div className="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all backdrop-blur-md">
+            <X size={20} />
+          </div>
+        </button>
 
         {/* Bottom Caption Area */}
         <div className="mt-6 text-center">
@@ -499,8 +498,8 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
 
 const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
-const [fullscreenImage, setFullscreenImage] = useState(null);
-const { theme } = useTheme();
+  const [fullscreenImage, setFullscreenImage] = useState(null);
+  const { theme } = useTheme();
   // --- Responsive Logic ---
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1000
@@ -526,17 +525,18 @@ const { theme } = useTheme();
   // Visual Width = (Cube + Gap) * 2 + Cube = 3 * Cube + 2 * Gap.
   const visibleContainerWidth = 3 * cubeWidth + 2 * gapWidth;
 
-  const realCount = rawPortfolioData.length;
-
+  /* 3-Set Infinite Loop Strategy:
+   * We render 3 full copies of the data: [Set 1] [Set 2] [Set 3]
+   * The user starts in Set 2 (Middle).
+   * If they reach Set 1 or Set 3, we snap them back to Set 2.
+   */
   const cubeList = useMemo(() => {
-    const startClones = rawPortfolioData.slice(-NUM_PHANTOM);
-    const endClones = rawPortfolioData.slice(0, NUM_PHANTOM);
-    return [...startClones, ...rawPortfolioData, ...endClones];
+    return [...rawPortfolioData, ...rawPortfolioData, ...rawPortfolioData];
   }, []);
 
-  const realStartIndex = NUM_PHANTOM;
-  const realEndIndex = realStartIndex + realCount - 1;
-  const initialIndex = realStartIndex + Math.floor(realCount / 2);
+  const len = rawPortfolioData.length;
+  // Start at the beginning of the middle set
+  const initialIndex = len;
 
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [isDragging, setIsDragging] = useState(false);
@@ -580,22 +580,24 @@ const { theme } = useTheme();
   useEffect(() => {
     startAutoSlide();
     return stopAutoSlide;
-  }, [startAutoSlide]);
+  }, [startAutoSlide, stopAutoSlide]);
 
-  useEffect(() => {
-    if (!isTransitioning) return;
-    if (activeIndex > realEndIndex) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setActiveIndex(realStartIndex);
-      }, 800);
-    } else if (activeIndex < realStartIndex) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setActiveIndex(realEndIndex);
-      }, 800);
+  const handleTransitionEnd = () => {
+    // 3-Set Infinite Loop Logic
+    // Set 1: [0 ... len-1]
+    // Set 2: [len ... 2*len-1] (Middle/Active Set)
+    // Set 3: [2*len ... 3*len-1]
+
+    if (activeIndex < len) {
+      // If in Set 1, snap to Set 2
+      setIsTransitioning(false);
+      setActiveIndex(activeIndex + len);
+    } else if (activeIndex >= len * 2) {
+      // If in Set 3, snap to Set 2
+      setIsTransitioning(false);
+      setActiveIndex(activeIndex - len);
     }
-  }, [activeIndex, isTransitioning, realEndIndex, realStartIndex]);
+  };
 
   const handleDragStart = (clientX) => {
     stopAutoSlide();
@@ -619,12 +621,23 @@ const { theme } = useTheme();
     if (!draggingRef.current) return;
     draggingRef.current = false;
     setIsDragging(false);
+
     const delta = clientX - startXRef.current;
-    let direction = 0;
-    if (delta < -SWIPE_THRESHOLD) direction = 1;
-    else if (delta > SWIPE_THRESHOLD) direction = -1;
+
+    // Calculate how many slides to move based on drag distance
+    // We reverse the sign because dragging left (negative delta) means moving forward (positive index)
+    let moveCount = Math.round(-delta / itemWidth);
+
+    // If the drag was significant enough to cross threshold but not enough to round to a full slide,
+    // force at least one slide movement
+    if (moveCount === 0) {
+      if (delta < -SWIPE_THRESHOLD) moveCount = 1;
+      else if (delta > SWIPE_THRESHOLD) moveCount = -1;
+    }
+
     setIsTransitioning(true);
-    setActiveIndex((prev) => prev + direction);
+    setActiveIndex((prev) => prev + moveCount);
+
     if (!isHoveringRef.current) startAutoSlide();
   };
 
@@ -634,19 +647,19 @@ const { theme } = useTheme();
       <header className=" mt-26 md:my-6  text-center px-4 z-20 flex-none">
         <div className={`
   backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
-  ${theme === 'dark' 
-    ? 'bg-black/50 border-white/5' 
-    : 'bg-white/50 border-black/5 shadow-xl'}
+  ${theme === 'dark'
+            ? 'bg-black/50 border-white/5'
+            : 'bg-white/50 border-black/5 shadow-xl'}
 `}>
-  <p className={`
+          <p className={`
     text-8xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
     ${theme === 'dark'
-      ? 'bg-gradient-to-b from-white to-white/50'
-      : 'bg-gradient-to-b from-gray-900 to-gray-500'}
+              ? 'bg-gradient-to-b from-white to-white/50'
+              : 'bg-gradient-to-b from-gray-900 to-gray-500'}
   `}>
-    Portfolio
-  </p>
-</div>
+            Portfolio
+          </p>
+        </div>
       </header>
 
       {/* 2. Main Center Area (Carousel) 
@@ -685,11 +698,12 @@ const { theme } = useTheme();
           <div
             ref={wrapperRef}
             className="flex items-center absolute h-full will-change-transform top-0"
+            onTransitionEnd={handleTransitionEnd}
             style={{
               transform: `translateX(${getTranslation(activeIndex)}px)`,
               gap: `${gapWidth}px`,
               transition: isTransitioning
-                ? "transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)"
+                ? "transform 1.5s cubic-bezier(0.23, 1, 0.32, 1)"
                 : "none",
               transformStyle: "preserve-3d",
               // paddingLeft: `${cubeWidth/2}px` // Initial offset helper
@@ -697,24 +711,26 @@ const { theme } = useTheme();
           >
             {cubeList.map((item, idx) => (
               <Cube
-                key={`${idx}-${item.id}`}
+                key={`${idx}-${item.id}`} // Ensure unique key for the 3 sets
                 item={item}
                 onViewDetails={setSelectedProject}
                 isDragging={isDragging}
+                isScrolling={isTransitioning}
                 width={cubeWidth}
                 height={cubeWidth} // Keeping it square
                 onImageOpen={(project) => setFullscreenImage(project)}
+                isVisible={Math.abs(idx - activeIndex) <= 2}
               />
             ))}
           </div>
         </div>
       </div>
       {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
-       {/* RE-ENGINEERED ZOOMABLE MODAL */}
+      {/* RE-ENGINEERED ZOOMABLE MODAL */}
       {fullscreenImage && (
-        <FullscreenZoomableImage 
-          image={fullscreenImage} 
-          onClose={() => setFullscreenImage(null)} 
+        <FullscreenZoomableImage
+          image={fullscreenImage}
+          onClose={() => setFullscreenImage(null)}
         />
       )}
       <DetailCard
