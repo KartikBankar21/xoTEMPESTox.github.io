@@ -4,12 +4,14 @@ import HeaderBackground, {
   ThemeProvider,
   ThemeControls,
   useTheme,
+  ThemePlayer,
 } from "./components/HeaderBackground";
 import FooterNavbar from "./components/FooterNavbar";
 import AnimatedOutlet from "./AnimatedOutlet";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
+import { motion, AnimatePresence } from 'framer-motion';
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -139,17 +141,17 @@ function ThemeControlsWrapper({ shouldHideUI }) {
     handleWallpaperSelect,
   } = useTheme();
 
-  if (shouldHideUI) {
-    return null;
-  }
   return (
-    <ThemeControls
-      theme={theme}
-      onThemeChange={handleThemeChange}
-      wallpapers={allWallpapers}
-      currentWallpaper={currentAsset}
-      onWallpaperSelect={handleWallpaperSelect}
-    />
+    
+      <ThemePlayer
+        theme={theme}
+        onThemeChange={handleThemeChange}
+        wallpapers={allWallpapers}
+        currentWallpaper={currentAsset}
+        onWallpaperSelect={handleWallpaperSelect}
+        shouldHideUI={shouldHideUI}
+      />
+   
   );
 }
 
@@ -174,10 +176,6 @@ function App() {
   const location = useLocation();
   const shouldHidePlayer =
     location.pathname === "/socials" || location.pathname === "/";
-  const isSocialsPage = location.pathname === "/socials";
-
-  // Use this boolean for both your player and your theme controls
-  const shouldHideUI = isSocialsPage;
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -366,6 +364,37 @@ function App() {
     }
   }, [volume]);
 
+  // 3. Pause/Resume audio when tab visibility changes (tab switch, browser minimize)
+  const wasPlayingBeforeHidden = useRef(false);
+  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!currentAudio.current) return;
+
+      if (document.visibilityState === 'hidden') {
+        // Store whether audio was playing before hiding
+        wasPlayingBeforeHidden.current = !currentAudio.current.paused;
+        if (wasPlayingBeforeHidden.current) {
+          currentAudio.current.pause();
+          setIsPlaying(false);
+        }
+      } else if (document.visibilityState === 'visible') {
+        // Only resume if it was playing before the tab was hidden
+        if (wasPlayingBeforeHidden.current) {
+          currentAudio.current.play()
+            .then(() => setIsPlaying(true))
+            .catch(err => console.error('Auto-resume failed:', err));
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   // Get the currently selected track details
   const currentTrack = useMemo(() => musicAPI[trackIndex], [trackIndex]);
 
@@ -499,7 +528,7 @@ function App() {
             <HeaderBackground />
           </div>
 
-          {!shouldHideUI && <ThemeControlsWrapper />}
+          {/* {!shouldHideUI && } */}
 
           {/* 2. Loader overlays everything until animation completes */}
           {loading && (
@@ -587,19 +616,10 @@ function App() {
                   )}
                 </div>
                 <AnimatedOutlet context={{ startAudioOnInteraction }} />
+        <ThemeControlsWrapper />
               </div>
 
-              <div
-                style={{
-                  position: "fixed",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  zIndex: 100,
-                }}
-              >
-                <FooterNavbar onNavigate={startAudioOnInteraction} />
-              </div>
+        <FooterNavbar onNavigate={startAudioOnInteraction} />
             </>
           )}
         </div>

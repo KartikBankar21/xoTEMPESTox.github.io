@@ -334,22 +334,7 @@ section {
     url(/fonts/nunito/nunito-v25-latin-900.svg) format("svg");
 }
 
-.custom-btn {
-  background-color: #ffffff;
-  border-radius: 1rem;
-  color: #000000;
-  display: block;
-  font-size: 1.4rem;
-  font-weight: 600;
-  padding: 0.6rem 0.2rem;
-  position: relative;
-  text-align: center;
-  text-transform: capitalize;
-  width: 17rem;
-}
-
 .main {
-  /* background-color: #000000; */
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1523,49 +1508,6 @@ HeaderBackground {
   }
 }
 
-.home__info__btn {
-  overflow: hidden;
-  cursor: pointer;
-  /* Use button-like pointer cursor */
-  user-select: none;
-  /* Prevent text selection */
-}
-
-.home__info__btn:after {
-  background-color: hsla(0, 0%, 45%, 0.418);
-  border-radius: 1rem;
-  content: "";
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  -webkit-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  transform: scaleX(0);
-  -webkit-transform-origin: right;
-  -ms-transform-origin: right;
-  transform-origin: right;
-  -webkit-transition: -webkit-transform 0.3s ease-in 0s;
-  transition: -webkit-transform 0.3s ease-in 0s;
-  -o-transition: transform 0.3s ease-in 0s;
-  transition: transform 0.3s ease-in 0s;
-  transition: transform 0.3s ease-in 0s, -webkit-transform 0.3s ease-in 0s;
-  width: 100%;
-  z-index: 1;
-}
-
-.home__info__btn:hover:after {
-  -webkit-transform: scaleX(1);
-  -ms-transform: scaleX(1);
-  transform: scaleX(1);
-  -webkit-transform-origin: left;
-  -ms-transform-origin: left;
-  transform-origin: left;
-}
-
-.home__info__btn:hover {
-  color: #ffffff;
-}
 
 /* --- Home Section Light Mode Overrides --- */
 
@@ -1597,30 +1539,12 @@ HeaderBackground {
   background-color: #000000; /* Blue cursor for light mode */
 }
 
-/* Button Adjustments for Light Mode */
-[data-theme='light'].home .custom-btn {
-  background-color: #0f172a; /* Dark button in light mode */
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-}
-
-[data-theme='light'].home .home__info__btn:after {
-  background-color: #334155; /* Hover fill color */
-}
-
-[data-theme='light'].home .home__info__btn:hover {
-  color: #ffffff;
-  box-shadow: 0 6px 15px rgba(15, 23, 42, 0.3);
-}
-
 /* Smooth Transitions */
 .home__info, 
 .home__info__title, 
 .home__info__desc, 
 .home__img, 
-.home__info__title span,
-.custom-btn {
+.home__info__title span {
   transition: all 0.5s ease-in-out;
 }
 
@@ -2251,8 +2175,13 @@ HeaderBackground {
   width: 100%;
 }
 
-.skills .container {
+.skills {
   z-index: 300;
+}
+
+.skills-container {
+  z-index: 300;
+
 }
 
 @media (max-width: 575.98px) {
@@ -2261,7 +2190,11 @@ HeaderBackground {
     margin-top: 5%;
   }
 
-  .skills .container {
+  .skills {
+    margin-bottom: 9rem;
+    margin-top: 4rem;
+  }
+  .skills-container {
     margin-bottom: 9rem;
     margin-top: 4rem;
   }
@@ -2441,6 +2374,46 @@ HeaderBackground {
 /* 5. Percentage Text and Labels */
 .skills[data-theme="light"] .skills__box__head span {
   color: #0f172a;
+}
+
+.skills-container {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .skills-container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .skills-container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .skills-container {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .skills-container {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .skills-container {
+    max-width: 1200px;
+  }
 }
 
 .services {
@@ -4362,4 +4335,141 @@ progress {
 
 [data-theme='dark'] {
   --icon-stroke: #f8fafc; /* Light slate/white for dark mode */
+}
+
+/* Home Page Read More Button CSS Styling */
+
+.button-read-more:focus {
+	outline: none;
+}
+
+.button-read-more:focus-visible {
+	outline: 2px solid #443ffc;
+	outline-offset: 3px;
+}
+
+.button-read-more {
+	pointer-events: auto;
+	cursor: pointer;
+	background: #e7e7e7;
+	border: none;
+	padding: 1.5rem 3rem;
+	margin: 0;
+	font-family: inherit;
+	font-size: inherit;
+	position: relative;
+	display: inline-block;
+  border-radius: 1rem;
+}
+ 
+.button-read-more::before,
+.button-read-more::after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.button--telesto {
+	overflow: hidden;
+	font-family: obvia, sans-serif;
+	font-weight: 800;
+	font-style: italic;
+	font-size: 1.5rem;
+	color: #fff;
+}
+
+.button--telesto span {
+	display: block;
+	position: relative;
+	z-index: 1;
+}
+
+.button--telesto > span {
+	overflow: hidden;
+	mix-blend-mode: difference;
+}
+
+.button--telesto:hover > span > span {
+	animation: MoveRightInitial 0.1s forwards, MoveRightEnd 0.3s forwards 0.2s;
+}
+
+@keyframes MoveRightInitial {
+	to {
+		transform: translate3d(105%,0,0);
+	}
+}
+
+@keyframes MoveRightEnd {
+	from {
+		transform: translate3d(-100%,0,0);
+	}
+	to {
+		transform: translate3d(0,0,0);
+	}
+}
+
+.button--telesto::before,
+.button--telesto::after {
+	content: '';
+	background: #000;
+}
+
+.button--telesto::before {
+	width: 135%;
+	-webkit-clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 0% 0%);
+	clip-path: polygon(75% 0%, 100% 50%, 75% 100%, 0% 100%, 0% 0%);
+	transform: translate3d(-100%,0,0);
+}
+
+.button--telesto:hover::before {
+	transform: translate3d(0,0,0);
+	transition: transform 0.3s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.button--telesto::after {
+	width: 105%;
+	transform: translate3d(100%,0,0);
+	transition: transform 0.3s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.button--telesto:hover::after {
+	transform: translate3d(0,0,0);
+	transition: transform 0.01s 0.3s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* --- LIGHT MODE --- */
+/* Background is white, so we make the button a soft light gray 
+   and the hover animation dark. */
+[data-theme='light'] .button-read-more {
+  background: #0f172a; /* Light gray button */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .button--telesto::before,
+[data-theme='light'] .button--telesto::after {
+  background: #f1f5f9; /* Dark slide-in effect */
+}
+
+[data-theme='light'] .button-read-more:focus-visible {
+  outline-color: #f1f5f9;
+}
+
+
+/* --- DARK MODE --- */
+/* Background is black, so we make the button a deep charcoal 
+   and the hover animation white. */
+[data-theme='dark'] .button-read-more {
+  background: #fff; /* Dark gray button */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='dark'] .button--telesto::before,
+[data-theme='dark'] .button--telesto::after {
+  background: #000000; /* Light slide-in effect */
+}
+
+[data-theme='dark'] .button-read-more:focus-visible {
+  outline-color: #000000;
 }
