@@ -158,6 +158,10 @@ Check out this great video on the AGI race:
 
 const Socials = () => {
   const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'detail'
+
+  // --- NEW: Tab State for Blog vs LinkedIn ---
+  const [activeTab, setActiveTab] = useState("linkedin"); // 'blogs' or 'linkedin'
+
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [search, setSearch] = useState("");
   const { theme } = useTheme();
@@ -468,9 +472,6 @@ const Socials = () => {
         </div>
         {socialLinks.map((link, index) => (
           <li key={index} className=" hover:scale-125">
-            {/* <div
-              class={`absolute h-[3.4rem] w-[3.4rem] rounded-full opacity-0 blur transition-all duration-300 group-hover:opacity-100 group-[.active]:opacity-100 group-[.active]:blur-lg bg-gradient-to-r from-blue-500/30 to-purple-500/30 pointer-events-none z-0 `}
-            ></div> */}
             <a
               className={`socials-link border border-transparent rounded-full 
                                 flex items-center justify-center 
@@ -500,35 +501,90 @@ const Socials = () => {
             : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
         }`}
       >
+        {/* --- TOGGLE SWITCH (Blogs | LinkedIn) --- */}
+        {/* Only show this on the main list page, hide it if viewing a specific blog post detail */}
+        {currentPage === "list" && (
+          <div className="flex justify-center mb-8">
+            <div 
+              className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${
+                theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
+              }`}
+            >
+              {/* Sliding Background Pill */}
+              <div 
+                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${
+                  theme === "dark" ? "bg-zinc-700" : "bg-white"
+                } ${activeTab === 'linkedin' ? 'translate-x-[100%] left-[2px]' : 'translate-x-0 left-1'}`}
+              />
+
+              {/* Buttons */}
+              <button 
+                onClick={() => setActiveTab('blogs')}
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
+                  activeTab === 'blogs' 
+                    ? (theme === 'dark' ? 'text-white' : 'text-slate-900') 
+                    : (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-200' : 'text-slate-500 hover:text-slate-700')
+                }`}
+              >
+                Blogs
+              </button>
+              <button 
+                onClick={() => setActiveTab('linkedin')}
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
+                  activeTab === 'linkedin'
+                    ? (theme === 'dark' ? 'text-white' : 'text-slate-900') 
+                    : (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-200' : 'text-slate-500 hover:text-slate-700')
+                }`}
+              >
+                LinkedIn Posts
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* LIST VIEW */}
         {currentPage === "list" && (
           <>
-            <BlogHeader
-              search={search}
-              setSearch={setSearch}
-              setFilters={setFilters}
-              /* Styling Suggestion for Header:
-         Use text-slate-100 (White/Grey) for titles
-         Use text-slate-400 (Grey) for subtitles
-         Use bg-blue-600 (Blue) for primary buttons 
-      */
-            />
-
-            <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
-              <div className="lg:col-span-2">
-                <PostList
-                  filteredPosts={filteredPosts}
-                  onPostClick={handlePostClick}
-                  /* Inside PostList: 
-             Cards should use bg-zinc-900 and hover:border-blue-500/50 
-          */
+            {/* 1. BLOGS TAB CONTENT */}
+            {activeTab === 'blogs' && (
+              <div className="animate-in fade-in zoom-in duration-300">
+                <BlogHeader
+                  search={search}
+                  setSearch={setSearch}
+                  setFilters={setFilters}
                 />
-              </div>
 
-              <aside className="lg:col-span-1">
-                <FilterSidebar filters={filters} setFilters={setFilters} />
-              </aside>
-            </main>
+                <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
+                  <div className="lg:col-span-2">
+                    <PostList
+                      filteredPosts={filteredPosts}
+                      onPostClick={handlePostClick}
+                    />
+                  </div>
+                  <aside className="lg:col-span-1">
+                    <FilterSidebar filters={filters} setFilters={setFilters} />
+                  </aside>
+                </main>
+              </div>
+            )}
+
+            {/* 2. LINKEDIN TAB CONTENT */}
+            {activeTab === 'linkedin' && (
+              <div className="animate-in fade-in slide-in-from-right-4 duration-300 w-full min-h-[500px] flex justify-center p-8 bg-[#f9fafb] rounded-3xl ">
+                 {/* IFrame Widget - Width set to 100% for responsiveness */}
+                 <iframe 
+                    src="https://widgets.sociablekit.com/linkedin-profile-posts/iframe/25647450" 
+                    frameBorder="0" 
+                    width="100%" 
+                    height="1000"
+                    style={{
+                      borderRadius: '12px',
+                      maxWidth: '1200px' // Keeps it from getting too stretched on huge screens
+                    }}
+                    title="LinkedIn Profile Posts"
+                 ></iframe> 
+              </div>
+            )}
           </>
         )}
 
@@ -539,6 +595,7 @@ const Socials = () => {
           </div>
         )}
       </div>
+      <style>{`.sk-header-button { background-color: #FFFF00 !important}`}</style>
     </div>
   );
 };

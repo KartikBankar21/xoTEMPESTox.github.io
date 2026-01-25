@@ -11,7 +11,7 @@ import AnimatedOutlet from "./AnimatedOutlet";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -142,16 +142,14 @@ function ThemeControlsWrapper({ shouldHideUI }) {
   } = useTheme();
 
   return (
-    
-      <ThemePlayer
-        theme={theme}
-        onThemeChange={handleThemeChange}
-        wallpapers={allWallpapers}
-        currentWallpaper={currentAsset}
-        onWallpaperSelect={handleWallpaperSelect}
-        shouldHideUI={shouldHideUI}
-      />
-   
+    <ThemePlayer
+      theme={theme}
+      onThemeChange={handleThemeChange}
+      wallpapers={allWallpapers}
+      currentWallpaper={currentAsset}
+      onWallpaperSelect={handleWallpaperSelect}
+      shouldHideUI={shouldHideUI}
+    />
   );
 }
 
@@ -366,32 +364,33 @@ function App() {
 
   // 3. Pause/Resume audio when tab visibility changes (tab switch, browser minimize)
   const wasPlayingBeforeHidden = useRef(false);
-  
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!currentAudio.current) return;
 
-      if (document.visibilityState === 'hidden') {
+      if (document.visibilityState === "hidden") {
         // Store whether audio was playing before hiding
         wasPlayingBeforeHidden.current = !currentAudio.current.paused;
         if (wasPlayingBeforeHidden.current) {
           currentAudio.current.pause();
           setIsPlaying(false);
         }
-      } else if (document.visibilityState === 'visible') {
+      } else if (document.visibilityState === "visible") {
         // Only resume if it was playing before the tab was hidden
         if (wasPlayingBeforeHidden.current) {
-          currentAudio.current.play()
+          currentAudio.current
+            .play()
             .then(() => setIsPlaying(true))
-            .catch(err => console.error('Auto-resume failed:', err));
+            .catch((err) => console.error("Auto-resume failed:", err));
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
@@ -600,7 +599,9 @@ function App() {
                       onVolumeChange={handleVolumeChange}
                     />
                   ) : (
-                    <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
+                    <div
+                      className={`mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]`}
+                    >
                       <MiniPlayer
                         onExpand={() => handleToggle(true)}
                         currentTrack={currentTrack}
@@ -616,15 +617,20 @@ function App() {
                   )}
                 </div>
                 <AnimatedOutlet context={{ startAudioOnInteraction }} />
-        <ThemeControlsWrapper />
+                <ThemeControlsWrapper />
               </div>
 
-        <FooterNavbar onNavigate={startAudioOnInteraction} />
+              <FooterNavbar onNavigate={startAudioOnInteraction} />
             </>
           )}
         </div>
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svgjs="http://svgjs.dev/svgjs"
+          opacity="1"
           style={{
             position: "absolute",
             width: 0,
@@ -642,11 +648,11 @@ function App() {
               height="140%"
               filterUnits="objectBoundingBox"
               primitiveUnits="userSpaceOnUse"
-              colorInterpolationFilters="linearRGB"
+              color-interpolation-filters="linearRGB"
             >
               <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.2"
+                type="turbulence"
+                baseFrequency="0.085"
                 numOctaves="4"
                 seed="15"
                 stitchTiles="stitch"
@@ -657,10 +663,10 @@ function App() {
                 result="turbulence"
               ></feTurbulence>
               <feSpecularLighting
-                surfaceScale="15"
-                specularConstant="1.1"
+                surfaceScale="19"
+                specularConstant="1.4"
                 specularExponent="20"
-                lightingColor="#a193b3"
+                lighting-color="#ffffff"
                 x="0%"
                 y="0%"
                 width="100%"
@@ -668,14 +674,25 @@ function App() {
                 in="turbulence"
                 result="specularLighting"
               >
-                <feDistantLight azimuth="3" elevation="62"></feDistantLight>
+                <feDistantLight azimuth="3" elevation="104"></feDistantLight>
               </feSpecularLighting>
             </filter>
           </defs>
+          <rect width="700" height="700" fill="#000000ff"></rect>
+          <rect
+            width="700"
+            height="700"
+            fill="#ffffff"
+            filter="url(#nnnoise-filter)"
+          ></rect>
         </svg>
 
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svgjs="http://svgjs.dev/svgjs"
+          opacity="1"
           style={{
             position: "absolute",
             width: 0,
@@ -687,40 +704,49 @@ function App() {
           <defs>
             <filter
               id="nnnoise-filter-black"
-              x="0%"
-              y="0%"
-              width="100%"
-              height="100%"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+              filterUnits="objectBoundingBox"
+              primitiveUnits="userSpaceOnUse"
+              color-interpolation-filters="linearRGB"
             >
               <feTurbulence
                 type="turbulence"
-                baseFrequency="0.7" /* Higher number = smaller, tighter dots */
+                baseFrequency="0.09"
                 numOctaves="4"
+                seed="15"
                 stitchTiles="stitch"
-                result="raw_noise"
-              />
-
-              <feColorMatrix
-                in="raw_noise"
-                type="matrix"
-                values="0 0 0 0 0
-            0 0 0 0 0
-            0 0 0 0 0
-            0 0 0 1 0"
-                result="black_specks"
-              />
-
-              {/* CHANGE TABLEVALUES HERE FOR DENSITY */}
-              <feComponentTransfer in="black_specks">
-                <feFuncA type="discrete" tableValues="0 0 1 " />
-              </feComponentTransfer>
-
-              {/* ADJUST SLOPE FOR VISIBILITY */}
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.4" />
-              </feComponentTransfer>
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                result="turbulence"
+              ></feTurbulence>
+              <feSpecularLighting
+                surfaceScale="16"
+                specularConstant="2.4"
+                specularExponent="20"
+                lighting-color="#9013fe"
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                in="turbulence"
+                result="specularLighting"
+              >
+                <feDistantLight azimuth="3" elevation="130"></feDistantLight>
+              </feSpecularLighting>
             </filter>
           </defs>
+          <rect width="700" height="700" fill="#ffffffff"></rect>
+          <rect
+            width="700"
+            height="700"
+            fill="#9013fe"
+            filter="url(#nnnoise-filter-black)"
+          ></rect>
         </svg>
       </>
     </ThemeProvider>

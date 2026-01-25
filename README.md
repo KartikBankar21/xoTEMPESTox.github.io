@@ -122,10 +122,10 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ### Issue
 * [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c)
 * [x]  Skill Section hidden behind music player on a spcific width for my laptop other Devices are okay , [img](https://github.com/user-attachments/assets/5324a0d9-d77f-4a9b-a2da-9d3b0723c84b)
-* [ ]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
-* [ ]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
+* [x]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
+* [x]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
 * [x]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
-* [ ]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
+* [x]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
 * [x]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (**need to discuss**)
 * [x]  Remove White Opacity layer infront of images for White mode in porfolio card
 * [x]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
@@ -136,4 +136,4 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 
 ### Feature
-* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.
+* [x] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.
