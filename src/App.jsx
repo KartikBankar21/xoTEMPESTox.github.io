@@ -169,6 +169,7 @@ function App() {
   const [duration, setDuration] = useState(NaN); // Total duration in seconds
   const [prevVolume, setPrevVolume] = useState(0.15);
   const [volume, setVolume] = useState(0.15); // 15% volume
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
@@ -464,6 +465,19 @@ function App() {
         });
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Responsive values for noise
+  const darkNoiseFreq = isMobile ? "0.25" : "0.15";
+  const lightNoiseFreq = isMobile ? "0.15" : "0.1";
+
   // Responsive Positioning Classes
   let positionClasses;
 
@@ -568,11 +582,10 @@ function App() {
     z-1200
     /* Transition and Opacity Logic */
     transition-all duration-500 ease-in-out
-    ${
-      shouldHidePlayer
-        ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
-        : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
-    }
+    ${shouldHidePlayer
+                      ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
+                      : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
+                    }
 
     
   `}
@@ -652,7 +665,7 @@ function App() {
             >
               <feTurbulence
                 type="turbulence"
-                baseFrequency="0.085"
+                baseFrequency={darkNoiseFreq}
                 numOctaves="4"
                 seed="15"
                 stitchTiles="stitch"
@@ -714,7 +727,7 @@ function App() {
             >
               <feTurbulence
                 type="turbulence"
-                baseFrequency="0.09"
+                baseFrequency={lightNoiseFreq}
                 numOctaves="4"
                 seed="15"
                 stitchTiles="stitch"
@@ -725,10 +738,10 @@ function App() {
                 result="turbulence"
               ></feTurbulence>
               <feSpecularLighting
-                surfaceScale="16"
-                specularConstant="2.4"
+                surfaceScale="19"
+                specularConstant="1.4"
                 specularExponent="20"
-                lighting-color="#9013fe"
+                lighting-color="#ffffff"
                 x="0%"
                 y="0%"
                 width="100%"
@@ -736,8 +749,13 @@ function App() {
                 in="turbulence"
                 result="specularLighting"
               >
-                <feDistantLight azimuth="3" elevation="130"></feDistantLight>
+                <feDistantLight azimuth="3" elevation="104"></feDistantLight>
               </feSpecularLighting>
+              <feComponentTransfer in="specularLighting">
+                <feFuncR type="table" tableValues="1 0" />
+                <feFuncG type="table" tableValues="1 0" />
+                <feFuncB type="table" tableValues="1 0" />
+              </feComponentTransfer>
             </filter>
           </defs>
           <rect width="700" height="700" fill="#ffffffff"></rect>
