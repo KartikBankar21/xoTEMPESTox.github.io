@@ -321,7 +321,7 @@ export const LoFiPlayer = ({
               <button
                 onClick={() => setShowVolume(!showVolume)}
                 className={`icon-btn p-2 rounded-full flex items-center justify-center transition-all duration-300 ${showVolume
-                  ? `bg-white scale-110 border ${theme === "dark"
+                  ? `scale-110 border ${theme === "dark"
                     ? "text-purple-600 shadow-[0_0_15px_rgba(168,85,247,0.4)] border-purple-500"
                     : "text-purple-700 shadow-md border-purple-300"
                   }`

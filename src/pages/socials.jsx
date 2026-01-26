@@ -5,6 +5,8 @@ import PostList from "../components/PostList";
 import DetailView from "../components/DetailView";
 import "../styles/main.css";
 import { useTheme } from "../components/HeaderBackground";
+import { NavLink } from "react-router-dom";
+
 
 // --- 1. DATA (Now using Markdown for post body) ---
 const BLOG_POSTS = [
@@ -445,7 +447,7 @@ const Socials = () => {
   ];
 
   return (
-    <div className="page-section mt-32" data-theme={theme}>
+    <div className="page-section" data-theme={theme}>
       <h1 className="sr-only">Blog & Socials</h1>
       <ul
         id="socials"

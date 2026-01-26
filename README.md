@@ -120,15 +120,15 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ## Roadmap
 
 ### Issue
-* [ ]  **Cut off Content behind with some padded margin  navbar/social/muisc/theme controll** [img](https://github.com/user-attachments/assets/27d99522-c8b0-47eb-8adc-2c96abda861e)
-* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c) Proposed Fix : Hide (black/white cursor glow on Mobile)
-* [ ]  Even spacing Between Appearance and top/ bottom button's , Replace pallet button with dark/kight mode toggle button [img](https://github.com/user-attachments/assets/ca2f3c8d-801c-44b2-a1e6-1a38a3739be3)
-* [ ]  Name to "Theme Controlls" , Remove the menu icon [img](https://github.com/user-attachments/assets/a08c5711-a557-46cf-b357-c099605a04d5)
-* [ ]  Same rounded rectangle box and light animation as music player [img](https://github.com/user-attachments/assets/20545184-db4d-4ca2-933b-45d4151e620a)
-* [ ]  Music Player Animation is outside the border , noise filter strangely missing from edges , keep the animation on the border within box same as navbar [img](https://github.com/user-attachments/assets/76bae42f-6e2d-402b-bf57-0ac7e7f98476)
-* [ ]  Simple Hover Effect around Border for portfolio card [](https://github.com/user-attachments/assets/583fdb43-4f87-4a9b-877f-446683791978)
-* [ ]  Replace the White Highlight effect in dark mode for Music player Volume controll on Selected
-* [ ]  Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
+* [x]  **Cut off Content behind with some padded margin  navbar/social/muisc/theme controll** [img](https://github.com/user-attachments/assets/27d99522-c8b0-47eb-8adc-2c96abda861e)
+* [x]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c) Proposed Fix : Hide (black/white cursor glow on Mobile)
+* [x]  Even spacing Between Appearance and top/ bottom button's , Replace pallet button with dark/kight mode toggle button [img](https://github.com/user-attachments/assets/ca2f3c8d-801c-44b2-a1e6-1a38a3739be3)
+* [x]  Name to "Theme Controlls" , Remove the menu icon [img](https://github.com/user-attachments/assets/a08c5711-a557-46cf-b357-c099605a04d5)
+* [x]  Same rounded rectangle box and light animation as music player [img](https://github.com/user-attachments/assets/20545184-db4d-4ca2-933b-45d4151e620a)
+* [x]  Music Player Animation is outside the border , noise filter strangely missing from edges , keep the animation on the border within box same as navbar [img](https://github.com/user-attachments/assets/76bae42f-6e2d-402b-bf57-0ac7e7f98476)
+* [x]  Simple Hover Effect around Border for portfolio card [](https://github.com/user-attachments/assets/583fdb43-4f87-4a9b-877f-446683791978)
+* [x]  Replace the White Highlight effect in dark mode for Music player Volume controll on Selected
+* [x]  Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
 
 
 ### Feature

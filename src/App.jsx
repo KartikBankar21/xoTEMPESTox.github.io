@@ -33,9 +33,8 @@ const customStyles = `
 /* Base styles for the player states, sizing is handled by Tailwind utility classes */
 .minimized {
     /* Use custom rounding for the mobile top-right bar shape */
-    padding: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--lo-fi-accent);
+    border: 3px solid transparent;
     background-color: var(--player-bg);
 }
 
@@ -175,6 +174,34 @@ function App() {
   const location = useLocation();
   const shouldHidePlayer =
     location.pathname === "/socials" || location.pathname === "/";
+  const socials = location.pathname === '/socials';
+  const journey = location.pathname === '/journey';
+  const skills = location.pathname === '/skills';
+  const about = location.pathname === '/about';
+
+
+
+
+  // ... inside your component
+const [isMobileForContent, setIsMobileForContent] = useState(false);
+
+useEffect(() => {
+  const handleResize = () => setIsMobileForContent(window.innerWidth < 900);
+  handleResize(); // Check on mount
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+// Logic for the height
+const getMinHeight = () => {
+  if (isMobileForContent && socials) return "calc(100vh - 22rem)";
+  if (socials) return "calc(100vh - 16rem)";
+  if (journey && isMobileForContent) return "calc(100vh - 14rem)";
+  if (journey) return "calc(100vh - 8rem)";
+  if (skills && isMobileForContent) return "calc(100vh - 14rem)";
+  if (about && isMobileForContent) return "calc(100vh - 8rem)";
+  return "100vh";
+};
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -186,6 +213,7 @@ function App() {
       "/services": "Services | Priyanshu Sah",
       "/skills": "Skills | Priyanshu Sah",
       "/socials": "Blog & Socials | Priyanshu Sah",
+      "/mail" : "Mail | Priyanshu Sah"
     };
 
     document.title =
@@ -491,7 +519,7 @@ function App() {
       " lg:right-10 lg:left-auto lg:w-1/5 lg:max-w-sm lg:translate-x-0 lg:translate-y-0";
   } else {
     // Mobile/Tablet: Top-right corner, compact horizontal bar
-    positionClasses = "fixed top-0 right-0 w-58 h-14";
+    positionClasses = "fixed -top-[3px] -right-[3px] w-58 h-14";
 
     // Desktop (lg): Right-center, narrow/tall vertical bar
     positionClasses +=
@@ -507,7 +535,7 @@ function App() {
     "transition-all duration-500",
     isExpanded
       ? "expanded lg:overflow-y-auto"
-      : "minimized rounded-bl-[2.5rem] lg:rounded-bl-xl lg:rounded-xl", // Apply large rounded-bottom-left for the top-right tab look on mobile, and standard rounded-xl on desktop.
+      : "minimized rounded-bl-[2.5rem] lg:rounded-bl-[1.4rem] lg:rounded-[1.4rem]", // Apply large rounded-bottom-left for the top-right tab look on mobile, and standard rounded-xl on desktop.
     isElastic ? "elastic-in" : "ease-in-out",
   ].join(" ");
   return (
@@ -517,7 +545,7 @@ function App() {
         <audio
           ref={currentAudio}
           onTimeUpdate={handleAudioUpdate}
-          onEnded={handleNextSong} // Auto-play next track when current one ends
+          onEnded={handleNextSong} // Auto-pl2.5remay next track when current one ends
           muted={isMuted} // This will be true initially
           playsInline
         />
@@ -570,8 +598,9 @@ function App() {
                 style={{
                   position: "relative",
                   width: "100%",
-                  minHeight: "calc(100vh)",
+                  minHeight: getMinHeight(),
                   zIndex: 10,
+                  top: socials ? '8rem':'0rem'
                 }}
               >
                 <div
@@ -580,12 +609,12 @@ function App() {
     ${containerClasses} 
 
     z-1200
-    /* Transition and Opacity Logic */
     transition-all duration-500 ease-in-out
-    ${shouldHidePlayer
-                      ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
-                      : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
-                    }
+    ${
+      shouldHidePlayer
+        ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
+        : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
+    }
 
     
   `}

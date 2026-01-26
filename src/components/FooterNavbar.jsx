@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import "../styles/main.css"; // We'll put the complex CSS/Animations here
 import { useTheme } from "./HeaderBackground";
@@ -18,6 +18,16 @@ const FooterNavbar = ({ onNavigate }) => {
   const { theme } = useTheme();
 
   const [glowPosition, setGlowPosition] = useState({ x: 0, y: 0, opacity: 0 });
+
+    // ... inside your component
+const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const handleResize = () => setIsMobile(window.innerWidth < 768);
+  handleResize(); // Check on mount
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   // Handle mouse movement to update the grey glow position
   const handleMouseMove = (e) => {
@@ -159,7 +169,7 @@ const FooterNavbar = ({ onNavigate }) => {
       </div>
 
       {/* Grey Cursor Glow Effect */}
-      <div
+      {!isMobile &&  <div
         className="cursor-glow"
         style={{
           left: `${glowPosition.x}px`,
@@ -171,6 +181,8 @@ const FooterNavbar = ({ onNavigate }) => {
               : "radial-gradient(circle, rgba(169, 169, 169, 0.4) 0%, transparent 70%)", // Light glow
         }}
       ></div>
+      }
+     
     </div>
   );
 };

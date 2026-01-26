@@ -56,7 +56,6 @@
       "permanent": true
     }],
   "rewrites": [
-    { "source": "/mail", "destination": "/redirects/mail/index.html" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }

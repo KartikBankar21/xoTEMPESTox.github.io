@@ -286,6 +286,7 @@ const Cube = React.memo(({
         }}
       >
         {/* The 3D Pivot Container */}
+        {/* The 3D Pivot Container */}
         <div
           className="w-full h-full relative transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{
@@ -294,11 +295,34 @@ const Cube = React.memo(({
             pointerEvents: "none",
           }}
         >
+           {/* --- ADDED: Animation Styles (Hover Only) --- */}
+           <style>{`
+            @keyframes border-signal-dark {
+              0% { border-color: rgba(0,0,0,0.9); box-shadow: 10 10 10 transparent; }
+              50% { border-color: rgba(99, 102, 241, 0.8); box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+              100% { border-color: rgba(0,0,0,0.9); box-shadow: 0 0 0 transparent; }
+            }
+            @keyframes border-signal-light {
+              0% { border-color: rgba(212, 212, 216, 1); box-shadow: 0 0 0 transparent; }
+              50% { border-color: rgba(59, 130, 246, 0.8); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+              100% { border-color: rgba(212, 212, 216, 1); box-shadow: 10 10 10 transparent; }
+            }
+            /* Only animate on hover */
+            .hover-glow-dark:hover {
+              animation: border-signal-dark 1.5s ease-in-out infinite;
+             
+            }
+            .hover-glow-light:hover {
+              animation: border-signal-light 1.5s ease-in-out infinite;
+            
+            }
+          `}</style>
+
           {/* FRONT FACE (Links) */}
           <div
-            className={`absolute inset-0 border rounded-4xl flex items-end justify-between gap-4 backface-hidden backdrop-blur-sm overflow-hidden transition-colors duration-300 ${theme === 'dark'
-              ? 'bg-[#0f172a] border-black/90'
-              : 'bg-[#0f172a] border-zinc-300 shadow-inner'
+            className={`absolute inset-0 border-2 rounded-4xl flex items-end justify-between gap-4 backface-hidden backdrop-blur-sm overflow-hidden transition-colors duration-300 ${theme === 'dark'
+              ? 'bg-[#0f172a] border-black/90 hover-glow-dark' // Added hover-glow-dark
+              : 'bg-[#0f172a] border-zinc-300 shadow-inner hover-glow-light' // Added hover-glow-light
               }`}
             style={{
               transform: `rotateX(0deg) translateZ(${translateZ}px)`,
@@ -307,6 +331,7 @@ const Cube = React.memo(({
               backfaceVisibility: "hidden",
             }}
           >
+            
             <div
               className={`absolute inset-0 bg-cover bg-center rounded-4xl cursor-pointer transition-all duration-300 ${isBulbHovered ? 'scale-105 opacity-100' : 'opacity-50'}`}
               style={{ backgroundImage: `url(${item.image_url})` }}

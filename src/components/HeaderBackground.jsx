@@ -10,15 +10,12 @@ import {
   Moon,
   Image as ImageIcon,
   X,
-  Palette,
   ChevronLeft,
   Check,
-  Smartphone,
-  Layout,
-  Monitor,
   ArrowRight,
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import "../styles/main.css";
 
 // -----------------------------------------------------------------------------
 // 1. CONTEXT & HOOKS (Unchanged)
@@ -368,16 +365,14 @@ const MiniThemeWidget = ({
   wallpapers = [],
   currentWallpaper,
   onWallpaperSelect,
+  onThemeChange,
 }) => {
-  const verticalTextStyle = {
-    writingMode: "vertical-rl",
-    transform: "rotate(180deg)",
-    whiteSpace: "nowrap",
-  };
+  const verticalTextStyle =
+    "lg:[writing-mode:vertical-rl] lg:rotate-180 lg:white-space-nowrap";
 
   // Logic to find next wallpaper
   const currentIndex = wallpapers.findIndex(
-    (w) => w.src === (currentWallpaper?.src || "")
+    (w) => w.src === (currentWallpaper?.src || ""),
   );
   const nextIndex =
     currentIndex >= 0 && wallpapers.length > 0
@@ -393,10 +388,11 @@ const MiniThemeWidget = ({
   };
 
   return (
-    <div className={`relative h-full w-full overflow-hidden ${
-          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
-        }`}>
-      {/* Background - theme-dependent color & noise */}
+    <div
+      className={`relative mini-theme rounded-br-[2.5rem] lg:rounded-[1.4rem]  h-full w-full ${
+        theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+      }`}
+    >
       <div
         className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
           theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
@@ -409,38 +405,43 @@ const MiniThemeWidget = ({
         }}
       />
 
-      <div className="relative flex flex-row items-center justify-between lg:flex-col h-full w-full px-4 py-2 lg:py-6 lg:px-0 lg:space-y-4">
+      <div className=" z-2  relative flex flex-row lg:flex-col items-center justify-between h-full w-full px-4 py-2 lg:py-10">
         {/* Top: Header/Icon Area (Clickable to Expand) */}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onThemeChange?.();
+          }}
+          className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl shadow-md flex items-center justify-center transition-all duration-300 z-20 ${
+            theme === "dark"
+              ? "bg-white/10 text-white hover:bg-white/20"
+              : "bg-white text-purple-600 shadow-gray-200 hover:bg-purple-100"
+          }`}
+        >
+          {theme === "dark" ? (
+            <Sun className="w-5 h-5 lg:w-6 lg:h-6 text-amber-400" />
+          ) : (
+            <Moon className="w-5 h-5 lg:w-6 lg:h-6 text-slate-700" />
+          )}
+        </button>
+        {/* 2. Appearance Text (Now visible on mobile + even spacing) */}
         <div
           onClick={onExpand}
-          className="flex flex-row lg:flex-col items-center gap-3 lg:gap-4 cursor-pointer group flex-shrink-0"
+          className={`cursor-pointer group flex items-center justify-center ${verticalTextStyle}`}
         >
-          <div
-            className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl shadow-md flex items-center justify-center transition-all duration-300 ${
+          <p
+            className={`text-xs lg:text-xl font-bold tracking-[0.1em] ml-2 lg:ml-0 mb-0! uppercase transition-colors ${
               theme === "dark"
-                ? "bg-white/10 text-white shadow-black group-hover:bg-white/20"
-                : "bg-white text-purple-600 shadow-gray-200 group-hover:bg-purple-50"
+                ? "text-white/60 group-hover:text-white"
+                : "text-black/60 group-hover:text-black"
             }`}
           >
-            <Palette className="w-5 h-5 lg:w-6 lg:h-6" />
-          </div>
-
-          <div
-            className="hidden lg:flex flex-col items-center justify-center space-y-2"
-            style={verticalTextStyle}
-          >
-            <p
-              className={`text-lg font-bold tracking-widest uppercase transition-colors ${
-                theme === "dark" ? "text-white/90" : "text-black/80"
-              }`}
-            >
-              Appearance
-            </p>
-          </div>
+            Appearance
+          </p>
         </div>
 
         {/* Spacer to push wallpapers to bottom on desktop */}
-        <div className="flex-grow hidden lg:block" onClick={onExpand} />
 
         {/* Bottom: Wallpaper Previews (The "Next in Line" Logic) */}
         <div className="flex items-center lg:flex-col gap-3 lg:gap-3">
@@ -467,7 +468,7 @@ const MiniThemeWidget = ({
                 e.stopPropagation(); // Prevent opening the expanded view
                 onWallpaperSelect(nextWallpaper);
               }}
-              className="relative w-10 h-10 lg:w-16 lg:h-16 ml-2 lg:ml-0 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group"
+              className="relative w-10 h-10 lg:w-14 lg:h-14 ml-2 lg:ml-0 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group"
               title="Switch to Next Wallpaper"
             >
               <div
@@ -492,7 +493,6 @@ const MiniThemeWidget = ({
   );
 };
 
-// --- ExpandedThemeWidget (The Phone UI) ---
 const ExpandedThemeWidget = ({
   onCollapse,
   theme,
@@ -509,9 +509,11 @@ const ExpandedThemeWidget = ({
   };
 
   return (
-    <div className={`relative h-full w-full p-[1rem] ${
-          theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
-        }`}>
+    <div
+      className={`relative h-full w-full p-[1rem] ${
+        theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+      }`}
+    >
       {/* Background with Noise */}
       <div
         className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
@@ -536,29 +538,20 @@ const ExpandedThemeWidget = ({
           }`}
         >
           <div className="flex items-center gap-3">
-            <div
-              className={`p-2 rounded-xl ${
-                theme === "dark"
-                  ? "bg-purple-500/20 text-purple-300"
-                  : "bg-purple-100 text-purple-600"
-              }`}
-            >
-              <Layout size={20} />
-            </div>
             <div>
               <h2
                 className={`text-lg font-bold leading-none ${
                   theme === "dark" ? "text-white" : "text-black"
                 }`}
               >
-                Display
+                Theme
               </h2>
               <span
                 className={`text-[10px] uppercase tracking-wider font-mono ${
                   theme === "dark" ? "text-white/50" : "text-gray-500"
                 }`}
               >
-                Personalization
+                Controlls
               </span>
             </div>
           </div>
@@ -679,8 +672,8 @@ const ExpandedThemeWidget = ({
                         isActive
                           ? "ring-2 ring-purple-500 ring-offset-1 ring-offset-transparent border-purple-500"
                           : theme === "dark"
-                          ? "border-transparent hover:border-white/30 hover:scale-[1.02]"
-                          : "border-transparent hover:border-black/20 hover:scale-[1.02]"
+                            ? "border-transparent hover:border-white/30 hover:scale-[1.02]"
+                            : "border-transparent hover:border-black/20 hover:scale-[1.02]"
                       }`}
                     >
                       <img
@@ -694,8 +687,8 @@ const ExpandedThemeWidget = ({
                         {wallpaperTheme === "dark"
                           ? "🌙"
                           : wallpaperTheme === "light"
-                          ? "☀️"
-                          : "⚪"}
+                            ? "☀️"
+                            : "⚪"}
                       </div>
 
                       {/* Active Badge (Removed backdrop-blur to fix shifting) */}
@@ -745,9 +738,10 @@ export const ThemePlayer = ({
 
   // 2. Determine visibility directly inside component
   const location = useLocation();
-  const isHidden = location.pathname === '/' || location.pathname === '/socials'; // Hide on Home
+  const isHidden =
+    location.pathname === "/" || location.pathname === "/socials"; // Hide on Home
 
- // Responsive Positioning Classes
+  // Responsive Positioning Classes
   let positionClasses;
 
   if (isExpanded) {
@@ -759,7 +753,7 @@ export const ThemePlayer = ({
     positionClasses += " lg:left-10 lg:translate-x-0 lg:w-90 lg:h-[70vh]";
   } else {
     // Mobile: Top-Left corner
-    positionClasses = "fixed top-4 left-4 w-auto h-14";
+    positionClasses = "fixed -top-[3px] -left-[3px] w-auto h-14";
 
     // Desktop: Left Center vertical strip
     positionClasses +=
@@ -772,27 +766,26 @@ export const ThemePlayer = ({
     "transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) z-[9999]", // Improved transition
     isExpanded
       ? "rounded-[2.5rem] shadow-2xl"
-      : "rounded-xl lg:rounded-[1.4rem] ",
+      : "rounded-br-[2.5rem] lg:rounded-[1.4rem] ",
     theme === "dark" ? "shadow-black/50" : "shadow-xl shadow-purple-900/10",
     "overflow-hidden",
-    
+
     // 3. THE MAGIC FIX:
     // If hidden, force it off-screen to the left (-200%).
     // This overrides the 'x' variable but KEEPS the 'y' centering intact.
-    isHidden ? "-translate-x-[250%]" : "" 
-    
+    isHidden ? "-translate-x-[250%]" : "",
   ].join(" ");
 
   return (
     <div
       ref={containerRef}
       className={`${positionClasses} ${containerClasses}`}
-
       // 3. THE MAGIC: Override Tailwind's X-translation variable directly
       style={{
-        // If hidden, force X to -250% (slide far left). 
+        // If hidden, force X to -250% (slide far left).
         // If visible, set to undefined (let Tailwind classes controls it).
         "--tw-translate-x": shouldHideUI ? "-250%" : undefined,
+        border: '0px solid transparent'
       }}
     >
       {isExpanded ? (
@@ -805,13 +798,17 @@ export const ThemePlayer = ({
           onWallpaperSelect={onWallpaperSelect}
         />
       ) : (
-        <MiniThemeWidget
-          onExpand={() => setIsExpanded(true)}
-          theme={theme}
-          wallpapers={wallpapers}
-          currentWallpaper={currentWallpaper}
-          onWallpaperSelect={onWallpaperSelect}
-        />
+        
+
+          <MiniThemeWidget
+            onExpand={() => setIsExpanded(true)}
+            theme={theme}
+            wallpapers={wallpapers}
+            currentWallpaper={currentWallpaper}
+            onWallpaperSelect={onWallpaperSelect}
+            onThemeChange={onThemeChange}
+          />
+        
       )}
     </div>
   );
