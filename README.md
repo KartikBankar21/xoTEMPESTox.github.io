@@ -109,8 +109,8 @@ tailwind.config.js             # Tailwind CSS configuration
 Feel free to adapt the content, color palette, or assets to tailor the portfolio for your own brand.
 
 ### Links
-- [Production](https://priyanshusah.com) - Github Pages
-
+- [Production](https://priyanshusah.com) - Vercel
+- [Dev](https://dev.priyanshusah.com/) - Vercel
 ## Credits
 
 - Inspiration: [James Oliver Portfolio](https://james-oliver-portfolio.netlify.app/)
