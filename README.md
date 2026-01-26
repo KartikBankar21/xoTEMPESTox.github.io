@@ -120,20 +120,16 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ## Roadmap
 
 ### Issue
-* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c)
-* [x]  Skill Section hidden behind music player on a spcific width for my laptop other Devices are okay , [img](https://github.com/user-attachments/assets/5324a0d9-d77f-4a9b-a2da-9d3b0723c84b)
-* [x]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
-* [x]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
-* [x]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
-* [x]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
-* [x]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (**need to discuss**)
-* [x]  Remove White Opacity layer infront of images for White mode in porfolio card
-* [x]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
-* [x]  Hide Navbar , along with Darkmode+walpaper selector In home page ,use the same slide animation as music player , left slide in/out  for wallpaper/theme , bottom slide in/out for navbar .
-* [x]  Update the Home page readmore button to use either 10/16 from this [link](https://tympanus.net/Development/ButtonHoverStyles/)
-* [ ]  **Not sure about this , Need to discuss** Shade of Purple in Music Player Higlight and White for music volume on slected
-* [ ]  **Need to discuss** , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
+* [ ]  **Cut off Content behind with some padded margin  navbar/social/muisc/theme controll** <img width="1913" height="1367" alt="image" src="https://github.com/user-attachments/assets/27d99522-c8b0-47eb-8adc-2c96abda861e" />
+* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c) Proposed Fix : Hide (black/white cursor glow on Mobile)
+* [ ]  Even spacing Between Appearance and top/ bottom button's , Replace pallet button with dark/kight mode toggle button [img](https://github.com/user-attachments/assets/ca2f3c8d-801c-44b2-a1e6-1a38a3739be3)
+* [ ]  Name to "Theme Controlls" , Remove the menu icon [img](https://github.com/user-attachments/assets/a08c5711-a557-46cf-b357-c099605a04d5)
+* [ ]  Same rounded rectangle box and light animation as music player [img](https://github.com/user-attachments/assets/20545184-db4d-4ca2-933b-45d4151e620a)
+* [ ]  Music Player Animation is outside the border , noise filter strangely missing from edges , keep the animation on the border within box same as navbar [img](https://github.com/user-attachments/assets/76bae42f-6e2d-402b-bf57-0ac7e7f98476)
+* [ ]  Simple Hover Effect around Border for portfolio card [](https://github.com/user-attachments/assets/583fdb43-4f87-4a9b-877f-446683791978)
+* [ ]  Replace the White Highlight effect in dark mode for Music player Volume controll on Selected
+* [ ]  Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
 
 
 ### Feature
-* [x] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.
+* [x] All Done (:
