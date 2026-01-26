@@ -120,7 +120,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ## Roadmap
 
 ### Issue
-* [ ]  **Cut off Content behind with some padded margin  navbar/social/muisc/theme controll** <img width="1913" height="1367" alt="image" src="https://github.com/user-attachments/assets/27d99522-c8b0-47eb-8adc-2c96abda861e" />
+* [ ]  **Cut off Content behind with some padded margin  navbar/social/muisc/theme controll** [img](https://github.com/user-attachments/assets/27d99522-c8b0-47eb-8adc-2c96abda861e)
 * [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c) Proposed Fix : Hide (black/white cursor glow on Mobile)
 * [ ]  Even spacing Between Appearance and top/ bottom button's , Replace pallet button with dark/kight mode toggle button [img](https://github.com/user-attachments/assets/ca2f3c8d-801c-44b2-a1e6-1a38a3739be3)
 * [ ]  Name to "Theme Controlls" , Remove the menu icon [img](https://github.com/user-attachments/assets/a08c5711-a557-46cf-b357-c099605a04d5)
