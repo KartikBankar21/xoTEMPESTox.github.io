@@ -8,154 +8,7 @@ import { useTheme } from "../components/HeaderBackground";
 import { NavLink } from "react-router-dom";
 
 // --- 1. DATA (Now using Markdown for post body) ---
-const BLOG_POSTS = [
-  {
-    id: 1,
-    title: "The 2024 Retrospective",
-    date: "2024-12-31",
-    excerpt:
-      "First Full-Time Year, Solo Travel while Working, Socializing, and more!",
-    readTime: 10,
-    views: 0,
-    tags: ["retro", "life"],
-    imageUrl: "https://placehold.co/144x144/222222/FFD700?text=2024",
-    heroImage: "https://placehold.co/1200x500/0a0a0a/34d399?text=2024+Review",
-    author: "Theodorus Clarence",
-    likes: 512,
-    body: `# The Retrospective: A Year of Growth
-
-This is the full retrospective post content. A detailed look at the year's achievements and lessons learned, covering everything from professional growth to personal travels and social life.
-
-### Career Milestones
-* Completed the first full year as a Senior Front-End Engineer.
-* Successfully mentored two junior developers on the team.
-* Presented at a small local tech conference on React performance.
-
-### Solo Travel & Work
-I spent three months traveling across Southeast Asia while maintaining a full-time remote workload. This required strict time management and excellent communication.
-
-> "The hardest part of remote work is knowing when to stop, especially when the beach is calling."
-
-We can clearly see the benefits of modern development environments:
-\`\`\`javascript
-// Example of a code block in Markdown
-const calculateDaysUntilNewYear = (today) => {
-    const endOfYear = new Date(today.getFullYear() + 1, 0, 1);
-    return Math.ceil((endOfYear - today) / (1000 * 60 * 60 * 24));
-};
-console.log(calculateDaysUntilNewYear(new Date()));
-\`\`\`
-
-This year has set the foundation for even greater things to come, and I'm very excited for 2025!`,
-  },
-  {
-    id: 2,
-    title: "List Animation using Motion for React",
-    date: "2024-12-17",
-    excerpt:
-      "An in-depth guide on how to animate enter and exit animation for list using Motion for React (previously Framer Motion).",
-    readTime: 6,
-    views: 0,
-    tags: ["react", "animation"],
-    imageUrl: "https://placehold.co/144x144/282a36/F8F8F2?text=Motion",
-    heroImage: "https://placehold.co/1200x500/1e293b/a5f3fc?text=React+Motion",
-    author: "Theodorus Clarence",
-    likes: 220,
-    body: `# Mastering Motion for Seamless Lists
-
-A comprehensive tutorial on creating fluid and beautiful list transitions in React using the latest techniques from [Motion for React](https://www.framer.com/motion/). This guide covers keyframes, layout preservation, and performance optimization. It's a must-read for serious front-end developers.
-
-## Key Techniques Comparison
-| Feature | Benefit | Example Hook |
-| :--- | :--- | :--- |
-| **Keyframes** | Fine-grained control over transitions | \`useAnimationControls\` |
-| **Layout** | Prevents Cumulative Layout Shift (CLS) | \`<motion.div layout/>\` |
-| **Gestures** | Adds interaction (tap, hover) | \`whileTap\`, \`whileHover\` |
-
-### Performance Tips
-The use of \`will-change: transform\` is often done automatically by the library, which significantly reduces the paint load on the GPU. Always ensure you are using stable keys for your list items to help React and Motion track elements correctly.
-
-For more complex examples, check out the official [GitHub Repository](https://github.com/framer/motion).`,
-  },
-  {
-    id: 3,
-    title: "CSS Grid vs. Flexbox: A modern guide",
-    date: "2024-11-25",
-    excerpt:
-      "When to use Grid for two-dimensional layouts and when Flexbox is sufficient for one-dimensional flows.",
-    readTime: 8,
-    views: 0,
-    tags: ["css", "grid", "flexbox"],
-    imageUrl: "https://placehold.co/144x144/334155/e0f7fa?text=Layout",
-    body: "Deep dive into the differences between CSS Grid and Flexbox. We look at real-world examples and common anti-patterns to ensure you choose the right tool for the job. Mastering both is key to modern web development.",
-    heroImage: "https://placehold.co/1200x500/0f172a/94a3b8?text=Grid+vs+Flex",
-    author: "Theodorus Clarence",
-    likes: 350,
-  },
-  {
-    id: 4,
-    title: "Vite for Next-Gen Front-End Setup",
-    date: "2024-10-10",
-    excerpt:
-      "How Vite revolutionized my development workflow and its benefits over traditional bundlers like Webpack.",
-    readTime: 5,
-    views: 0,
-    tags: ["vite", "tools", "setup"],
-    imageUrl: "https://placehold.co/144x144/475569/cbd5e1?text=Vite",
-    body: "Exploring the speed and simplicity of Vite.js. We cover configuration, hot module replacement, and deploying a Vite-powered application. This tool drastically reduces build times.",
-    heroImage: "https://placehold.co/1200x500/1f2937/d1d5db?text=Vite+Setup",
-    author: "Theodorus Clarence",
-    likes: 180,
-  },
-  {
-    id: 5,
-    title: "The 2024 Retrospective",
-    date: "2024-12-31",
-    excerpt:
-      "First Full-Time Year, Solo Travel while Working, Socializing, and more!",
-    readTime: 10,
-    views: 0,
-    tags: ["retro", "life"],
-    imageUrl:
-      "https://www.cometapi.com/wp-content/uploads/2025/07/elon-musk-launches-grok-4.webp",
-    heroImage: "https://cdn.finshots.app/images/2023/11/sam-altman.jpg",
-    author: "Theodorus Clarence",
-    likes: 512,
-    body: `# The Retrospective: A Year of Growth
-
-![Elon Musk Grok Launch](https://www.cometapi.com/wp-content/uploads/2025/07/elon-musk-launches-grok-4.webp)
-
-![AI Image](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUUVlkgM0ok6K3ygXamSGkBWY2GaKvYfoILw&s)
-
-This is the full retrospective post content. A detailed look at the year's achievements and lessons learned, covering everything from professional growth to personal travels and social life.
-
-### Career Milestones
-* Completed the first full year as a Senior Front-End Engineer.
-* Successfully mentored two junior developers on the team.
-* Presented at a small local tech conference on React performance.
-
-### Solo Travel & Work
-I spent three months traveling across Southeast Asia while maintaining a full-time remote workload. This required strict time management and excellent communication.
-
-> "The hardest part of remote work is knowing when to stop, especially when the beach is calling."
-
-We can clearly see the benefits of modern development environments:
-\`\`\`javascript
-// Example of a code block in Markdown
-const calculateDaysUntilNewYear = (today) => {
-    const endOfYear = new Date(today.getFullYear() + 1, 0, 1);
-    return Math.ceil((endOfYear - today) / (1000 * 60 * 60 * 24));
-};
-console.log(calculateDaysUntilNewYear(new Date()));
-\`\`\`
-
-This year has set the foundation for even greater things to come, and I'm very excited for 2025!
-
-### Further Viewing
-Check out this great video on the AGI race:
-[The AGI Race - Video Link](https://www.youtube.com/watch?v=tRsxLLghL1k)`,
-  },
-];
+const BLOG_POSTS = [];
 
 const Socials = () => {
   const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'detail'
@@ -453,17 +306,15 @@ const Socials = () => {
         id="socials"
         aria-label="Social links"
         // Combine custom class for positioning/border and Tailwind for flex layout/colors
-        className={`socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group transition-all duration-500 border ${
-          theme === "dark"
+        className={`socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group transition-all duration-500 border ${theme === "dark"
             ? "bg-black border-white/10 shadow-2xl shadow-black/50"
             : "bg-white border-white/90 shadow-lg shadow-gray-200"
-        }`}
+          }`}
       >
         <div className="absolute overflow-hidden h-[100%] w-[100%] pointer-events-none ">
           <div
-            className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
-              theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
-            }`}
+            className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
+              }`}
             style={{
               filter:
                 theme === "dark"
@@ -511,54 +362,49 @@ const Socials = () => {
         })}
       </ul>
       <div
-        className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${
-          theme === "dark"
+        className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${theme === "dark"
             ? "bg-zinc-950/70 backdrop-blur-sm border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.02)]"
             : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
-        }`}
+          }`}
       >
         {/* --- TOGGLE SWITCH (Blogs | LinkedIn) --- */}
         {/* Only show this on the main list page, hide it if viewing a specific blog post detail */}
         {currentPage === "list" && (
           <div className="flex justify-center mb-8">
             <div
-              className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${
-                theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
-              }`}
+              className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
+                }`}
             >
               {/* Sliding Background Pill */}
               <div
-                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${
-                  theme === "dark" ? "bg-zinc-700" : "bg-white"
-                } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
+                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${theme === "dark" ? "bg-zinc-700" : "bg-white"
+                  } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
               />
 
               {/* Buttons */}
               <button
                 onClick={() => setActiveTab("blogs")}
-                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === "blogs"
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "blogs"
                     ? theme === "dark"
                       ? "text-white"
                       : "text-slate-900"
                     : theme === "dark"
                       ? "text-zinc-400 hover:text-zinc-200"
                       : "text-slate-500 hover:text-slate-700"
-                }`}
+                  }`}
               >
                 Blogs
               </button>
               <button
                 onClick={() => setActiveTab("linkedin")}
-                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === "linkedin"
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "linkedin"
                     ? theme === "dark"
                       ? "text-white"
                       : "text-slate-900"
                     : theme === "dark"
                       ? "text-zinc-400 hover:text-zinc-200"
                       : "text-slate-500 hover:text-slate-700"
-                }`}
+                  }`}
               >
                 LinkedIn Posts
               </button>
