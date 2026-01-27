@@ -500,6 +500,7 @@ const Portfolio = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [fullscreenImage, setFullscreenImage] = useState(null);
   const { theme } = useTheme();
+
   // --- Responsive Logic ---
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1000
@@ -518,32 +519,17 @@ const Portfolio = () => {
   const gapWidth = BASE_GAP_WIDTH * currentScale;
   const itemWidth = cubeWidth + gapWidth;
 
-  // Calculate visible container width: We want exactly 3 items visible.
-  // 3 * itemWidth - gapWidth (to not count the last gap) + padding for safety
-  // Actually simpler: 3 * itemWidth roughly allows 1 center + 2 sides.
-  // Let's make it tightly fit 3 items.
-  // Visual Width = (Cube + Gap) * 2 + Cube = 3 * Cube + 2 * Gap.
+  // Visual Width for container
   const visibleContainerWidth = 3 * cubeWidth + 2 * gapWidth;
 
-  /* 3-Set Infinite Loop Strategy:
-   * We render 3 full copies of the data: [Set 1] [Set 2] [Set 3]
-   * The user starts in Set 2 (Middle).
-   * If they reach Set 1 or Set 3, we snap them back to Set 2.
-   */
-  const cubeList = useMemo(() => {
-    return [...rawPortfolioData, ...rawPortfolioData, ...rawPortfolioData];
-  }, []);
-
   const len = rawPortfolioData.length;
-  // Start at the beginning of the middle set
-  const initialIndex = len;
+  // Start at a large index to allow left scrolling without negative quirks immediately, 
+  // though the logic handles negatives fine.
+  const [activeIndex, setActiveIndex] = useState(len * 100);
 
-  const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
-  // We rely on calculated widths, not DOM ref widths for the carousel math now
-  // to ensure server/client match and responsiveness
   const containerRef = useRef(null);
   const wrapperRef = useRef(null);
   const startXRef = useRef(0);
@@ -552,14 +538,29 @@ const Portfolio = () => {
   const autoSlideRef = useRef(null);
   const isHoveringRef = useRef(false);
 
+  // Buffer range: How many items to render on each side of the active index
+  // 3 visible + 2 buffer on each side = 7 total should be safe usually.
+  // User requested +/- 7 to ensure seamlessness even with aggressive scrolling.
+  const BUFFER = 7;
+
   const getTranslation = useCallback(
     (index) => {
       // Center the active index within the visible container
-      // Offset = (ContainerWidth / 2) - (Index * ItemWidth + CubeWidth/2)
+      // The wrapper moves opposite to the index direction
       return visibleContainerWidth / 2 - (index * itemWidth + cubeWidth / 2);
     },
     [visibleContainerWidth, itemWidth, cubeWidth]
   );
+
+  // Generate the window of virtual indices to render
+  // range: [activeIndex - BUFFER, activeIndex + BUFFER]
+  const visibleIndices = useMemo(() => {
+    const indices = [];
+    for (let i = -BUFFER; i <= BUFFER; i++) {
+      indices.push(activeIndex + i);
+    }
+    return indices;
+  }, [activeIndex]);
 
   const stopAutoSlide = useCallback(() => {
     if (autoSlideRef.current) {
@@ -582,22 +583,9 @@ const Portfolio = () => {
     return stopAutoSlide;
   }, [startAutoSlide, stopAutoSlide]);
 
-  const handleTransitionEnd = () => {
-    // 3-Set Infinite Loop Logic
-    // Set 1: [0 ... len-1]
-    // Set 2: [len ... 2*len-1] (Middle/Active Set)
-    // Set 3: [2*len ... 3*len-1]
-
-    if (activeIndex < len) {
-      // If in Set 1, snap to Set 2
-      setIsTransitioning(false);
-      setActiveIndex(activeIndex + len);
-    } else if (activeIndex >= len * 2) {
-      // If in Set 3, snap to Set 2
-      setIsTransitioning(false);
-      setActiveIndex(activeIndex - len);
-    }
-  };
+  // We no longer need separate handleTransitionEnd for snapping
+  // But we might want to ensure 'isTransitioning' is set back to true if it was false for dragging
+  // actually existing logic just sets it to true on drag end.
 
   const handleDragStart = (clientX) => {
     stopAutoSlide();
@@ -612,8 +600,7 @@ const Portfolio = () => {
     if (!draggingRef.current) return;
     const delta = clientX - startXRef.current;
     if (wrapperRef.current) {
-      wrapperRef.current.style.transform = `translateX(${currentTranslateRef.current + delta
-        }px)`;
+      wrapperRef.current.style.transform = `translateX(${currentTranslateRef.current + delta}px)`;
     }
   };
 
@@ -624,12 +611,11 @@ const Portfolio = () => {
 
     const delta = clientX - startXRef.current;
 
-    // Calculate how many slides to move based on drag distance
-    // We reverse the sign because dragging left (negative delta) means moving forward (positive index)
+    // Calculate move count. 
+    // Dragging left (negative delta) -> move forward (positive index increase)
     let moveCount = Math.round(-delta / itemWidth);
 
-    // If the drag was significant enough to cross threshold but not enough to round to a full slide,
-    // force at least one slide movement
+    // Threshold check for small drags
     if (moveCount === 0) {
       if (delta < -SWIPE_THRESHOLD) moveCount = 1;
       else if (delta > SWIPE_THRESHOLD) moveCount = -1;
@@ -644,38 +630,32 @@ const Portfolio = () => {
   return (
     <div className="h-screen w-full flex flex-col overflow-hidden selection:bg-indigo-500/30">
       {/* 1. Header (Top) */}
-      <header className=" mt-26 md:my-6  text-center px-4 z-20 flex-none">
+      <header className="mt-26 md:my-6 text-center px-4 z-20 flex-none">
         <div className={`
-  backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
-  ${theme === 'dark'
+          backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
+          ${theme === 'dark'
             ? 'bg-black/50 border-white/5'
             : 'bg-white/50 border-black/5 shadow-xl'}
-`}>
+        `}>
           <p className={`
-    text-8xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
-    ${theme === 'dark'
+            text-8xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
+            ${theme === 'dark'
               ? 'bg-gradient-to-b from-white to-white/50'
               : 'bg-gradient-to-b from-gray-900 to-gray-500'}
-  `}>
+          `}>
             Portfolio
           </p>
         </div>
       </header>
 
-      {/* 2. Main Center Area (Carousel) 
-          - flex-grow takes up remaining space
-          - justify-center centers vertically
-          - pb-[10rem] adds the "safe zone" for the navbar (5rem offset + 5rem height)
-      */}
-      <div className="flex-grow flex flex-col items-center justify-center relative pb-[12rem] ">
+      {/* 2. Main Center Area (Carousel) */}
+      <div className="flex-grow flex flex-col items-center justify-center relative pb-[12rem]">
         <div
           ref={containerRef}
-          className="relative h-full touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden "
+          className="relative h-full touch-none select-none cursor-grab active:cursor-grabbing overflow-hidden"
           style={{
             perspective: "750px",
-            // Enforce strictly 3 items visible width
             width: `${visibleContainerWidth}px`,
-            // Add vertical padding for 3D rotation clearance
             paddingTop: "2rem",
             paddingBottom: "2rem",
           }}
@@ -697,35 +677,51 @@ const Portfolio = () => {
         >
           <div
             ref={wrapperRef}
-            className="flex items-center absolute h-full will-change-transform top-0"
-            onTransitionEnd={handleTransitionEnd}
+            className="absolute h-full top-0 will-change-transform"
             style={{
               transform: `translateX(${getTranslation(activeIndex)}px)`,
-              gap: `${gapWidth}px`,
               transition: isTransitioning
                 ? "transform 1.5s cubic-bezier(0.23, 1, 0.32, 1)"
                 : "none",
               transformStyle: "preserve-3d",
-              // paddingLeft: `${cubeWidth/2}px` // Initial offset helper
+              width: "100%", // Wrapper width doesn't strictly matter as items are absolute, but good for context
             }}
           >
-            {cubeList.map((item, idx) => (
-              <Cube
-                key={`${idx}-${item.id}`} // Ensure unique key for the 3 sets
-                item={item}
-                onViewDetails={setSelectedProject}
-                isDragging={isDragging}
-                isScrolling={isTransitioning}
-                width={cubeWidth}
-                height={cubeWidth} // Keeping it square
-                onImageOpen={(project) => setFullscreenImage(project)}
-                isVisible={Math.abs(idx - activeIndex) <= 2}
-              />
-            ))}
+            {visibleIndices.map((virtualIndex) => {
+              // Map virtual index to actual data index
+              // Handling negative indices correctly: ((i % n) + n) % n
+              const dataIndex = ((virtualIndex % len) + len) % len;
+              const item = rawPortfolioData[dataIndex];
+
+              return (
+                <div
+                  key={virtualIndex} // Unique key for virtual index ensures efficient React diffing
+                  style={{
+                    position: "absolute",
+                    left: `${virtualIndex * itemWidth}px`,
+                    width: `${cubeWidth}px`,
+                    height: `${cubeWidth}px`, // Ensure container has height
+                    // We remove gap logic from flex and bake it into position
+                  }}
+                  className="flex items-center justify-center top-1/2 -translate-y-1/2"
+                >
+                  <Cube
+                    item={item}
+                    onViewDetails={setSelectedProject}
+                    isDragging={isDragging}
+                    isScrolling={isTransitioning}
+                    width={cubeWidth}
+                    height={cubeWidth}
+                    onImageOpen={(project) => setFullscreenImage(project)}
+                    isVisible={Math.abs(virtualIndex - activeIndex) <= 2}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-      {/* RE-ENGINEERED FULLSCREEN IMAGE MODAL */}
+
       {/* RE-ENGINEERED ZOOMABLE MODAL */}
       {fullscreenImage && (
         <FullscreenZoomableImage

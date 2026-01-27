@@ -109,8 +109,8 @@ tailwind.config.js             # Tailwind CSS configuration
 Feel free to adapt the content, color palette, or assets to tailor the portfolio for your own brand.
 
 ### Links
-- [Production](https://priyanshusah.com) - Github Pages
-
+- [Production](https://priyanshusah.com) - Vercel
+- [Dev](https://dev.priyanshusah.com/) - Vercel
 ## Credits
 
 - Inspiration: [James Oliver Portfolio](https://james-oliver-portfolio.netlify.app/)
@@ -120,20 +120,12 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ## Roadmap
 
 ### Issue
-* [ ]  There is wierd boxing on choosing some of the options on ios probably due to interaction of on click and the active highlights , [New Img after fix](https://github.com/user-attachments/assets/fdaf1108-1af2-4aa7-91cf-a3b632f2264c)
-* [x]  Skill Section hidden behind music player on a spcific width for my laptop other Devices are okay , [img](https://github.com/user-attachments/assets/5324a0d9-d77f-4a9b-a2da-9d3b0723c84b)
-* [ ]  Add back the hover Tooltip for Navbar icons , If a simple hover options is easier with same style as navbar without the animated ligts , otherwise look into morphing the icon to text on hover as simpler alternative
-* [ ]  SVG noise for white mode and blck mode might need a visibility bump try these , [White](https://github.com/user-attachments/assets/0fd48490-bc92-4295-a35e-941057acce0a) , [Black](https://github.com/user-attachments/assets/b1f8ad27-22ba-429b-9f9c-eda63f4a919c)
-* [x]  Walpaper Selector + light/Dark mode toglle Need to inherite the same UI location and view as Music Player ie left absolute position , same gradient / animation , even in walpaper slector background , [img](https://github.com/user-attachments/assets/0e19586a-61f1-476a-a46a-f8c4196d0017)
-* [ ]  White Mode Animated Line visibilty compared to dark mode (navbar/music player), missing the contracting visual
-* [x]  White mode Selected icon , glow effect compared to Dark Mode , need to revamp from Black bloom to either gradeint or increase colour visibilty (**need to discuss**)
-* [x]  Remove White Opacity layer infront of images for White mode in porfolio card
-* [x]  Mobile Preview of Portfolio card should allow zoom/pich controlls to move around/unzoom to see full image [img](https://github.com/user-attachments/assets/fb23b919-8696-4c8c-bd75-42e2abcbcf86)
-* [x]  Hide Navbar , along with Darkmode+walpaper selector In home page ,use the same slide animation as music player , left slide in/out  for wallpaper/theme , bottom slide in/out for navbar .
-* [x]  Update the Home page readmore button to use either 10/16 from this [link](https://tympanus.net/Development/ButtonHoverStyles/)
-* [ ]  **Not sure about this , Need to discuss** Shade of Purple in Music Player Higlight and White for music volume on slected
-* [ ]  **Need to discuss** , Redirect fallback page Ui & Vercel side integration logic [img](https://github.com/user-attachments/assets/6597592f-e008-499d-a60d-2e71ad3c1eb2)
-
-
-### Feature
-* [ ] **Add scrolling feed** for blog and LinkedIn posts; link posts directly to the website and vice versa from Linkedin , Borrow the metrics from Linkedin like etc or use server side for post only on Blog **Need to Discuss Implementation Logic**.
+* [ ] Need to improve card hover animaiton for portfolio card , this is not it , also make it untrigger when you hover over light bulb
+* [ ] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
+* [ ] Boxing still present in mobile need to check glow / svg interaction
+* [ ] Music Player Mobile UI , initial letters cut off
+* [ ] Hide theme controls + Music player while Scrolling down when the journey Scroll indicator Disappears [img](https://github.com/user-attachments/assets/e61b475a-aac9-493d-ae6d-865456506dea)
+* [ ] Add Typing effect same as Home page with same cursor and type effect to blog section Description [img](https://github.com/user-attachments/assets/fd813370-3d21-4c70-bc76-74f0a7b77726)
+* [ ] **Need to Discuss** Change the call to action Button at end of journey to use new "/mail" route instead of mail:to route on Desktop ( use mailto as default option in Mobile , but in desktop use "/mail" )
+* [ ] **Need to Discuss** in "/mail" On desktop don't trigger "mailto:" on Click button instead open new tab with gmail mail link , and then show the backup option with Copy and "mailto:" option (Essentially This means on Desktop "mailto:" and "gmail mail link" are swapped , no changes in Mobile UI  
+* [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 

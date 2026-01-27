@@ -418,13 +418,17 @@ section {
   width: 100%;
 }
 
+.padding-zero {
+  padding: 0 !important;
+}
+
 .list {
   -webkit-box-pack: space-evenly;
   -ms-flex-pack: space-evenly;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 1px solid #474646;
+  border: 0px solid transparent;
   /* background-color: #000000; */
   border-radius: 1.4rem;
   bottom: 4rem;
@@ -445,9 +449,7 @@ section {
   z-index: 999999999999;
 }
 
-.padding-zero {
-  padding: 0 !important;
-}
+
 
 /* Base styles */
 .list::before,
@@ -484,6 +486,8 @@ section {
   filter: url("#nnnoise-filter-black") !important;
   opacity: 0.8;
 }
+
+
 
 @media (max-width: 767.98px) {
   .list {
@@ -547,10 +551,10 @@ section {
 
   background-image: conic-gradient(from var(--angle),
       /* Starts rotation at 0 */
-      transparent 80%,
-      #E0D1FF 88%,
-      #E0D1FF 92%,
-      #381D6A 100%);
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
   background-origin: border-box;
 
   /* Masking to only show the gradient along the border edge */
@@ -578,10 +582,10 @@ section {
 
   background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
       /* Offset by 180 degrees */
-      transparent 80%,
-      #E0D1FF 88%,
-      #E0D1FF 92%,
-      #381D6A 100%);
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
   background-origin: border-box;
 
   /* Reuse the same mask definition */
@@ -604,6 +608,96 @@ section {
   animation-play-state: paused;
 }
 
+[data-theme='light'].list .media-object {
+   --border-width: 0.3rem;
+  border-radius: 1.4rem;
+  min-height: 5rem;
+  border: var(--border-width) solid transparent;
+}
+
+[data-theme='dark'].list .media-object {
+  --border-width: 2px;
+  border-radius: 1.4rem;
+  min-height: 5rem;
+  border: var(--border-width) solid transparent;
+}
+
+[data-theme='dark'].list .media-object::before {
+  content: " ";
+  position: absolute;
+  /* Inset sets the size of the background gradient area relative to the object */
+  inset: calc(var(--border-width) * -1);
+  z-index: -1;
+  border-radius: inherit;
+  border: inherit;
+
+  background-image: conic-gradient(from var(--angle),
+      /* Starts rotation at 0 */
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
+  background-origin: border-box;
+
+  /* Masking to only show the gradient along the border edge */
+  -webkit-mask:
+    linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  mask: linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* Apply the spin animation */
+  animation: spin 4s linear infinite;
+}
+
+[data-theme='dark'].list .media-object::after {
+  content: " ";
+  position: absolute;
+  inset: calc(var(--border-width) * -1);
+  z-index: -1;
+  border-radius: inherit;
+  border: inherit;
+
+  background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
+      /* Offset by 180 degrees */
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
+  background-origin: border-box;
+
+  /* Reuse the same mask definition */
+  -webkit-mask:
+    linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  mask: linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* Apply the spin animation */
+  animation: spin 4s linear infinite;
+}
+
+[data-theme='dark'].list .media-object:hover::before {
+  animation-play-state: paused;
+}
+
+[data-theme='dark'].list .media-object:hover::after {
+  animation-play-state: paused;
+}
+
+/* transparent 80%,
+      #e0d1ff 88%,
+      #e0d1ff 92%,
+      #381d6a 100% */
+
 @property --angle {
   syntax: "<angle>";
   inherits: true;
@@ -617,7 +711,7 @@ section {
 }
 
 .mini-player {
-  --border-width: 2px;
+  --border-width: 0.3rem;
   /* border-radius: 1.4rem; */
   /* border-bottom-left-radius: 1.4rem; */
   /* min-height: 5rem; */
@@ -635,10 +729,10 @@ section {
 
   background-image: conic-gradient(from var(--angle),
       /* Starts rotation at 0 */
-      transparent 80%,
-      #E0D1FF 88%,
-      #E0D1FF 92%,
-      #381D6A 100%);
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
   background-origin: border-box;
 
   /* Masking to only show the gradient along the border edge */
@@ -667,10 +761,10 @@ section {
 
   background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
       /* Offset by 180 degrees */
-      transparent 80%,
-      #E0D1FF 88%,
-      #E0D1FF 92%,
-      #381D6A 100%);
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
   background-origin: border-box;
 
   /* Reuse the same mask definition */
@@ -688,6 +782,11 @@ section {
   animation: spin 4s linear infinite;
 }
 
+/* transparent 80%,
+      #e0d1ff 88%,
+      #e0d1ff 92%,
+      #381d6a 100% */
+
 /* main.css */
 
 /* DARK MODE - Force background and borders */
@@ -696,7 +795,6 @@ html.dark .expanded,
 html[data-theme='dark'] .minimized,
 html[data-theme='dark'] .expanded {
     background-color: #000000 !important;
-    border-color: #c6aee3 !important;
 }
 
 /* LIGHT MODE - Force background and borders */
@@ -705,13 +803,7 @@ html.light .expanded,
 html[data-theme='light'] .minimized,
 html[data-theme='light'] .expanded {
     background-color: #ffffff;
-    border-color: #a193b3 !important;
 }
-
-/* Optional: Handle the text and icon colors here too if needed */
-/* [data-theme='light'] .mini-player p {
-    color: #000000 ;
-} */
 
 .socials-container {
   /* Fixed Positioning and Centering (Desktop/Default) */
@@ -745,7 +837,7 @@ html[data-theme='light'] .expanded {
   content: " ";
   position: absolute;
   /* Inset value determines the border width, using CSS variable */
-  --border-width: 2px;
+  --border-width: 0.3rem;
   inset: calc(var(--border-width) * -1);
   z-index: -1;
   /* Ensures it is behind the content */
@@ -755,10 +847,10 @@ html[data-theme='light'] .expanded {
   /* The conic gradient for the light trail effect */
   background-image: conic-gradient(from var(--angle),
       /* Starts rotation at 0 */
-      transparent 80%,
-      #e0d1ff 88%,
-      #e0d1ff 92%,
-      #381d6a 100%);
+       transparent 60%,
+      #E0D1FF 78%,
+      #E0D1FF 82%,
+      #9922dd 100%);
   background-origin: border-box;
 
   /* Mask to make the gradient appear only on the border */
@@ -781,7 +873,7 @@ html[data-theme='light'] .expanded {
   content: " ";
   position: absolute;
   /* Inset value determines the border width, using CSS variable */
-  --border-width: 2px;
+  --border-width: 0.3rem;
   inset: calc(var(--border-width) * -1);
   z-index: -1;
   /* Ensures it is behind the content */
@@ -790,10 +882,10 @@ html[data-theme='light'] .expanded {
 
   /* The key fix: Offset the starting angle by 0.5turn (180 degrees) */
   background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
-      transparent 80%,
-      #e0d1ff 88%,
-      #e0d1ff 92%,
-      #381d6a 100%);
+       transparent 60%,
+      #E0D1FF 78%,
+      #E0D1FF 82%,
+      #9922dd 100%);
   background-origin: border-box;
 
   /* Reuse the mask from the ::before element */
@@ -855,7 +947,7 @@ html[data-theme='light'] .expanded {
 .socials-container::after {
   content: " ";
   position: absolute;
-  --border-width: 2px;
+  --border-width: 3px;
   inset: calc(var(--border-width) * -1);
   z-index: -1;
   border: var(--border-width) solid transparent;
@@ -874,19 +966,19 @@ html[data-theme='light'] .expanded {
 /* Trail 1 - KEPT ORIGINAL COLORS (#e0d1ff, #381d6a) */
 .socials-container::before {
   background-image: conic-gradient(from var(--angle),
-      transparent 80%,
-      #e0d1ff 88%,
-      #e0d1ff 92%,
-      #381d6a 100%);
+      transparent 60%,
+      #E0D1FF 78%,
+      #E0D1FF 82%,
+      #9922dd 100%);
 }
 
 /* Trail 2 - KEPT ORIGINAL COLORS (#e0d1ff, #381d6a) */
 .socials-container::after {
   background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
-      transparent 80%,
-      #e0d1ff 88%,
-      #e0d1ff 92%,
-      #381d6a 100%);
+      transparent 60%,
+      #E0D1FF 78%,
+      #E0D1FF 82%,
+      #9922dd 100%);
 }
 
 /* Pause on hover */
@@ -923,40 +1015,6 @@ html[data-theme='light'] .expanded {
     height: 1.8rem;
     width: 1.8rem;
   }
-}
-
-.list .list-item {
-  cursor: pointer;
-  /* padding: 0.3rem; */
-  position: relative;
-}
-
-.list .list-item:before {
-  /* background-color: #000000; */
-  border: 1px solid #ffffff;
-  border-radius: 1.4rem;
-  color: #ffffff;
-  content: attr(data-name-sec);
-  font-size: 1.6rem;
-  left: 50%;
-  opacity: 0;
-  /* padding: 0.6rem 0.8rem; */
-  position: absolute;
-  text-align: center;
-  text-transform: capitalize;
-  top: -100%;
-  -webkit-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
-  -webkit-transition: all 0.2s ease-in 0s;
-  -o-transition: all 0.2s ease-in 0s;
-  transition: all 0.2s ease-in 0s;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  visibility: hidden;
-  width: 10rem;
 }
 
 .layout {
@@ -1049,31 +1107,12 @@ HeaderBackground {
 
 .page-overlay::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari and Opera */
+ 
 }
 
 .page-section {
   min-height: 100vh;
   width: 100%;
-
-  /* display: flex;              
-  justify-content: center;    
-  align-items: center;         */
-
-  /* optional: to stack children vertically */
-  /* flex-direction: column; */
-}
-
-@media (max-width: 991.98px) {
-  .list .list-item:before {
-    content: none;
-  }
-}
-
-.list .list-item:hover:before {
-  opacity: 1;
-  top: -145%;
-  visibility: visible;
 }
 
 .home {
@@ -2350,7 +2389,7 @@ HeaderBackground {
   background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0 1.1rem 2rem rgba(0, 0, 0, 0.1); /* Softer shadow for light mode */
 }
-
+ 
 /* 2. Skills Title */
 .skills[data-theme="light"] .skills__title {
   color: #1e293b;
@@ -4472,4 +4511,76 @@ progress {
 
 [data-theme='dark'] .button-read-more:focus-visible {
   outline-color: #000000;
+}
+
+.mini-theme {
+  --border-width: 0.3rem;
+  /* border-radius: 1.4rem; */
+  /* border-bottom-left-radius: 1.4rem; */
+  /* min-height: 5rem; */
+  border: var(--border-width) solid transparent;
+}
+
+.mini-theme::before {
+  content: " ";
+  position: absolute;
+  /* Inset sets the size of the background gradient area relative to the object */
+  inset: calc(var(--border-width) * -1);
+  z-index: 1;
+  border-radius: inherit;
+  border: inherit;
+
+  background-image: conic-gradient(from var(--angle),
+      /* Starts rotation at 0 */
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
+  background-origin: border-box;
+
+  /* Masking to only show the gradient along the border edge */
+  -webkit-mask:
+    linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  mask: linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* Apply the spin animation */
+  animation: spin 4s linear infinite;
+
+}
+
+.mini-theme::after {
+  content: " ";
+  position: absolute;
+  inset: calc(var(--border-width) * -1);
+  z-index: 1;
+  border-radius: inherit;
+  border: inherit;
+
+  background-image: conic-gradient(from calc(var(--angle) + 0.5turn),
+      /* Offset by 180 degrees */
+      transparent 72%,
+      /* #E0D1FF 80%, */
+      #c4c4c4 82%,
+      #9d0af1 100%);
+  background-origin: border-box;
+
+  /* Reuse the same mask definition */
+  -webkit-mask:
+    linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  mask: linear-gradient(black, black) content-box,
+    linear-gradient(black, black);
+  -webkit-mask-clip: content-box, border-box;
+  mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* Apply the spin animation */
+  animation: spin 4s linear infinite;
 }

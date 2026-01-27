@@ -11,7 +11,7 @@ import AnimatedOutlet from "./AnimatedOutlet";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -33,9 +33,8 @@ const customStyles = `
 /* Base styles for the player states, sizing is handled by Tailwind utility classes */
 .minimized {
     /* Use custom rounding for the mobile top-right bar shape */
-    padding: 0.5rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--lo-fi-accent);
+    border: 3px solid transparent;
     background-color: var(--player-bg);
 }
 
@@ -142,16 +141,14 @@ function ThemeControlsWrapper({ shouldHideUI }) {
   } = useTheme();
 
   return (
-    
-      <ThemePlayer
-        theme={theme}
-        onThemeChange={handleThemeChange}
-        wallpapers={allWallpapers}
-        currentWallpaper={currentAsset}
-        onWallpaperSelect={handleWallpaperSelect}
-        shouldHideUI={shouldHideUI}
-      />
-   
+    <ThemePlayer
+      theme={theme}
+      onThemeChange={handleThemeChange}
+      wallpapers={allWallpapers}
+      currentWallpaper={currentAsset}
+      onWallpaperSelect={handleWallpaperSelect}
+      shouldHideUI={shouldHideUI}
+    />
   );
 }
 
@@ -171,11 +168,40 @@ function App() {
   const [duration, setDuration] = useState(NaN); // Total duration in seconds
   const [prevVolume, setPrevVolume] = useState(0.15);
   const [volume, setVolume] = useState(0.15); // 15% volume
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const hasInteracted = useRef(false);
   const currentAudio = useRef(null);
   const location = useLocation();
   const shouldHidePlayer =
     location.pathname === "/socials" || location.pathname === "/";
+  const socials = location.pathname === '/socials';
+  const journey = location.pathname === '/journey';
+  const skills = location.pathname === '/skills';
+  const about = location.pathname === '/about';
+
+
+
+
+  // ... inside your component
+const [isMobileForContent, setIsMobileForContent] = useState(false);
+
+useEffect(() => {
+  const handleResize = () => setIsMobileForContent(window.innerWidth < 900);
+  handleResize(); // Check on mount
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+// Logic for the height
+const getMinHeight = () => {
+  if (isMobileForContent && socials) return "calc(100vh - 22rem)";
+  if (socials) return "calc(100vh - 16rem)";
+  if (journey && isMobileForContent) return "calc(100vh - 14rem)";
+  if (journey) return "calc(100vh - 8rem)";
+  if (skills && isMobileForContent) return "calc(100vh - 14rem)";
+  if (about && isMobileForContent) return "calc(100vh - 8rem)";
+  return "100vh";
+};
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -187,6 +213,7 @@ function App() {
       "/services": "Services | Priyanshu Sah",
       "/skills": "Skills | Priyanshu Sah",
       "/socials": "Blog & Socials | Priyanshu Sah",
+      "/mail" : "Mail | Priyanshu Sah"
     };
 
     document.title =
@@ -366,32 +393,33 @@ function App() {
 
   // 3. Pause/Resume audio when tab visibility changes (tab switch, browser minimize)
   const wasPlayingBeforeHidden = useRef(false);
-  
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!currentAudio.current) return;
 
-      if (document.visibilityState === 'hidden') {
+      if (document.visibilityState === "hidden") {
         // Store whether audio was playing before hiding
         wasPlayingBeforeHidden.current = !currentAudio.current.paused;
         if (wasPlayingBeforeHidden.current) {
           currentAudio.current.pause();
           setIsPlaying(false);
         }
-      } else if (document.visibilityState === 'visible') {
+      } else if (document.visibilityState === "visible") {
         // Only resume if it was playing before the tab was hidden
         if (wasPlayingBeforeHidden.current) {
-          currentAudio.current.play()
+          currentAudio.current
+            .play()
             .then(() => setIsPlaying(true))
-            .catch(err => console.error('Auto-resume failed:', err));
+            .catch((err) => console.error("Auto-resume failed:", err));
         }
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
@@ -465,6 +493,19 @@ function App() {
         });
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Responsive values for noise
+  const darkNoiseFreq = isMobile ? "0.25" : "0.15";
+  const lightNoiseFreq = isMobile ? "0.15" : "0.1";
+
   // Responsive Positioning Classes
   let positionClasses;
 
@@ -478,7 +519,7 @@ function App() {
       " lg:right-10 lg:left-auto lg:w-1/5 lg:max-w-sm lg:translate-x-0 lg:translate-y-0";
   } else {
     // Mobile/Tablet: Top-right corner, compact horizontal bar
-    positionClasses = "fixed top-0 right-0 w-58 h-14";
+    positionClasses = "fixed -top-[3px] -right-[3px] w-58 h-14";
 
     // Desktop (lg): Right-center, narrow/tall vertical bar
     positionClasses +=
@@ -494,7 +535,7 @@ function App() {
     "transition-all duration-500",
     isExpanded
       ? "expanded lg:overflow-y-auto"
-      : "minimized rounded-bl-[2.5rem] lg:rounded-bl-xl lg:rounded-xl", // Apply large rounded-bottom-left for the top-right tab look on mobile, and standard rounded-xl on desktop.
+      : "minimized rounded-bl-[2.5rem] lg:rounded-bl-[1.4rem] lg:rounded-[1.4rem]", // Apply large rounded-bottom-left for the top-right tab look on mobile, and standard rounded-xl on desktop.
     isElastic ? "elastic-in" : "ease-in-out",
   ].join(" ");
   return (
@@ -504,7 +545,7 @@ function App() {
         <audio
           ref={currentAudio}
           onTimeUpdate={handleAudioUpdate}
-          onEnded={handleNextSong} // Auto-play next track when current one ends
+          onEnded={handleNextSong} // Auto-pl2.5remay next track when current one ends
           muted={isMuted} // This will be true initially
           playsInline
         />
@@ -557,8 +598,9 @@ function App() {
                 style={{
                   position: "relative",
                   width: "100%",
-                  minHeight: "calc(100vh)",
+                  minHeight: getMinHeight(),
                   zIndex: 10,
+                  top: socials ? '8rem':'0rem'
                 }}
               >
                 <div
@@ -567,7 +609,6 @@ function App() {
     ${containerClasses} 
 
     z-1200
-    /* Transition and Opacity Logic */
     transition-all duration-500 ease-in-out
     ${
       shouldHidePlayer
@@ -600,7 +641,9 @@ function App() {
                       onVolumeChange={handleVolumeChange}
                     />
                   ) : (
-                    <div className="mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]">
+                    <div
+                      className={`mini-player h-[100%] w-[100%] rounded-bl-[2.5rem] lg:rounded-[1.4rem]`}
+                    >
                       <MiniPlayer
                         onExpand={() => handleToggle(true)}
                         currentTrack={currentTrack}
@@ -616,15 +659,20 @@ function App() {
                   )}
                 </div>
                 <AnimatedOutlet context={{ startAudioOnInteraction }} />
-        <ThemeControlsWrapper />
+                <ThemeControlsWrapper />
               </div>
 
-        <FooterNavbar onNavigate={startAudioOnInteraction} />
+              <FooterNavbar onNavigate={startAudioOnInteraction} />
             </>
           )}
         </div>
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svgjs="http://svgjs.dev/svgjs"
+          opacity="1"
           style={{
             position: "absolute",
             width: 0,
@@ -642,11 +690,11 @@ function App() {
               height="140%"
               filterUnits="objectBoundingBox"
               primitiveUnits="userSpaceOnUse"
-              colorInterpolationFilters="linearRGB"
+              color-interpolation-filters="linearRGB"
             >
               <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.2"
+                type="turbulence"
+                baseFrequency={darkNoiseFreq}
                 numOctaves="4"
                 seed="15"
                 stitchTiles="stitch"
@@ -657,10 +705,10 @@ function App() {
                 result="turbulence"
               ></feTurbulence>
               <feSpecularLighting
-                surfaceScale="15"
-                specularConstant="1.1"
+                surfaceScale="19"
+                specularConstant="1.4"
                 specularExponent="20"
-                lightingColor="#a193b3"
+                lighting-color="#ffffff"
                 x="0%"
                 y="0%"
                 width="100%"
@@ -668,14 +716,25 @@ function App() {
                 in="turbulence"
                 result="specularLighting"
               >
-                <feDistantLight azimuth="3" elevation="62"></feDistantLight>
+                <feDistantLight azimuth="3" elevation="104"></feDistantLight>
               </feSpecularLighting>
             </filter>
           </defs>
+          <rect width="700" height="700" fill="#000000ff"></rect>
+          <rect
+            width="700"
+            height="700"
+            fill="#ffffff"
+            filter="url(#nnnoise-filter)"
+          ></rect>
         </svg>
 
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svgjs="http://svgjs.dev/svgjs"
+          opacity="1"
           style={{
             position: "absolute",
             width: 0,
@@ -687,40 +746,54 @@ function App() {
           <defs>
             <filter
               id="nnnoise-filter-black"
-              x="0%"
-              y="0%"
-              width="100%"
-              height="100%"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+              filterUnits="objectBoundingBox"
+              primitiveUnits="userSpaceOnUse"
+              color-interpolation-filters="linearRGB"
             >
               <feTurbulence
                 type="turbulence"
-                baseFrequency="0.7" /* Higher number = smaller, tighter dots */
+                baseFrequency={lightNoiseFreq}
                 numOctaves="4"
+                seed="15"
                 stitchTiles="stitch"
-                result="raw_noise"
-              />
-
-              <feColorMatrix
-                in="raw_noise"
-                type="matrix"
-                values="0 0 0 0 0
-            0 0 0 0 0
-            0 0 0 0 0
-            0 0 0 1 0"
-                result="black_specks"
-              />
-
-              {/* CHANGE TABLEVALUES HERE FOR DENSITY */}
-              <feComponentTransfer in="black_specks">
-                <feFuncA type="discrete" tableValues="0 0 1 " />
-              </feComponentTransfer>
-
-              {/* ADJUST SLOPE FOR VISIBILITY */}
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.4" />
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                result="turbulence"
+              ></feTurbulence>
+              <feSpecularLighting
+                surfaceScale="19"
+                specularConstant="1.4"
+                specularExponent="20"
+                lighting-color="#ffffff"
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+                in="turbulence"
+                result="specularLighting"
+              >
+                <feDistantLight azimuth="3" elevation="104"></feDistantLight>
+              </feSpecularLighting>
+              <feComponentTransfer in="specularLighting">
+                <feFuncR type="table" tableValues="1 0" />
+                <feFuncG type="table" tableValues="1 0" />
+                <feFuncB type="table" tableValues="1 0" />
               </feComponentTransfer>
             </filter>
           </defs>
+          <rect width="700" height="700" fill="#ffffffff"></rect>
+          <rect
+            width="700"
+            height="700"
+            fill="#9013fe"
+            filter="url(#nnnoise-filter-black)"
+          ></rect>
         </svg>
       </>
     </ThemeProvider>

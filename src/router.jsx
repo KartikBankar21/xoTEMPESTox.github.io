@@ -14,6 +14,7 @@ import Services from "./pages/services";
 import Skills from "./pages/skills";
 import Socials from "./pages/socials";
 import ExternalRedirect from "./components/ExternalRedirect";
+import MailPage from "./pages/mail";
 
 
 const appRouter = createBrowserRouter([
@@ -51,7 +52,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/mail",
-        element: <ExternalRedirect to="mailto:priyanshu123sah@gmail.com" />,
+        element: <MailPage />,
       },
       {
         path: "*",
