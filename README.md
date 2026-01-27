@@ -124,4 +124,4 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
 * [ ] Boxing still present in mobile need to check glow / svg interaction
 * [ ] Music Player Mobile UI , initial letters cut off
-* [ ] Prepare Blogs to use JSON as data source and prepare Ui for it .
+* [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
