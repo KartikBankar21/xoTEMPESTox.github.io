@@ -7,7 +7,6 @@ import "../styles/main.css";
 import { useTheme } from "../components/HeaderBackground";
 import { NavLink } from "react-router-dom";
 
-
 // --- 1. DATA (Now using Markdown for post body) ---
 const BLOG_POSTS = [
   {
@@ -298,6 +297,7 @@ const Socials = () => {
     {
       href: "/mail",
       label: "Email Priyanshu Sah",
+      internal: true,
       icon: (
         // Email SVG Icon
         <svg
@@ -454,10 +454,10 @@ const Socials = () => {
         aria-label="Social links"
         // Combine custom class for positioning/border and Tailwind for flex layout/colors
         className={`socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group transition-all duration-500 border ${
-    theme === "dark" 
-      ? "bg-black border-white/10 shadow-2xl shadow-black/50" 
-      : "bg-white border-white/90 shadow-lg shadow-gray-200"
-  }`}
+          theme === "dark"
+            ? "bg-black border-white/10 shadow-2xl shadow-black/50"
+            : "bg-white border-white/90 shadow-lg shadow-gray-200"
+        }`}
       >
         <div className="absolute overflow-hidden h-[100%] w-[100%] pointer-events-none ">
           <div
@@ -472,29 +472,43 @@ const Socials = () => {
             }}
           />
         </div>
-        {socialLinks.map((link, index) => (
-          <li key={index} className=" hover:scale-125">
-            <a
-              className={`socials-link border border-transparent rounded-full 
-                                flex items-center justify-center 
-                                h-[3.4rem] w-[3.4rem] z-10
-                                transition-all duration-200 ease-in-out 
-                                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white hover:text-sky-400 transition-transform duration-200  ${
-                                  theme === "dark"
-                                    ? "text-white  "
-                                    : "text-slate-900  "
-                                }`}
-              href={link.href}
-              target={link.target}
-              rel={link.rel}
-              aria-label={link.label}
-            >
-              <span className="h-5 w-5 md:h-8 md:w-8 ">
-                <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
-              </span>
-            </a>
-          </li>
-        ))}
+        {socialLinks.map((link, index) => {
+          const commonClasses = `socials-link border border-transparent rounded-full 
+    flex items-center justify-center 
+    h-[3.4rem] w-[3.4rem] z-10
+    transition-all duration-200 ease-in-out 
+    focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white 
+    hover:text-sky-400 transition-transform duration-200
+    ${theme === "dark" ? "text-white" : "text-slate-900"}`;
+
+          return (
+            <li key={index} className="hover:scale-125">
+              {link.internal ? (
+                <NavLink
+                  to={link.href}
+                  aria-label={link.label}
+                  className={commonClasses}
+                >
+                  <span className="h-5 w-5 md:h-8 md:w-8">
+                    <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
+                  </span>
+                </NavLink>
+              ) : (
+                <a
+                  href={link.href}
+                  target={link.target}
+                  rel={link.rel}
+                  aria-label={link.label}
+                  className={commonClasses}
+                >
+                  <span className="h-5 w-5 md:h-8 md:w-8">
+                    <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
+                  </span>
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
       <div
         className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${
@@ -507,35 +521,43 @@ const Socials = () => {
         {/* Only show this on the main list page, hide it if viewing a specific blog post detail */}
         {currentPage === "list" && (
           <div className="flex justify-center mb-8">
-            <div 
+            <div
               className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${
                 theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
               }`}
             >
               {/* Sliding Background Pill */}
-              <div 
+              <div
                 className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${
                   theme === "dark" ? "bg-zinc-700" : "bg-white"
-                } ${activeTab === 'linkedin' ? 'translate-x-[100%] left-[2px]' : 'translate-x-0 left-1'}`}
+                } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
               />
 
               {/* Buttons */}
-              <button 
-                onClick={() => setActiveTab('blogs')}
+              <button
+                onClick={() => setActiveTab("blogs")}
                 className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === 'blogs' 
-                    ? (theme === 'dark' ? 'text-white' : 'text-slate-900') 
-                    : (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-200' : 'text-slate-500 hover:text-slate-700')
+                  activeTab === "blogs"
+                    ? theme === "dark"
+                      ? "text-white"
+                      : "text-slate-900"
+                    : theme === "dark"
+                      ? "text-zinc-400 hover:text-zinc-200"
+                      : "text-slate-500 hover:text-slate-700"
                 }`}
               >
                 Blogs
               </button>
-              <button 
-                onClick={() => setActiveTab('linkedin')}
+              <button
+                onClick={() => setActiveTab("linkedin")}
                 className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === 'linkedin'
-                    ? (theme === 'dark' ? 'text-white' : 'text-slate-900') 
-                    : (theme === 'dark' ? 'text-zinc-400 hover:text-zinc-200' : 'text-slate-500 hover:text-slate-700')
+                  activeTab === "linkedin"
+                    ? theme === "dark"
+                      ? "text-white"
+                      : "text-slate-900"
+                    : theme === "dark"
+                      ? "text-zinc-400 hover:text-zinc-200"
+                      : "text-slate-500 hover:text-slate-700"
                 }`}
               >
                 LinkedIn Posts
@@ -548,7 +570,7 @@ const Socials = () => {
         {currentPage === "list" && (
           <>
             {/* 1. BLOGS TAB CONTENT */}
-            {activeTab === 'blogs' && (
+            {activeTab === "blogs" && (
               <div className="animate-in fade-in zoom-in duration-300">
                 <BlogHeader
                   search={search}
@@ -571,20 +593,20 @@ const Socials = () => {
             )}
 
             {/* 2. LINKEDIN TAB CONTENT */}
-            {activeTab === 'linkedin' && (
+            {activeTab === "linkedin" && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300 w-full min-h-[500px] flex justify-center p-8 bg-[#f9fafb] rounded-3xl ">
-                 {/* IFrame Widget - Width set to 100% for responsiveness */}
-                 <iframe 
-                    src="https://widgets.sociablekit.com/linkedin-profile-posts/iframe/25647450" 
-                    frameBorder="0" 
-                    width="100%" 
-                    height="1000"
-                    style={{
-                      borderRadius: '12px',
-                      maxWidth: '1200px' // Keeps it from getting too stretched on huge screens
-                    }}
-                    title="LinkedIn Profile Posts"
-                 ></iframe> 
+                {/* IFrame Widget - Width set to 100% for responsiveness */}
+                <iframe
+                  src="https://widgets.sociablekit.com/linkedin-profile-posts/iframe/25647450"
+                  frameBorder="0"
+                  width="100%"
+                  height="1000"
+                  style={{
+                    borderRadius: "12px",
+                    maxWidth: "1200px", // Keeps it from getting too stretched on huge screens
+                  }}
+                  title="LinkedIn Profile Posts"
+                ></iframe>
               </div>
             )}
           </>
