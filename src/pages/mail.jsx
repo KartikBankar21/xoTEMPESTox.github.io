@@ -28,7 +28,7 @@ const MailPage = () => {
 
   return (
     <div className="page-section mt-32">
-      <div className="flex items-center justify-center overflow-hidden">
+      <div className="flex items-center justify-center">
         {/* Theme-aware Overlay */}
 
         {/* Main Content Card */}
