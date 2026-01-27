@@ -67,7 +67,7 @@ const MailPage = () => {
               className={`group relative flex items-center justify-center space-x-3 px-10 py-4 rounded-full font-medium text-lg transition-all duration-300
               ${theme === "dark" ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-gray-800"}`}
             >
-              <span>Click Me Here</span>
+              <span>Email Me</span>
               <motion.div
                 animate={isClicked ? { x: [0, 5, 0] } : {}}
                 transition={{ repeat: Infinity, duration: 1.5 }}
