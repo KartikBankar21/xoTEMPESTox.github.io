@@ -122,7 +122,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ### Issue
 * [ ] Need to improve card hover animaiton for portfolio card , this is not it , also make it untrigger when you hover over light bulb
 * [ ] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
-* [ ] Boxing still present in mobile need to check glow / svg interaction
+* [x] Boxing still present in mobile need to check glow / svg interaction
 * [ ] Music Player Mobile UI , initial letters cut off
 * [ ] Hide theme controls + Music player while Scrolling down when the journey Scroll indicator Disappears [img](https://github.com/user-attachments/assets/e61b475a-aac9-493d-ae6d-865456506dea)
 * [ ] Add Typing effect same as Home page with same cursor and type effect to blog section Description [img](https://github.com/user-attachments/assets/fd813370-3d21-4c70-bc76-74f0a7b77726)
