@@ -132,7 +132,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [x] Click outside to Exit Expanded portfolio card , [img](https://github.com/user-attachments/assets/6fb89c48-5aff-4c0e-a020-395a9216138f)
 * [ ] Remove Arrow From "Email me" Button in "/mail" , Change Hover Animation use either 19 from this [link](https://tympanus.net/Development/ButtonHoverStyles/)
 * [ ] Check Old Seo Data such as sitemap , favicon setup is still functioning 
-* [ ] Implement New Speed insight + Vercel Analytics from Vercel for React based 
+* [ ] Implement New Speed insight + Vercel Analytics from Vercel for React based [web](https://vercel.com/docs/analytics/package) , [speed](https://vercel.com/docs/speed-insights/package)
 * [ ] Add headphone + Music Warning in Loading page , Keep it simple , animated if possible other wise just small text in Top middle 
 * [ ] Social Bar Hidden in small Mobile Screens [img](https://github.com/user-attachments/assets/c78e5d32-d132-404a-8792-86ab7282b4c5)
 * [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
