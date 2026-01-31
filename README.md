@@ -128,8 +128,11 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ] Add Typing effect same as Home page with same cursor and type effect to blog section Description [img](https://github.com/user-attachments/assets/fd813370-3d21-4c70-bc76-74f0a7b77726)
 * [ ] **Need to Discuss** Change the call to action Button at end of journey to use new "/mail" route instead of mail:to route on Desktop ( use mailto as default option in Mobile , but in desktop use "/mail" )
 * [ ] **Need to Discuss** in "/mail" On desktop don't trigger "mailto:" on Click button instead open new tab with gmail mail link , and then show the backup option with Copy and "mailto:" option (Essentially This means on Desktop "mailto:" and "gmail mail link" are swapped , no changes in Mobile UI
-* [ ] Remove old Analytics Script That were saved locally/ added to Pure Html , Will switch to vercel React version After prod Deployment
+* [x] Remove old Analytics Script That were saved locally/ added to Pure Html , Will switch to vercel React version After prod Deployment
 * [x] Click outside to Exit Expanded portfolio card , [img](https://github.com/user-attachments/assets/6fb89c48-5aff-4c0e-a020-395a9216138f)
 * [ ] Remove Arrow From "Email me" Button in "/mail" , Change Hover Animation use either 19 from this [link](https://tympanus.net/Development/ButtonHoverStyles/)
+* [ ] Check Old Seo Data such as sitemap , favicon setup is still functioning 
+* [ ] Implement New Speed insight + Vercel Analytics from Vercel for React based 
+* [ ] Add headphone + Music Warning in Loading page , Keep it simple , animated if possible other wise just small text in Top middle 
 * [ ] Social Bar Hidden in small Mobile Screens [img](https://github.com/user-attachments/assets/c78e5d32-d132-404a-8792-86ab7282b4c5)
 * [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
