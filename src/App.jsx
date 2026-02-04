@@ -194,7 +194,6 @@ useEffect(() => {
 
 // Logic for the height
 const getMinHeight = () => {
-  if (isMobileForContent && socials) return "calc(100vh - 22rem)";
   if (socials) return "calc(100vh - 16rem)";
   if (journey && isMobileForContent) return "calc(100vh - 14rem)";
   if (journey) return "calc(100vh - 8rem)";

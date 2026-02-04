@@ -814,16 +814,9 @@ html[data-theme='light'] .expanded {
   position: fixed;
   left: 50%;
   top: 4rem;
-  /* 16 */
   transform: translate(-50%, -1.5rem);
-  /* -6 */
   z-index: 999999999998;
   isolation: isolate;
-  /* For z-index stacking context */
-
-  /* Base Styling: Solid black background and subtle static border */
-  /* background-color: #000000; */
-  /* border: 1px solid #474646; */
   border-radius: 1.4rem;
   min-height: 4.4rem;
   padding: 0.6rem 2.2rem;

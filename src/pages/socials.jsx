@@ -301,7 +301,6 @@ const Socials = () => {
 
   return (
     <div className="page-section" data-theme={theme}>
-      <h1 className="sr-only">Blog & Socials</h1>
       <ul
         id="socials"
         aria-label="Social links"

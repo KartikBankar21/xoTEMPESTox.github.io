@@ -121,9 +121,9 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Issue
 * [ ] Need to improve card hover animaiton for portfolio card , this is not it , also make it untrigger when you hover over light bulb
-* [ ] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
+* [x] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
 * [x] Boxing still present in mobile need to check glow / svg interaction
-* [ ] Music Player Mobile UI , initial letters cut off
+* [x] Music Player Mobile UI , initial letters cut off
 * [ ] Hide theme controls + Music player while Scrolling down when the journey Scroll indicator Disappears [img](https://github.com/user-attachments/assets/e61b475a-aac9-493d-ae6d-865456506dea)
 * [ ] Add Typing effect same as Home page with same cursor and type effect to blog section Description [img](https://github.com/user-attachments/assets/fd813370-3d21-4c70-bc76-74f0a7b77726)
 * [ ] **Need to Discuss** Change the call to action Button at end of journey to use new "/mail" route instead of mail:to route on Desktop ( use mailto as default option in Mobile , but in desktop use "/mail" )
@@ -134,5 +134,5 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [ ] Check Old Seo Data such as sitemap , favicon setup is still functioning 
 * [ ] Implement New Speed insight + Vercel Analytics from Vercel for React based [web](https://vercel.com/docs/analytics/package) , [speed](https://vercel.com/docs/speed-insights/package)
 * [ ] Add headphone + Music Warning in Loading page , Keep it simple , animated if possible other wise just small text in Top middle 
-* [ ] Social Bar Hidden in small Mobile Screens [img](https://github.com/user-attachments/assets/c78e5d32-d132-404a-8792-86ab7282b4c5)
+* [x] Social Bar Hidden in small Mobile Screens [img](https://github.com/user-attachments/assets/c78e5d32-d132-404a-8792-86ab7282b4c5)
 * [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
