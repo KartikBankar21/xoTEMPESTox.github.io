@@ -4603,3 +4603,115 @@ progress {
   /* Apply the spin animation */
   animation: spin 4s linear infinite;
 }
+
+.button--bestia {
+  font-family: freight-display-pro, serif;
+  font-size: 1.15rem;
+  /* Use the variable or fallback to white */
+  color: var(--btn-text, #fff);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+}
+
+.button--bestia .button__bg {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--btn-bg, #e7e7e7);
+  border-radius: 0.85rem;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.1, 0, 0.3, 1);
+}
+
+.button--bestia:hover .button__bg {
+  transform: scale3d(1.1, 1.1, 1);
+}
+
+.button--bestia .button__bg::before,
+.button--bestia .button__bg::after {
+  content: '';
+  position: absolute;
+  background: var(--btn-fill, #000);
+}
+
+.button--bestia .button__bg::before {
+  width: 110%;
+  height: 0;
+  padding-bottom: 110%;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate3d(-50%, -50%, 0) scale3d(0, 0, 1);
+}
+
+.button--bestia:hover .button__bg::before {
+  transition: transform 0.4s cubic-bezier(0.1, 0, 0.3, 1);
+  transform: translate3d(-50%, -50%, 0) scale3d(1, 1, 1);
+}
+
+.button--bestia .button__bg::after {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.button--bestia:hover .button__bg::after {
+  opacity: 1;
+  transition-duration: 0.01s;
+  transition-delay: 0.3s;
+}
+
+.button--bestia span {
+  display: block;
+  position: relative;
+  padding: 1.2rem 2.5rem;
+  /* This creates the color inversion effect on the text */
+  mix-blend-mode: difference;
+  z-index: 1;
+}
+
+/* --- Updated CSS --- */
+.typing-animation-container {
+  display: inline-grid;    /* Changed from inline-flex */
+  grid-template-columns: 1fr;
+  position: relative;
+  vertical-align: bottom;  /* Aligns with the rest of your sentence */
+}
+
+.typing-animation-container .typed-text__wrapper {
+  display: none;
+  position: relative;
+}
+
+.typing-animation-container.typed-text--ready .typed-text__wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Ensure the content is visible and stable */
+.typing-animation-container .typed-text__content {
+  display: inline-block;
+  min-height: 1.2em;
+}
+
+/* Keep your existing cursor styles, they work fine with absolute positioning */
+.typing-animation-container .typed-text__cursor {
+  animation: typed-underline-blink 1.1s steps(2, start) infinite;
+  background-color: currentColor;
+  border-radius: 999px;
+  bottom: 0;
+  display: block;
+  height: 0.18em;
+  position: absolute;
+  right: 0;
+  z-index: 1;
+}

@@ -370,9 +370,6 @@ const Home = () => {
 
     return cancelTyping;
   };
-  // initHomeRoleTyper();
-
-
 
   return (
     <div className="page-section">
@@ -409,7 +406,7 @@ const Home = () => {
                     <br></br> @Intern at Liferythm Healthcare.
                   </span>
                 </p>
-
+ 
                 <NavLink
                   id="read-more-home"
                   className="mx-auto mt-6 button-read-more button--telesto"

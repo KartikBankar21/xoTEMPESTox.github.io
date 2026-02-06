@@ -1,10 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Headphones } from "lucide-react";
 import { useTheme } from "./HeaderBackground";
 
 const SvgLoaderLeftToRight = ({ onFinish }) => {
-      const { theme } = useTheme(); 
-  
+  const { theme } = useTheme();
+
   // 1. Parent variants to control the sequence
   const svgVariants = {
     hidden: { opacity: 1 },
@@ -13,7 +14,7 @@ const SvgLoaderLeftToRight = ({ onFinish }) => {
       transition: {
         // This tells the children to animate one by one
         // 0.4s delay between each path starting
-        staggerChildren: 0.40,
+        staggerChildren: 0.4,
       },
     },
   };
@@ -39,7 +40,26 @@ const SvgLoaderLeftToRight = ({ onFinish }) => {
   };
 
   return (
-    <div className={`flex items-center justify-center h-screen w-full ${theme === 'dark' ? 'bg-black':'bg-white'}`} data-theme={theme}>
+    <div
+      className={`flex items-center justify-center h-screen w-full ${theme === "dark" ? "bg-black" : "bg-white"}`}
+      data-theme={theme}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 1 }}
+        className={`absolute top-12 flex items-center gap-2 text-[12px] md:text-lg font-semibold tracking-[0.2em] uppercase opacity-60 
+          ${theme === "dark" ? "text-white" : "text-neutral-800"}`}
+      >
+        <motion.div
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          <Headphones size={18} strokeWidth={2} />
+        </motion.div>
+        <span>Sound On Recommended</span>
+      </motion.div>
+
       <motion.svg
         id="eeSQNZ5fwYi1"
         // xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -138,7 +158,6 @@ const SvgLoaderLeftToRight = ({ onFinish }) => {
           strokeLinecap="round"
           strokeLinejoin="round"
           variants={pathVariants}
-
         />
         <motion.path
           id="eeSQNZ5fwYi13"
@@ -150,7 +169,6 @@ const SvgLoaderLeftToRight = ({ onFinish }) => {
           strokeLinecap="round"
           strokeLinejoin="round"
           variants={pathVariants}
-
         />
       </motion.svg>
     </div>
