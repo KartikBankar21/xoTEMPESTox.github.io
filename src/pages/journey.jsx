@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import "../styles/main.css";
 import TimelineCard from "../components/TimelineCard";
 import { useTheme } from "../components/HeaderBackground";
@@ -89,6 +89,8 @@ const Journey = () => {
   const [isMobile, setIsMobile] = useState(false);
   const { theme } = useTheme();
 
+  const { setIsScrollingDown } = useOutletContext();
+
   // Use a simple boolean for the "hidden" state
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -101,11 +103,13 @@ const Journey = () => {
       const scrollTop =
         scrollContainer === window ? window.scrollY : scrollContainer.scrollTop;
 
-      // Trigger fade as soon as 20px are scrolled
+      // When indicator disappears (scrollTop > 20)
       if (scrollTop > 20) {
         setIsScrolled(true);
+        setIsScrollingDown(true); // Hide Music/Theme UI
       } else {
         setIsScrolled(false);
+        setIsScrollingDown(false); // Show Music/Theme UI
       }
     };
 
@@ -115,7 +119,7 @@ const Journey = () => {
     handleScroll();
 
     return () => scrollContainer.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [setIsScrollingDown]);
 
   // Dynamic Height Calculation
   const ITEM_HEIGHT = 300; // Pixels per item
@@ -339,10 +343,10 @@ const Journey = () => {
         {/* Timeline Wrapper - Increased Height significantly to prevent overlap */}
         <div className="relative h-auto">
           {/* Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-4 md:gap-40 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 h-full  relative">
             {/* LEFT COLUMN: Education */}
             <div
-              className="relative h-full ml-4 md:ml-32"
+              className="relative h-full ml-4"
               ref={eduRef}
               style={{
                 // Mobile: Use its own height | Desktop: Match the taller column
@@ -405,7 +409,7 @@ const Journey = () => {
 
             {/* RIGHT COLUMN: Experience */}
             <div
-              className="relative h-full mr-4 lg:mr-32"
+              className="relative h-full mr-4"
               ref={expRef}
               style={{
                 height: isMobile ? `${expHeight}px` : `${maxHeight}px`,

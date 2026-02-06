@@ -738,8 +738,10 @@ export const ThemePlayer = ({
 
   // 2. Determine visibility directly inside component
   const location = useLocation();
-  const isHidden =
-    location.pathname === "/" || location.pathname === "/socials"; // Hide on Home
+  // Combine route-based hiding and scroll-based hiding
+  const isRouteHidden =
+    location.pathname === "/" || location.pathname === "/socials";
+  const effectivelyHidden = isRouteHidden || shouldHideUI;
 
   // Responsive Positioning Classes
   let positionClasses;
@@ -773,7 +775,7 @@ export const ThemePlayer = ({
     // 3. THE MAGIC FIX:
     // If hidden, force it off-screen to the left (-200%).
     // This overrides the 'x' variable but KEEPS the 'y' centering intact.
-    isHidden ? "-translate-x-[250%]" : "",
+    effectivelyHidden ? "-translate-x-[250%]" : "",
   ].join(" ");
 
   return (
@@ -784,8 +786,8 @@ export const ThemePlayer = ({
       style={{
         // If hidden, force X to -250% (slide far left).
         // If visible, set to undefined (let Tailwind classes controls it).
-        "--tw-translate-x": shouldHideUI ? "-250%" : undefined,
-        border: '0px solid transparent'
+        "--tw-translate-x": effectivelyHidden ? "-250%" : undefined,
+        border: "0px solid transparent",
       }}
     >
       {isExpanded ? (
@@ -798,17 +800,14 @@ export const ThemePlayer = ({
           onWallpaperSelect={onWallpaperSelect}
         />
       ) : (
-        
-
-          <MiniThemeWidget
-            onExpand={() => setIsExpanded(true)}
-            theme={theme}
-            wallpapers={wallpapers}
-            currentWallpaper={currentWallpaper}
-            onWallpaperSelect={onWallpaperSelect}
-            onThemeChange={onThemeChange}
-          />
-        
+        <MiniThemeWidget
+          onExpand={() => setIsExpanded(true)}
+          theme={theme}
+          wallpapers={wallpapers}
+          currentWallpaper={currentWallpaper}
+          onWallpaperSelect={onWallpaperSelect}
+          onThemeChange={onThemeChange}
+        />
       )}
     </div>
   );

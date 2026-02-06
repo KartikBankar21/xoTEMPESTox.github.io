@@ -160,6 +160,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const { theme } = useTheme();
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
 
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -174,33 +175,31 @@ function App() {
   const location = useLocation();
   const shouldHidePlayer =
     location.pathname === "/socials" || location.pathname === "/";
-  const socials = location.pathname === '/socials';
-  const journey = location.pathname === '/journey';
-  const skills = location.pathname === '/skills';
-  const about = location.pathname === '/about';
-
-
-
+  const shouldHideUI = shouldHidePlayer || isScrollingDown;
+  const socials = location.pathname === "/socials";
+  const journey = location.pathname === "/journey";
+  const skills = location.pathname === "/skills";
+  const about = location.pathname === "/about";
 
   // ... inside your component
-const [isMobileForContent, setIsMobileForContent] = useState(false);
+  const [isMobileForContent, setIsMobileForContent] = useState(false);
 
-useEffect(() => {
-  const handleResize = () => setIsMobileForContent(window.innerWidth < 900);
-  handleResize(); // Check on mount
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+  useEffect(() => {
+    const handleResize = () => setIsMobileForContent(window.innerWidth < 900);
+    handleResize(); // Check on mount
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-// Logic for the height
-const getMinHeight = () => {
-  if (socials) return "calc(100vh - 16rem)";
-  if (journey && isMobileForContent) return "calc(100vh - 14rem)";
-  if (journey) return "calc(100vh - 8rem)";
-  if (skills && isMobileForContent) return "calc(100vh - 14rem)";
-  if (about && isMobileForContent) return "calc(100vh - 8rem)";
-  return "100vh";
-};
+  // Logic for the height
+  const getMinHeight = () => {
+    if (socials) return "calc(100vh - 16rem)";
+    if (journey && isMobileForContent) return "calc(100vh - 14rem)";
+    if (journey) return "calc(100vh - 8rem)";
+    if (skills && isMobileForContent) return "calc(100vh - 14rem)";
+    if (about && isMobileForContent) return "calc(100vh - 8rem)";
+    return "100vh";
+  };
 
   // --- DYNAMIC TITLE HANDLER ---
   useEffect(() => {
@@ -212,7 +211,7 @@ const getMinHeight = () => {
       "/services": "Services | Priyanshu Sah",
       "/skills": "Skills | Priyanshu Sah",
       "/socials": "Blog & Socials | Priyanshu Sah",
-      "/mail" : "Mail | Priyanshu Sah"
+      "/mail": "Mail | Priyanshu Sah",
     };
 
     document.title =
@@ -568,8 +567,6 @@ const getMinHeight = () => {
             <HeaderBackground />
           </div>
 
-          {/* {!shouldHideUI && } */}
-
           {/* 2. Loader overlays everything until animation completes */}
           {loading && (
             <div
@@ -599,7 +596,7 @@ const getMinHeight = () => {
                   width: "100%",
                   minHeight: getMinHeight(),
                   zIndex: 10,
-                  top: socials ? '8rem':'0rem'
+                  top: socials ? "8rem" : "0rem",
                 }}
               >
                 <div
@@ -608,15 +605,21 @@ const getMinHeight = () => {
     ${containerClasses} 
 
     z-1200
-    transition-all duration-500 ease-in-out
+    lg:transition-all lg:duration-500
+    transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) 
     ${
-      shouldHidePlayer
-        ? "opacity-0 pointer-events-none translate-y-8 lg:translate-y-[-50%] lg:translate-x-[200%]"
-        : "opacity-100 pointer-events-auto translate-y-0 lg:translate-x-0"
+      shouldHideUI
+        ? "opacity-0 pointer-events-none translate-x-[250%]"
+        : "opacity-100 pointer-events-auto "
     }
 
     
   `}
+                  style={{
+                    // If hidden, force X to -250% (slide far left).
+                    // If visible, set to undefined (let Tailwind classes controls it).
+                    "--tw-translate-x": shouldHideUI ? "250%" : undefined,
+                  }}
                 >
                   {isExpanded ? (
                     <LoFiPlayer
@@ -657,8 +660,10 @@ const getMinHeight = () => {
                     </div>
                   )}
                 </div>
-                <AnimatedOutlet context={{ startAudioOnInteraction }} />
-                <ThemeControlsWrapper />
+                <AnimatedOutlet
+                  context={{ startAudioOnInteraction, setIsScrollingDown }}
+                />
+                <ThemeControlsWrapper shouldHideUI={shouldHideUI} />
               </div>
 
               <FooterNavbar onNavigate={startAudioOnInteraction} />

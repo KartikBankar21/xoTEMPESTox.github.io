@@ -124,7 +124,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 * [x] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
 * [x] Boxing still present in mobile need to check glow / svg interaction
 * [x] Music Player Mobile UI , initial letters cut off
-* [ ] Hide theme controls + Music player while Scrolling down when the journey Scroll indicator Disappears [img](https://github.com/user-attachments/assets/e61b475a-aac9-493d-ae6d-865456506dea)
+* [x] Hide theme controls + Music player while Scrolling down when the journey Scroll indicator Disappears [img](https://github.com/user-attachments/assets/e61b475a-aac9-493d-ae6d-865456506dea)
 * [x] Add Typing effect same as Home page with same cursor and type effect to blog section Description [img](https://github.com/user-attachments/assets/fd813370-3d21-4c70-bc76-74f0a7b77726)
 * [x] **Need to Discuss** Change the call to action Button at end of journey to use new "/mail" route instead of mail:to route on Desktop ( use mailto as default option in Mobile , but in desktop use "/mail" )
 * [x] **Need to Discuss** in "/mail" On desktop don't trigger "mailto:" on Click button instead open new tab with gmail mail link , and then show the backup option with Copy and "mailto:" option (Essentially This means on Desktop "mailto:" and "gmail mail link" are swapped , no changes in Mobile UI)
