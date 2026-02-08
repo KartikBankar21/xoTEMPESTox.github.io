@@ -120,7 +120,7 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 ## Roadmap
 
 ### Issue
-* [ ] Need to improve card hover animaiton for portfolio card , this is not it , also make it untrigger when you hover over light bulb
+* [x] Need to improve card hover animaiton for portfolio card , this is not it , also make it untrigger when you hover over light bulb
 * [x] Content margin Cut off , way to different for desktop vs mobile , too much gap in mobile
 * [x] Boxing still present in mobile need to check glow / svg interaction
 * [x] Music Player Mobile UI , initial letters cut off
