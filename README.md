@@ -121,6 +121,6 @@ Feel free to adapt the content, color palette, or assets to tailor the portfolio
 
 ### Issue
 
-* [x] Social Bar Hidden in IOS [img]()
+* [ ] Social Bar Hidden in IOS [img](https://github.com/user-attachments/assets/6e3fefdd-fc11-49cc-94c2-919aca4aa88b)
 
 * [ ] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
