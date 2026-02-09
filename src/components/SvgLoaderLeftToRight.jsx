@@ -57,7 +57,7 @@ const SvgLoaderLeftToRight = ({ onFinish }) => {
         >
           <Headphones size={18} strokeWidth={2} />
         </motion.div>
-        <span>Sound On Recommended</span>
+        <span>Audio experience enabled</span>
       </motion.div>
 
       <motion.svg
