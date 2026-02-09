@@ -16,7 +16,7 @@ const formatViews = (num) => {
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
+    year: "numeric", 
     month: "long",
     day: "numeric",
   });
@@ -39,6 +39,12 @@ const PostCard = ({ post, onPostClick }) => {
 
   const readTime = calculateReadTime(bodyContent);
   const viewsStr = formatViews(views);
+
+  // Hero image is first media item
+  const heroImage =
+    post.media && post.media.length > 0
+      ? post.media[0].url
+      : "https://placehold.co/1200x630/1e293b/60a5fa?text=No+Image";
 
   return (
     <article
@@ -121,7 +127,7 @@ const PostCard = ({ post, onPostClick }) => {
                  transition-all duration-500 shadow-xl border ${
                    theme === "dark" ? "border-zinc-800" : "border-slate-200"
                  }`}
-          src={post.imageUrl}
+          src={heroImage}
           alt={`${post.title} thumbnail`}
           onError={(e) => {
             e.target.onerror = null;
