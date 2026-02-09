@@ -1,0 +1,16 @@
+{
+    "name": "linkedin-scraper",
+    "version": "2.0.0",
+    "description": "Scrape LinkedIn posts and export to blogs_v2.json format",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "login": "node login.js",
+        "scrape": "node index.js"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0",
+        "puppeteer-core": "^22.0.0",
+        "slugify": "^1.6.6"
+    }
+}

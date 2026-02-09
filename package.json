@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host",
     "build": "npm install && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update": "cd scripts/linkedin-scraper && npm install && node index.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
