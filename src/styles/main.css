@@ -2893,8 +2893,11 @@ HeaderBackground {
   width: 4rem;
 }
 
-.portfolio .my-card:hover .my-card__img__links {
-  top: 0;
+/* Only enable hover animation on devices that support hover (desktop) */
+@media (hover: hover) {
+  .portfolio .my-card:hover .my-card__img__links {
+    top: 0;
+  }
 }
 
 .portfolio .my-card__info {

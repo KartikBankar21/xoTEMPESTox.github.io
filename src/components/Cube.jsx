@@ -87,11 +87,10 @@ const RopeBulb = ({ isOn, onClick, onHoverChange, onBulbHover }) => {
 
         {/* The Bulb with Flickering logic */}
         <div
-          className={`w-8 h-8 rounded-full border-2 -mt-1 relative z-0 transition-all duration-500 ${
-            isOn
-              ? "bg-yellow-200 border-yellow-100 shadow-[0_0_45px_15px_rgba(253,224,71,0.7)]"
-              : "bg-orange-400/30 border-orange-300/40 shadow-none animate-bulb-flicker group-hover:bg-orange-400"
-          }`}
+          className={`w-8 h-8 rounded-full border-2 -mt-1 relative z-0 transition-all duration-500 ${isOn
+            ? "bg-yellow-200 border-yellow-100 shadow-[0_0_45px_15px_rgba(253,224,71,0.7)]"
+            : "bg-orange-400/30 border-orange-300/40 shadow-none animate-bulb-flicker group-hover:bg-orange-400"
+            }`}
         >
           {/* Reflection Highlight */}
           <div
@@ -129,11 +128,10 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
 
   return (
     <div
-      className={`absolute inset-0 backdrop-blur-sm border rounded-4xl p-5 overflow-hidden flex flex-col backface-hidden transition-colors duration-300 ${
-        theme === "dark"
-          ? "bg-[#0a0a0a]/95 border-white/30"
-          : "bg-white/90 border-black/10 shadow-sm"
-      }`}
+      className={`absolute inset-0 backdrop-blur-sm border rounded-4xl p-5 overflow-hidden flex flex-col backface-hidden transition-colors duration-300 ${theme === "dark"
+        ? "bg-[#0a0a0a]/95 border-white/30"
+        : "bg-white/90 border-black/10 shadow-sm"
+        }`}
       ref={listRef}
       onMouseMove={gradientHoverMove}
       onMouseLeave={gradientHoverLeave}
@@ -142,18 +140,16 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
       <div className="relative z-10 flex flex-col h-full pointer-events-auto">
         <div className="mt-6 flex-1">
           <p
-            className={`text-2xl min-[1265px]:text-4xl font-bold leading-tight mb-1 uppercase tracking-tight bg-clip-text text-transparent text-center bg-gradient-to-r ${
-              theme === "dark"
-                ? "from-gray-400 via-white to-gray-500"
-                : "from-gray-500 via-gray-900 to-gray-600"
-            }`}
+            className={`text-2xl min-[1265px]:text-4xl font-bold leading-tight mb-1 uppercase tracking-tight bg-clip-text text-transparent text-center bg-gradient-to-r ${theme === "dark"
+              ? "from-gray-400 via-white to-gray-500"
+              : "from-gray-500 via-gray-900 to-gray-600"
+              }`}
           >
             {item.title}
           </p>
           <p
-            className={`text-lg min-[1265px]:text-2xl leading-snug line-clamp-3 lg:line-clamp-none text-center ${
-              theme === "dark" ? "text-[#c4c4c4]" : "text-zinc-600"
-            }`}
+            className={`text-lg min-[1265px]:text-2xl leading-snug line-clamp-3 lg:line-clamp-none text-center ${theme === "dark" ? "text-[#c4c4c4]" : "text-zinc-600"
+              }`}
           >
             {item.description}
           </p>
@@ -180,11 +176,10 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
               toggleLight();
             }}
             onPointerDown={(e) => e.stopPropagation()}
-            className={`!text-xl transition-colors uppercase tracking-widest font-semibold cursor-pointer relative z-20 ${
-              theme === "dark"
-                ? "text-zinc-500 hover:text-zinc-300"
-                : "text-zinc-400 hover:text-zinc-600"
-            }`}
+            className={`!text-xl transition-colors uppercase tracking-widest font-semibold cursor-pointer relative z-20 ${theme === "dark"
+              ? "text-zinc-500 hover:text-zinc-300"
+              : "text-zinc-400 hover:text-zinc-600"
+              }`}
           >
             Close
           </button>
@@ -194,11 +189,10 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
               onViewDetails(item);
             }}
             onPointerDown={(e) => e.stopPropagation()}
-            className={`group relative font-black uppercase rounded-full overflow-hidden transition-all shadow-xl ${
-              theme === "dark"
-                ? "bg-white text-black hover:shadow-white/10"
-                : "bg-black text-white hover:shadow-black/20"
-            }`}
+            className={`group relative font-black uppercase rounded-full overflow-hidden transition-all shadow-xl ${theme === "dark"
+              ? "bg-white text-black hover:shadow-white/10"
+              : "bg-black text-white hover:shadow-black/20"
+              }`}
           >
             <span className="relative z-10 text-xl group-hover:text-white transition-colors rounded-full flex items-center gap-2 px-4 py-2">
               View Details
@@ -208,11 +202,10 @@ const TopFaceContent = ({ item, toggleLight, onViewDetails }) => {
               />
             </span>
             <div
-              className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full ${
-                theme === "dark"
-                  ? "group-hover:bg-black/70"
-                  : "group-hover:bg-zinc-800"
-              }`}
+              className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full ${theme === "dark"
+                ? "group-hover:bg-black/70"
+                : "group-hover:bg-zinc-800"
+                }`}
             ></div>
           </button>
         </div>
@@ -249,6 +242,16 @@ const Cube = React.memo(
     const [isBulbHovered, setIsBulbHovered] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const { theme } = useTheme();
+
+    // Detect if device supports hover (desktop) - disable hover animations on touch devices
+    const [canHover, setCanHover] = useState(true);
+    useEffect(() => {
+      const mediaQuery = window.matchMedia("(hover: hover)");
+      setCanHover(mediaQuery.matches);
+      const handler = (e) => setCanHover(e.matches);
+      mediaQuery.addEventListener("change", handler);
+      return () => mediaQuery.removeEventListener("change", handler);
+    }, []);
 
     const [showImageModal, setShowImageModal] = useState(false);
     // interactionReady determines if the 2D overlay should be shown
@@ -334,10 +337,9 @@ const Cube = React.memo(
               background-repeat: no-repeat;
               background-size: 50% 50%, 50% 50%;
               background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-              background-image: ${
-                theme === "dark"
-                  ? "linear-gradient(#6366f1, #6366f1), linear-gradient(#8b5cf6, #8b5cf6), linear-gradient(#06b6d4, #06b6d4), linear-gradient(#4f46e5, #4f46e5)"
-                  : "linear-gradient(#3b82f6, #3b82f6), linear-gradient(#8b5cf6, #8b5cf6), linear-gradient(#06b6d4, #06b6d4), linear-gradient(#4f46e5, #4f46e5)"
+              background-image: ${theme === "dark"
+                ? "linear-gradient(#6366f1, #6366f1), linear-gradient(#8b5cf6, #8b5cf6), linear-gradient(#06b6d4, #06b6d4), linear-gradient(#4f46e5, #4f46e5)"
+                : "linear-gradient(#3b82f6, #3b82f6), linear-gradient(#8b5cf6, #8b5cf6), linear-gradient(#06b6d4, #06b6d4), linear-gradient(#4f46e5, #4f46e5)"
               };
               border-radius: calc(2rem + 6px);
               opacity: 0;
@@ -386,11 +388,10 @@ const Cube = React.memo(
 
             {/* FRONT FACE (Links) */}
             <div
-              className={`rainbow-border h-[100%] ${isHovered ? "rainbow-border-active" : ""} absolute inset-0 border-2 rounded-4xl flex items-end justify-between gap-4 backface-hidden backdrop-blur-sm transition-colors duration-300 ${
-                theme === "dark"
-                  ? "bg-[#0f172a] border-black/90"
-                  : "bg-[#0f172a] border-zinc-300 shadow-inner"
-              }`}
+              className={`rainbow-border h-[100%] ${isHovered ? "rainbow-border-active" : ""} absolute inset-0 border-2 rounded-4xl flex items-end justify-between gap-4 backface-hidden backdrop-blur-sm transition-colors duration-300 ${theme === "dark"
+                ? "bg-[#0f172a] border-black/90"
+                : "bg-[#0f172a] border-zinc-300 shadow-inner"
+                }`}
               style={{
                 transform: `rotateX(0deg) translateZ(${translateZ}px)`,
                 visibility: isLightOn ? "hidden" : "visible",
@@ -398,8 +399,8 @@ const Cube = React.memo(
                 backfaceVisibility: "hidden",
                 overflow: "hidden",
               }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              onMouseEnter={() => canHover && setIsHovered(true)}
+              onMouseLeave={() => canHover && setIsHovered(false)}
             >
               <div
                 className={`absolute -inset-[1px] bg-cover bg-center cursor-pointer transition-all duration-300 z-10 ${isBulbHovered ? "scale-105 opacity-100" : "opacity-50"}`}
@@ -434,11 +435,10 @@ const Cube = React.memo(
                 }}
               >
                 <span
-                  className={`px-3 py-1 backdrop-blur-md text-[10px] font-bold uppercase tracking-widest border rounded-full transition-colors ${
-                    theme === "dark"
-                      ? "bg-black/60 text-white border-white/10"
-                      : "bg-white/80 text-zinc-900 border-black/10"
-                  }`}
+                  className={`px-3 py-1 backdrop-blur-md text-[10px] font-bold uppercase tracking-widest border rounded-full transition-colors ${theme === "dark"
+                    ? "bg-black/60 text-white border-white/10"
+                    : "bg-white/80 text-zinc-900 border-black/10"
+                    }`}
                 >
                   {item.tag}
                 </span>
@@ -446,11 +446,10 @@ const Cube = React.memo(
 
               {/* Button Container (Bottom Left) */}
               <div
-                className={`relative z-40 flex gap-3 px-4 pt-4 pb-3 rounded-tr-3xl border-t border-r transition-colors ${
-                  theme === "dark"
-                    ? "bg-zinc-900 border-white/10"
-                    : "bg-white border-zinc-200 shadow-lg"
-                }`}
+                className={`relative z-40 flex gap-3 px-4 pt-4 pb-3 rounded-tr-3xl border-t border-r transition-colors ${theme === "dark"
+                  ? "bg-zinc-900 border-white/10"
+                  : "bg-white border-zinc-200 shadow-lg"
+                  }`}
                 onMouseEnter={(e) => {
                   e.stopPropagation();
                   setIsHovered(false);
@@ -464,11 +463,10 @@ const Cube = React.memo(
                   onClick={handleLinkClick(item.links.github_link)}
                   onMouseDown={(e) => e.stopPropagation()}
                   onTouchStart={(e) => e.stopPropagation()}
-                  className={`w-14 h-14 flex items-center justify-center rounded-full transition-all transform hover:scale-110 border cursor-pointer ${
-                    theme === "dark"
-                      ? "bg-black hover:bg-zinc-800 text-white border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                      : "bg-zinc-900 hover:bg-black text-white border-transparent shadow-md"
-                  }`}
+                  className={`w-14 h-14 flex items-center justify-center rounded-full transition-all transform hover:scale-110 border cursor-pointer ${theme === "dark"
+                    ? "bg-black hover:bg-zinc-800 text-white border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                    : "bg-zinc-900 hover:bg-black text-white border-transparent shadow-md"
+                    }`}
                   style={{ pointerEvents: "auto" }}
                 >
                   <Github size={18} />
@@ -479,11 +477,10 @@ const Cube = React.memo(
                   onClick={handleLinkClick(item.links.live_link)}
                   onMouseDown={(e) => e.stopPropagation()}
                   onTouchStart={(e) => e.stopPropagation()}
-                  className={`w-14 h-14 flex items-center justify-center rounded-full transition-all transform hover:scale-110 border cursor-pointer ${
-                    theme === "dark"
-                      ? "bg-white hover:bg-zinc-200 text-black border-black/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                      : "bg-white hover:bg-zinc-50 text-zinc-900 border-zinc-200 shadow-md"
-                  }`}
+                  className={`w-14 h-14 flex items-center justify-center rounded-full transition-all transform hover:scale-110 border cursor-pointer ${theme === "dark"
+                    ? "bg-white hover:bg-zinc-200 text-black border-black/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                    : "bg-white hover:bg-zinc-50 text-zinc-900 border-zinc-200 shadow-md"
+                    }`}
                   style={{ pointerEvents: "auto" }}
                 >
                   <ExternalLink size={15} />
