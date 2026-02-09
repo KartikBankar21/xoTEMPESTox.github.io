@@ -118,7 +118,11 @@ const Journey = () => {
     // Check initial state
     handleScroll();
 
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+    return () => {
+      scrollContainer.removeEventListener("scroll", handleScroll);
+      // Reset the scroll state when leaving Journey page so theme/music UI returns
+      setIsScrollingDown(false);
+    };
   }, [setIsScrollingDown]);
 
   // Dynamic Height Calculation
@@ -228,18 +232,16 @@ const Journey = () => {
         {/* Header */}
         <div className="flex items-center justify-center  mb-0 h-fit">
           <div
-            className={`text-center mb-6 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit transition-all duration-300 ${
-              theme === "dark"
+            className={`text-center mb-6 backdrop-blur-sm rounded-2xl m-0 w-[100%] p-12 w-fit transition-all duration-300 ${theme === "dark"
                 ? "bg-black/50"
                 : "bg-white/65 border border-slate-200 shadow-lg"
-            }`}
+              }`}
           >
             <p
-              className={`text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r uppercase ${
-                theme === "dark"
+              className={`text-8xl md:text-9xl font-black mb-8 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r uppercase ${theme === "dark"
                   ? "from-sky-400 to-purple-400"
                   : "from-sky-600 to-purple-600"
-              }`}
+                }`}
             >
               Journey
             </p>
@@ -248,36 +250,32 @@ const Journey = () => {
               {/* Education Section */}
               <div className="flex flex-col items-center">
                 <span
-                  className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${
-                    theme === "dark" ? "text-sky-400" : "text-sky-600"
-                  }`}
+                  className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${theme === "dark" ? "text-sky-400" : "text-sky-600"
+                    }`}
                 >
                   Education
                 </span>
                 <div
-                  className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${
-                    theme === "dark"
+                  className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${theme === "dark"
                       ? "bg-sky-500 shadow-[0_0_15px_#3b82f6]"
                       : "bg-sky-600 shadow-[0_2px_8px_rgba(2,132,199,0.4)]"
-                  }`}
+                    }`}
                 ></div>
               </div>
 
               {/* Experience Section */}
               <div className="flex flex-col items-center">
                 <span
-                  className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${
-                    theme === "dark" ? "text-purple-400" : "text-purple-600"
-                  }`}
+                  className={`font-mono font-bold text-lg md:text-3xl tracking-[0.2em] uppercase transition-colors ${theme === "dark" ? "text-purple-400" : "text-purple-600"
+                    }`}
                 >
                   Experience
                 </span>
                 <div
-                  className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${
-                    theme === "dark"
+                  className={`h-[2px] w-20 md:w-40 mt-3 rounded-full transition-all ${theme === "dark"
                       ? "bg-purple-500 shadow-[0_0_15px_#a855f7]"
                       : "bg-purple-600 shadow-[0_2px_8px_rgba(147,51,234,0.4)]"
-                  }`}
+                    }`}
                 ></div>
               </div>
             </div>
@@ -285,23 +283,20 @@ const Journey = () => {
         </div>
         <div
           ref={indicatorRef}
-          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center backdrop-blur-md rounded-2xl transition-all duration-1000 ease-in-out ${
-            theme === "dark"
+          className={`relative z-10 w-full max-w-lg md:max-w-2xl mx-auto px-6 p-12 mb-44 text-center backdrop-blur-md rounded-2xl transition-all duration-1000 ease-in-out ${theme === "dark"
               ? "bg-black/50 border-white/5 shadow-2xl"
               : "bg-white/60 border border-slate-200 shadow-xl"
-          } ${
-            isScrolled
+            } ${isScrolled
               ? "opacity-0 translate-y-20 pointer-events-none invisible"
               : "opacity-100 translate-y-0"
-          }`}
+            }`}
         >
           <div className="inline-flex flex-col items-center group cursor-pointer">
             <p
-              className={`font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 transition-all duration-700 group-hover:tracking-[0.4em] ${
-                theme === "dark"
+              className={`font-mono font-bold text-xl md:text-2xl tracking-[0.3em] uppercase mb-12 transition-all duration-700 group-hover:tracking-[0.4em] ${theme === "dark"
                   ? "text-white opacity-90 group-hover:opacity-100"
                   : "text-slate-800 opacity-80 group-hover:opacity-100"
-              }`}
+                }`}
             >
               The Journey Continues
             </p>
@@ -309,31 +304,27 @@ const Journey = () => {
             <div className="relative flex flex-col items-center">
               {/* Mouse Icon */}
               <div
-                className={`relative w-8 h-14 rounded-full border-2 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 ${
-                  theme === "dark"
+                className={`relative w-8 h-14 rounded-full border-2 backdrop-blur-sm flex justify-center p-1.5 transition-all duration-500 ${theme === "dark"
                     ? "border-white/70 group-hover:border-white"
                     : "border-slate-400 group-hover:border-slate-900"
-                }`}
+                  }`}
               >
                 <div
-                  className={`w-1.5 h-3 rounded-full animate-scroll-dot ${
-                    theme === "dark" ? "bg-white" : "bg-slate-700"
-                  }`}
+                  className={`w-1.5 h-3 rounded-full animate-scroll-dot ${theme === "dark" ? "bg-white" : "bg-slate-700"
+                    }`}
                 ></div>
               </div>
 
               {/* Vertical Path Line */}
               <div
-                className={`relative w-px h-24 mt-2 overflow-hidden transition-colors ${
-                  theme === "dark"
+                className={`relative w-px h-24 mt-2 overflow-hidden transition-colors ${theme === "dark"
                     ? "bg-gradient-to-b from-white/70 via-white/35 to-transparent"
                     : "bg-gradient-to-b from-slate-400 via-slate-200 to-transparent"
-                }`}
+                  }`}
               >
                 <div
-                  className={`absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-transparent animate-path-flow ${
-                    theme === "dark" ? "via-white/70" : "via-slate-500"
-                  }`}
+                  className={`absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-transparent animate-path-flow ${theme === "dark" ? "via-white/70" : "via-slate-500"
+                    }`}
                 ></div>
               </div>
             </div>
@@ -378,10 +369,9 @@ const Journey = () => {
                   <div
                     key={`node-edu-${i}`}
                     className={`absolute left-0 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
-                      ${
-                        eduProgress >= effectivePos
-                          ? "border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-110"
-                          : "border-white/10 grayscale opacity-20 scale-90"
+                      ${eduProgress >= effectivePos
+                        ? "border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.5)] scale-110"
+                        : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
                     style={{ top: `${effectivePos * 100}%` }}
                   >
@@ -438,10 +428,9 @@ const Journey = () => {
                   <div
                     key={`node-exp-${i}`}
                     className={`absolute right-0 translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 transition-all duration-500 flex items-center justify-center bg-black overflow-hidden z-20
-                      ${
-                        expProgress >= effectivePos
-                          ? "border-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] scale-110"
-                          : "border-white/10 grayscale opacity-20 scale-90"
+                      ${expProgress >= effectivePos
+                        ? "border-purple-400 shadow-[0_0_30px_rgba(168,85,247,0.5)] scale-110"
+                        : "border-white/10 grayscale opacity-20 scale-90"
                       }`}
                     style={{ top: `${effectivePos * 100}%` }}
                   >
@@ -472,38 +461,33 @@ const Journey = () => {
         {/* Bottom Footer */}
         <div
           ref={footerRef}
-          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${
-            footerVisible
+          className={`mt-60 text-center pb-40 transition-all duration-1000 transform ${footerVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-20"
-          }`}
+            }`}
         >
           <div
-            className={`relative p-[1px] rounded-3xl inline-block transition-all duration-500 ${
-              theme === "dark"
+            className={`relative p-[1px] rounded-3xl inline-block transition-all duration-500 ${theme === "dark"
                 ? "bg-gradient-to-b from-white/10 to-transparent"
                 : "bg-gradient-to-b from-slate-200 to-transparent shadow-2xl"
-            }`}
+              }`}
           >
             <div
-              className={`backdrop-blur-sm p-12 rounded-[calc(1.5rem-1px)] border max-w-2xl transition-all duration-500 ${
-                theme === "dark"
+              className={`backdrop-blur-sm p-12 rounded-[calc(1.5rem-1px)] border max-w-2xl transition-all duration-500 ${theme === "dark"
                   ? "bg-black/50 border-white/5"
                   : "bg-white/50 border-slate-200"
-              }`}
+                }`}
             >
               <p
-                className={`text-3xl font-bold mb-4 transition-colors ${
-                  theme === "dark" ? "text-white" : "text-slate-900"
-                }`}
+                className={`text-3xl font-bold mb-4 transition-colors ${theme === "dark" ? "text-white" : "text-slate-900"
+                  }`}
               >
                 Ready for the Next Chapter?
               </p>
 
               <p
-                className={`mb-10 leading-relaxed text-xl transition-colors ${
-                  theme === "dark" ? "text-gray-400" : "text-slate-600"
-                }`}
+                className={`mb-10 leading-relaxed text-xl transition-colors ${theme === "dark" ? "text-gray-400" : "text-slate-600"
+                  }`}
               >
                 I'm currently available for full-stack AI roles and innovative
                 engineering projects.
@@ -518,27 +502,24 @@ const Journey = () => {
                     window.location.href = "mailto:priyanshu123sah@gmail.com";
                   }
                 }}
-                className={`group relative px-10 py-5 font-black uppercase rounded-full overflow-hidden transition-all shadow-xl ${
-                  theme === "dark"
+                className={`group relative px-10 py-5 font-black uppercase rounded-full overflow-hidden transition-all shadow-xl ${theme === "dark"
                     ? "bg-white text-black hover:shadow-white/10"
                     : "bg-slate-900 text-white hover:shadow-slate-300"
-                }`}
+                  }`}
               >
                 <span
-                  className={`relative z-10 text-xl transition-colors ${
-                    theme === "dark"
+                  className={`relative z-10 text-xl transition-colors ${theme === "dark"
                       ? "group-hover:text-white"
                       : "group-hover:text-slate-900"
-                  }`}
+                    }`}
                 >
                   Contact for My Next Gig
                 </span>
 
                 {/* Hover Background Slide Effect */}
                 <div
-                  className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ${
-                    theme === "dark" ? "bg-zinc-800" : "bg-slate-100"
-                  }`}
+                  className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ${theme === "dark" ? "bg-zinc-800" : "bg-slate-100"
+                    }`}
                 ></div>
               </button>
             </div>
