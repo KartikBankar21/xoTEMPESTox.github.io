@@ -12,6 +12,7 @@ import { MiniPlayer } from "./components/MiniPlayer";
 import { LoFiPlayer } from "./components/LofiPlayer";
 import SvgLoaderLeftToRight from "./components/SvgLoaderLeftToRight";
 import { motion, AnimatePresence } from "framer-motion";
+import SocialBar from "./components/SocialBar";
 
 const customStyles = `
 /* Custom Tailwind Configuration (replicated here for self-containment) */
@@ -665,7 +666,9 @@ function App() {
                 />
                 <ThemeControlsWrapper shouldHideUI={shouldHideUI} />
               </div>
-
+              {
+                socials && <SocialBar />
+              }
               <FooterNavbar onNavigate={startAudioOnInteraction} />
             </>
           )}

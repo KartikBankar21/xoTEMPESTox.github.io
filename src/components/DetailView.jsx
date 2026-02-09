@@ -33,12 +33,11 @@ const getLikedPostsFromCookie = () => {
 
 const saveLikedPostsToCookie = (likedPosts) => {
   const expiryDate = new Date();
-  expiryDate.setFullYear(expiryDate.getFullYear() + 1); // 1 year expiry
+  expiryDate.setFullYear(expiryDate.getFullYear() + 1);
   document.cookie = `${LIKED_POSTS_COOKIE}=${encodeURIComponent(JSON.stringify(likedPosts))}; expires=${expiryDate.toUTCString()}; path=/`;
 };
 
 // --- UTILITY FUNCTIONS ---
-
 const formatViews = (num) => {
   if (num >= 1000000) {
     return `${(num / 1000000).toFixed(1)}M`;
@@ -63,73 +62,82 @@ const calculateReadTime = (text) => {
   return Math.ceil(wordCount / wordsPerMinute);
 };
 
-// --- IMAGE GALLERY COMPONENT ---
-
-const ImageGallery = ({ images, theme }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
-
+const ImageGalleryGrid = ({ images, theme, onImageClick }) => {
   if (!images || images.length === 0) return null;
 
-  return (
-    <div className="my-12">
-      <h3
-        className={`text-2xl font-bold mb-6 ${
-          theme === "dark" ? "text-slate-100" : "text-slate-900"
+  const count = images.length;
+
+  // Single image
+  if (count === 1) {
+    return (
+      <div
+        onClick={() => onImageClick(0)}
+        className={`relative overflow-hidden rounded-lg cursor-pointer group border ${
+          theme === "dark"
+            ? "bg-zinc-900 border-zinc-800"
+            : "bg-slate-100 border-slate-200"
         }`}
+        style={{ aspectRatio: "16/10" }}
       >
-        Gallery
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 ${
-              theme === "dark"
-                ? "bg-zinc-900 hover:shadow-2xl hover:shadow-slate-500/20"
-                : "bg-slate-50 hover:shadow-2xl hover:shadow-slate-300/50"
-            }`}
-            onClick={() => setSelectedImage(image)}
-          >
-            <img
-              src={image.url}
-              alt={image.alt}
-              className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div
-              className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end ${
-                theme === "dark"
-                  ? "bg-gradient-to-t from-black/80 to-transparent"
-                  : "bg-gradient-to-t from-white/90 to-transparent"
-              }`}
-            >
-              <p
-                className={`p-4 text-sm font-medium ${
-                  theme === "dark" ? "text-slate-200" : "text-slate-900"
-                }`}
-              >
-                {image.alt}
-              </p>
-            </div>
-          </div>
-        ))}
+        <img
+          src={images[0].url}
+          alt={images[0].alt}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1 rounded-xl overflow-hidden shadow-sm">
+      {/* Featured Large Top Image */}
+      <div
+        onClick={() => onImageClick(0)}
+        className={`relative w-full overflow-hidden cursor-pointer group ${
+          theme === "dark" ? "bg-zinc-900" : "bg-slate-100"
+        }`}
+        style={{ aspectRatio: "16/11" }}
+      >
+        <img
+          src={images[0].url}
+          alt={images[0].alt}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
 
-      {/* Lightbox Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-5xl max-h-[90vh]">
-            <img
-              src={selectedImage.url}
-              alt={selectedImage.alt}
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
-            />
-            <p className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 text-center rounded-b-lg">
-              {selectedImage.alt}
-            </p>
-          </div>
+      {/* Bottom Thumbnails Grid (3 Columns) */}
+      {count > 1 && (
+        <div className="grid grid-cols-3 gap-1 h-32 md:h-48">
+          {images.slice(1, 4).map((img, idx) => {
+            const actualIndex = idx + 1;
+            const isLastThumbnail = idx === 2;
+            const hasMore = count > 4;
+
+            return (
+              <div
+                key={actualIndex}
+                onClick={() => onImageClick(actualIndex)}
+                className={`relative h-full overflow-hidden cursor-pointer group ${
+                  theme === "dark" ? "bg-zinc-900" : "bg-slate-100"
+                }`}
+              >
+                <img
+                  src={img.url}
+                  alt={img.alt}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+
+                {/* +N Overlay as seen in the reference image */}
+                {isLastThumbnail && hasMore && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] text-white">
+                    <span className="text-2xl md:text-4xl font-semibold">
+                      +{count - 3}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -137,12 +145,10 @@ const ImageGallery = ({ images, theme }) => {
 };
 
 // --- DETAIL VIEW COMPONENT ---
-
-const DetailView = ({ post, onBack }) => {
+const DetailView = ({ post, onBack, onGalleryImageClick }) => {
   const { theme } = useTheme();
   const [isLiked, setIsLiked] = useState(false);
 
-  // Check if post is liked on mount
   useEffect(() => {
     if (post?.id) {
       const likedPosts = getLikedPostsFromCookie();
@@ -150,7 +156,6 @@ const DetailView = ({ post, onBack }) => {
     }
   }, [post?.id]);
 
-  // Handle like/unlike
   const handleLikeToggle = () => {
     if (!post?.id) return;
 
@@ -158,10 +163,8 @@ const DetailView = ({ post, onBack }) => {
     let updatedLikedPosts;
 
     if (isLiked) {
-      // Unlike: remove from array
       updatedLikedPosts = likedPosts.filter((id) => id !== post.id);
     } else {
-      // Like: add to array
       updatedLikedPosts = [...likedPosts, post.id];
     }
 
@@ -177,7 +180,6 @@ const DetailView = ({ post, onBack }) => {
     );
   }
 
-  // Extract data from JSON structure
   const authorName = post.author?.name || "Unknown Author";
   const authorAvatar = post.author?.avatar || null;
   const authorUrl = post.author?.profileUrl || null;
@@ -185,27 +187,23 @@ const DetailView = ({ post, onBack }) => {
   const likes = post.metrics?.likes || 0;
   const comments = post.metrics?.comments || 0;
   const views = post.metrics?.views || 0;
-  const shares = post.metrics?.shares || 0;
 
   const excerpt = post.content?.summary || "";
   const bodyContent = post.content?.markdown || post.content?.raw || "";
 
   const readTime = calculateReadTime(bodyContent);
 
-  // Hero image is first media item
   const heroImage =
     post.media && post.media.length > 0
       ? post.media[0].url
       : "https://placehold.co/1200x630/1e293b/60a5fa?text=No+Image";
 
-  // Gallery is remaining media items
   const galleryImages =
     post.media && post.media.length > 1 ? post.media.slice(1) : [];
 
   const dateStr = formatDate(post.date);
   const viewsStr = formatViews(views);
 
-  // Hero image background
   const heroStyle = {
     backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${heroImage}')`,
     backgroundSize: "cover",
@@ -236,7 +234,6 @@ const DetailView = ({ post, onBack }) => {
         }`}
         style={heroStyle}
       >
-        {/* Gradient Overlay */}
         <div
           className="absolute inset-0 z-10 transition-opacity duration-500"
           style={{
@@ -247,7 +244,6 @@ const DetailView = ({ post, onBack }) => {
           }}
         ></div>
 
-        {/* Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 pt-32 pb-8 flex flex-col justify-end h-full min-h-[600px]">
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
@@ -324,7 +320,6 @@ const DetailView = ({ post, onBack }) => {
                 : "border-slate-200 text-slate-600"
             }`}
           >
-            {/* Stats */}
             <div className="flex flex-wrap gap-6">
               <div className="flex items-center space-x-2">
                 <Eye
@@ -349,7 +344,7 @@ const DetailView = ({ post, onBack }) => {
               {likes > 0 && (
                 <button
                   onClick={handleLikeToggle}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-200 active:scale-95 hover:scale-105 group ${
+                  className={`flex h-fit items-center space-x-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-200 active:scale-95 hover:scale-105 group ${
                     isLiked
                       ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
                       : theme === "dark"
@@ -370,6 +365,23 @@ const DetailView = ({ post, onBack }) => {
                   </span>
                 </button>
               )}
+              {post.originalUrl && (
+                <div className="flex justify-start mb-0 p-0">
+                  <a
+                    href={post.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold border transition-all hover:scale-105 ${
+                      theme === "dark"
+                        ? "bg-zinc-900 border-zinc-700 text-slate-300 hover:border-slate-500"
+                        : "bg-slate-50 border-slate-300 text-slate-700 hover:border-slate-400"
+                    }`}
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    <span>View Original on LinkedIn</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -377,29 +389,6 @@ const DetailView = ({ post, onBack }) => {
 
       {/* Article Content */}
       <article className="max-w-7xl mx-auto mt-16 px-4 sm:px-0">
-        {/* Original Post Link */}
-        {post.originalUrl && (
-          <div
-            className={`flex justify-start mb-12 pb-8 border-b ${
-              theme === "dark" ? "border-zinc-800" : "border-slate-200"
-            }`}
-          >
-            <a
-              href={post.originalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold border transition-all hover:scale-105 ${
-                theme === "dark"
-                  ? "bg-zinc-900 border-zinc-700 text-slate-300 hover:border-slate-500"
-                  : "bg-slate-50 border-slate-300 text-slate-700 hover:border-slate-400"
-              }`}
-            >
-              <ExternalLink className="w-5 h-5" />
-              <span>View Original on LinkedIn</span>
-            </a>
-          </div>
-        )}
-
         {/* Markdown Body */}
         <div
           className={`markdownBody prose max-w-none transition-colors duration-500 ${
@@ -411,9 +400,44 @@ const DetailView = ({ post, onBack }) => {
           </ReactMarkdown>
         </div>
 
-        {/* Image Gallery */}
+        {/* Image Constraints for Markdown Content */}
+        <style>{`
+          .markdownBody img {
+            max-height: 600px !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            display: block !important;
+          }
+          
+          .markdownBody figure {
+            max-height: 600px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
+        `}</style>
+
+        {/* LinkedIn-Style Image Gallery Grid */}
         {galleryImages.length > 0 && (
-          <ImageGallery images={galleryImages} theme={theme} />
+          <div className="mt-12">
+            <h3
+              className={`text-2xl font-bold mb-6 ${
+                theme === "dark" ? "text-slate-100" : "text-slate-900"
+              }`}
+            >
+              Post Gallery
+            </h3>
+            <ImageGalleryGrid
+              images={galleryImages}
+              theme={theme}
+              onImageClick={(index) =>
+                onGalleryImageClick && onGalleryImageClick(galleryImages, index)
+              }
+            />
+          </div>
         )}
 
         {/* Author Card */}
