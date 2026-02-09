@@ -7,6 +7,8 @@
     "dev": "vite --host",
     "build": "npm install && vite build",
     "preview": "vite preview",
+    "update:scrape": "cd scripts/linkedin-scraper && npm install && node index.js --scrape-only",
+    "update:process": "cd scripts/linkedin-scraper && node index.js --process-only",
     "update": "cd scripts/linkedin-scraper && npm install && node index.js"
   },
   "dependencies": {

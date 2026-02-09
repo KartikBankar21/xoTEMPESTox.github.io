@@ -6,7 +6,9 @@
     "type": "module",
     "scripts": {
         "login": "node login.js",
-        "scrape": "node index.js"
+        "scrape": "node index.js --scrape-only",
+        "process": "node index.js --process-only",
+        "update": "node index.js"
     },
     "dependencies": {
         "@google/generative-ai": "^0.21.0",

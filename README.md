@@ -1,126 +1,130 @@
-# Portfolio
+# Portfolio — priyanshusah.com
 
-A Vite-powered personal portfolio showcasing key projects, services, and testimonials on a single-page experience. The site blends Bootstrap 5 styling with custom animations, dynamic background media, and Swiper.js carousels to create an interactive presentation.
+A high-performance personal portfolio built with React, Vite, and Tailwind CSS. Features cinematic looping backgrounds, an ambient lo-fi music player, a 3D interactive cube, LinkedIn-powered blog with Gemini LLM processing, and smooth page transitions — all running at 60fps.
 
-- Single-page layout with quick navigation between `home`, `about`, `quality`, `skills`, `services`, `portfolio`, `reviews`, and `contact` sections.
-- Background stills load instantly from `public/assets/images/backgrounds/backgrounds.json`, and matching videos fade in once buffered, with optional parallax for desktop visitors.
-- Swiper.js sliders highlight portfolio work and client reviews, adapting automatically to varying screen widths.
-- Staged background loader shows the paired still immediately and fades in the video once buffered, keeping the first paint fast.
-- Bootstrap bundle is imported locally so data attributes (e.g. tooltips, dropdowns) work without additional setup.
+## ✨ Features
 
-## About Priyanshu Sah
+### Pages
+| Page | Description |
+|---|---|
+| **Home** | Animated landing with rotating background media and 3D cube |
+| **About** | Personal bio and introduction |
+| **Journey** | Interactive timeline of career milestones, education, and experiences |
+| **Skills** | Technical skills matrix with visual indicators |
+| **Services** | Consulting, prototyping, and deployment capabilities |
+| **Portfolio** | Swiper.js carousel showcasing featured projects with detail views |
+| **Socials** | LinkedIn blog feed with tag filtering, search, and markdown rendering |
+| **Mail** | Contact form and collaboration routes |
 
-Hi, I'm Priyanshu Sah an AI/ML engineer and full-stack developer focused on shipping production-ready machine learning systems, cloud-native applications, and end-to-end product experiences. My work spans data science research, model deployment, React + Node.js development, and MLOps automation.
+### Interactive Elements
+- **Cinematic Backgrounds** — 10 unique looping video environments with day/night modes, parallax on desktop, randomized per session
+- **Lo-fi Music Player** — Ambient background music with mini player controls across all pages
+- **3D Cube** — Interactive Three.js element on the home page
+- **Blog System** — Posts scraped from LinkedIn, transformed via Gemini LLM, filterable by tags
+- **URL Shortener** — Slugs like `/linkedin`, `/github`, `/resume-global` act as branded short links
+- **Wallpaper Selector** — Choose from multiple background themes with smooth transitions
+- **Dark/Light Mode** — Theme toggle with persistent preference
 
-### Core Expertise
-
-- Designing intelligent products with Python, TensorFlow, PyTorch, and scikit-learn.
-- Building full-stack web apps with React, Node.js, Express, and TypeScript.
-- Automating data pipelines, CI/CD, and containerized workloads across AWS, Azure, and GCP.
-- Translating business goals into measurable ML metrics, dashboards, and user-facing experiences.
-
-### What You'll Find Here
-
-- Featured AI/ML case studies and engineering projects.
-- Skills matrix covering machine learning, data engineering, and full-stack development.
-- Services section outlining consulting, prototyping, and deployment capabilities.
-- Contact routes for collaborations, speaking opportunities, and mentorship.
-
-> SEO keywords intentionally woven throughout this README include: *AI engineer*, *machine learning engineer*, *data scientist*, *MLOps specialist*, *full-stack developer*, *cloud architect*, and *Priyanshu Sah portfolio*.
-
-
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js 18 or newer (required by Vite 5).
-- npm (bundled with Node) or a compatible package manager.
+- Node.js 18+ (required by Vite 5)
+- npm
 
 ### Installation
-
 ```bash
 npm install
 ```
 
-### Useful Scripts
-
+### Scripts
 ```bash
-npm run dev      # Start the local development server on http://localhost:5173
-npm run build    # Generate a production build in the dist/ directory
-npm run preview  # Preview the production build locally
+npm run dev       # Start dev server (http://localhost:5173, exposed to network)
+npm run build     # Production build → dist/
+npm run preview   # Preview production build locally
+npm run update    # Run LinkedIn scraper (installs deps + scrapes + LLM processes)
 ```
 
-If you need to test from another device on your network, run `npm run dev -- --host`.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-.
-public/
-  assets/                      # Media assets (images, videos, etc.)
-  favicons/                    # Site favicons
-  fonts/                       # Custom font assets
-src/
-  components/                  # Reusable UI components (LofiPlayer, Cube, etc.)
-  pages/                       # Page-level components (Home, About, etc.)
-  styles/                      # CSS modules and global styles
-  App.jsx                      # Main application shell and layout
-  main.jsx                     # React entry point
-  router.jsx                   # React Router configuration
-  AnimatedOutlet.jsx           # Page transition logic
-index.html                     # HTML shell
-vite.config.js                 # Vite configuration
-tailwind.config.js             # Tailwind CSS configuration
+├── public/
+│   ├── assets/                    # Images, videos, backgrounds
+│   ├── data/blogs_v2.json         # LinkedIn blog posts (auto-generated)
+│   ├── favicons/                  # Site favicons
+│   ├── fonts/                     # Custom font files
+│   ├── robots.txt                 # SEO crawler config
+│   └── sitemap.xml                # Sitemap for search engines
+├── src/
+│   ├── components/
+│   │   ├── HeaderBackground.jsx   # Cinematic background media loader
+│   │   ├── LofiPlayer.jsx         # Full lo-fi music player
+│   │   ├── MiniPlayer.jsx         # Compact player controls
+│   │   ├── Cube.jsx               # 3D interactive cube
+│   │   ├── BlogHeader.jsx         # Blog section header and search
+│   │   ├── PostCard.jsx           # Blog post card component
+│   │   ├── DetailView.jsx         # Full blog post reader with markdown
+│   │   ├── FilterSidebar.jsx      # Tag-based blog filtering
+│   │   ├── FooterNavbar.jsx       # Bottom navigation bar
+│   │   ├── SocialBar.jsx          # Floating social media links
+│   │   └── SvgLoaderLeftToRight.jsx # Page transition animations
+│   ├── pages/                     # Route-level page components
+│   ├── styles/
+│   │   └── main.css               # Global styles and animations
+│   ├── App.jsx                    # Application shell and layout
+│   ├── main.jsx                   # React entry point
+│   └── router.jsx                 # React Router configuration
+├── scripts/
+│   └── linkedin-scraper/          # Node.js LinkedIn scraper + Gemini LLM
+├── index.html                     # HTML shell with SEO meta tags
+└── vite.config.js                 # Vite configuration
 ```
 
-## Background Media
+## 🎬 Background Media
 
-- Update `public/assets/images/backgrounds/backgrounds.json` to control which media files are considered for rotation.
-- Each entry can be either a simple string (image-only background) or an object with `image` and `video` keys pointing to files in `public/assets/images/backgrounds/` and `public/assets/videos/backgrounds/`, respectively.
-- Videos fade in after their paired still image is shown, so initial page load stays responsive while motion assets buffer in the background.
-- Assets are selected at random on page load, avoiding repeats between sessions when possible thanks to localStorage caching.
+- Controlled via `public/assets/images/backgrounds/backgrounds.json`
+- Each entry maps a still image to a looping video
+- Stills load instantly → videos fade in once buffered
+- Randomized per session with localStorage dedup
+- 10 unique scenes, each with day and night variants
 
-## Customization Tips
+## 🔗 URL Shortener
 
-- Edit page content and layouts in `src/pages/`.
-- Create or modify reusable UI elements in `src/components/`.
-- Styling is handled via Tailwind CSS and CSS modules in `src/styles/`.
-- Configure routes and navigation in `src/router.jsx`.
+Static redirects in `public/<slug>/index.html` make the portfolio double as a branded short-link service:
 
-## SEO Assets
+`/linkedin` · `/github` · `/mail` · `/resume-global` · `/twitch` · `/spotify` · `/steam` · `/discord` · `/codolio`
 
-- `public/robots.txt` allows major crawlers to index every section and advertises the sitemap endpoint.
-- `public/sitemap.xml` lists the canonical portfolio URL (`https://priyanshusah.com/`) to help search engines discover updates quickly.
-- `index.html` head metadata includes canonical, Open Graph, Twitter, and Schema.org Person tags tailored to AI/ML and full-stack keywords.
+## 📝 LinkedIn Blog Scraper
 
-## URL Shortener & Aggregator
+An automated pipeline in `scripts/linkedin-scraper/` that:
+1. Scrapes posts from LinkedIn using Puppeteer
+2. Transforms content via Gemini LLM (title, summary, markdown, curated tags)
+3. Supports incremental updates — only new posts hit the LLM
+4. Outputs to `public/data/blogs_v2.json`
 
-- Friendly slugs such as `/linkedin`, `/github`, `/mail`, `/codolio`, `/resume-global`, `/twitch`, `/spotify`, `/steam`, and `/discord` route through the portfolio, so a single change updates both the site UI and external share links.
-- Each slug maps to a static redirect in `public/<slug>/index.html`, making the portfolio double as a lightweight URL shortener without server-side code.
-- `index.html` references those slugs for social icons, ensuring outbound links remain consistent even if destination URLs change later.
+See [`scripts/linkedin-scraper/README.md`](scripts/linkedin-scraper/README.md) for setup details.
 
-## Deployment
+## 🌐 SEO
 
-1. Run `npm run build`.
-2. Deploy the generated `dist/` folder to any static hosting service (GitHub Pages, Netlify, Vercel, etc.).
-3. Ensure `public/assets/` is copied alongside the build output so media and manifest files resolve correctly.
+- `robots.txt` allows major crawlers with sitemap reference
+- `sitemap.xml` points to canonical URL (`https://priyanshusah.com/`)
+- `index.html` includes Open Graph, Twitter Card, and Schema.org Person metadata
 
-Feel free to adapt the content, color palette, or assets to tailor the portfolio for your own brand.
+## 🚢 Deployment
+
+1. `npm run build`
+2. Deploy `dist/` to any static host (Vercel, Netlify, GitHub Pages)
+3. Ensure `public/assets/` is included in the build output
 
 ### Links
-- [Production](https://priyanshusah.com) - Vercel
-- [Dev](https://dev.priyanshusah.com/) - Vercel
+- [Production](https://priyanshusah.com) — Vercel
+- [Dev](https://dev.priyanshusah.com/) — Vercel
+
 ## Credits
 
 - Inspiration: [James Oliver Portfolio](https://james-oliver-portfolio.netlify.app/)
-- Backgrounds: Video backgrounds sourced from the Steam Wallpaper Engine Workshop — credit to the original artists.
-- Music: credits to the original artists.
+- Backgrounds: Video loops sourced from Steam Wallpaper Engine Workshop — credit to the original artists
+- Music: Lo-fi tracks credit to the original artists
 
 ## Roadmap
 
-### Issue
-
-* [x] Social Bar Hidden in IOS [img](https://github.com/user-attachments/assets/6e3fefdd-fc11-49cc-94c2-919aca4aa88b)
-
-* [x] Prepare Blogs to use JSON as data source and prepare Ui for it . Rough Example : [json Structure](https://github.com/KartikBankar21/xoTEMPESTox.github.io/blob/80ab17039829bcf3aad2f253ed2ca6044a1a373c/public/data/blogs_v2.json) , Need some refinement but use this to gague rough feilds that will be present 
+- [x] Currently no planned updates
