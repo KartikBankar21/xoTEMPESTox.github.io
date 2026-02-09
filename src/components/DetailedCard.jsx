@@ -35,9 +35,12 @@ const DetailCard = ({ project, onClose }) => {
   
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300 ${
-  theme === 'dark' ? 'bg-black/80' : 'bg-zinc-900/40'
-}`}>
+    <div 
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300 ${
+        theme === 'dark' ? 'bg-black/80' : 'bg-zinc-900/40'
+      }`}
+      onClick={onClose}
+    >
   <div
     className={`w-full max-w-6xl mt-4 mb-[10rem] border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 transition-colors ${
       theme === 'dark' 

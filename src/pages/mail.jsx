@@ -2,17 +2,37 @@ import React, { useState, useEffect } from "react";
 import { Mail, Copy, Check, ExternalLink, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../components/HeaderBackground";
+import "../styles/main.css";
 
 const MailPage = () => {
   const { theme } = useTheme();
   const [isClicked, setIsClicked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const email = "priyanshu123sah@gmail.com";
 
   const handleEmailClick = () => {
     setIsClicked(true);
-    window.location.href = `mailto:${email}`;
+
+    if (isDesktop) {
+      // Desktop: Open Gmail in new tab
+      window.open(
+        `https://mail.google.com/mail/?view=cm&fs=1&to=${email}`,
+        "_blank",
+      );
+    } else {
+      // Mobile: Standard mailto behavior
+      window.location.href = `mailto:${email}`;
+    }
   };
+
+  // Check screen size on mount and resize
+  useEffect(() => {
+    const checkIsDesktop = () => setIsDesktop(window.innerWidth > 768);
+    checkIsDesktop();
+    window.addEventListener("resize", checkIsDesktop);
+    return () => window.removeEventListener("resize", checkIsDesktop);
+  }, []);
 
   const copyToClipboard = () => {
     // Standard clipboard fallback as per environment instructions
@@ -24,6 +44,12 @@ const MailPage = () => {
     document.body.removeChild(el);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const buttonStyleVars = {
+    "--btn-bg": theme === "light" ? "#222222" : "#e7e7e7",
+    "--btn-fill": theme === "light" ? "#ffffff" : "#000000",
+    "--btn-text": "#ffffff", // Usually kept white for the 'difference' blend mode
   };
 
   return (
@@ -49,7 +75,9 @@ const MailPage = () => {
             </motion.div>
 
             <div className="space-y-3">
-              <h1 className={`text-4xl md:text-5xl font-bold tracking-tight ${theme === "dark" ? "text-white" : ""}`}>
+              <h1
+                className={`text-4xl md:text-5xl font-bold tracking-tight ${theme === "dark" ? "text-white" : ""}`}
+              >
                 Get in Touch
               </h1>
               <p
@@ -59,22 +87,17 @@ const MailPage = () => {
               </p>
             </div>
 
-            {/* Primary Action Button */}
-            <motion.button
+            <button
               onClick={handleEmailClick}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`group relative flex items-center justify-center space-x-3 px-10 py-4 rounded-full font-medium text-lg transition-all duration-300
-              ${theme === "dark" ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-gray-800"}`}
+              className="button--bestia group relative"
+              style={buttonStyleVars}
             >
+              {/* 1. The Background Layer */}
+              <div className="button__bg"></div>
+
+              {/* 2. The Text Layer */}
               <span>Email Me</span>
-              <motion.div
-                animate={isClicked ? { x: [0, 5, 0] } : {}}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              >
-                <ArrowRight size={20} />
-              </motion.div>
-            </motion.button>
+            </button>
 
             {/* Fallback Message & Email ID */}
             <AnimatePresence>
@@ -90,8 +113,9 @@ const MailPage = () => {
                   ${theme === "dark" ? "bg-white/5 border-white/10 text-white/80" : "bg-black/5 border-black/5"}`}
                   >
                     <p className="text-sm opacity-60">
-                      If your email app didn't open, feel free to copy my
-                      address manually:
+                      {isDesktop
+                        ? "Opened Gmail in a new tab. If that didn't work, copy below:"
+                        : "If your email app didn't open, feel free to copy my address manually:"}
                     </p>
 
                     <div
@@ -116,26 +140,42 @@ const MailPage = () => {
                       </button>
                     </div>
 
-                    <a
-                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center space-x-2 text-xs font-semibold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
-                    >
-                      <span className={`${theme === "dark" ? "text-white/70" : ""}`} >Open in Gmail</span>
-                      <ExternalLink size={12} />
-                    </a>
+                    {/* Logic Swap for Backup Link */}
+                    {isDesktop ? (
+                      // Desktop: Show Mailto link as backup
+                      <a
+                        href={`mailto:${email}`}
+                        className="flex items-center justify-center space-x-2 text-xs font-semibold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+                      >
+                        <span
+                          className={`${theme === "dark" ? "text-white/70" : ""}`}
+                        >
+                          Open Default Mail App
+                        </span>
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      // Mobile: Show Gmail link as backup
+                      <a
+                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center space-x-2 text-xs font-semibold uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+                      >
+                        <span
+                          className={`${theme === "dark" ? "text-white/70" : ""}`}
+                        >
+                          Open in Gmail
+                        </span>
+                        <ExternalLink size={12} />
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </motion.div>
-
-        {/* Footer Branding */}
-        <div className="absolute bottom-8 z-20 text-[10px] uppercase tracking-[0.3em] opacity-30 select-none">
-          Secure Communication • Encrypted • 2024
-        </div>
       </div>
     </div>
   );

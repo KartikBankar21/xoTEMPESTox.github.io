@@ -12,7 +12,6 @@ import Cube from "../components/Cube";
 import { RotateCcw, X, ZoomIn, ZoomOut } from "lucide-react";
 import { useTheme } from "../components/HeaderBackground";
 
-
 // --- Configuration Constants ---
 // Base values (Mobile/Tablet)
 const BASE_CUBE_WIDTH = 200;
@@ -399,7 +398,7 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
       // Pinch Start
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+        e.touches[0].clientY - e.touches[1].clientY,
       );
       startPinchDist.current = dist;
       startScale.current = scale;
@@ -408,7 +407,7 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
       setIsDragging(true);
       startPos.current = {
         x: e.touches[0].clientX - position.x,
-        y: e.touches[0].clientY - position.y
+        y: e.touches[0].clientY - position.y,
       };
     }
   };
@@ -418,14 +417,14 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
     if (scale > 1 || e.touches.length === 2) {
       // Only prevent default if we are actively interacting with the image logic
       // otherwise standard scrolling might be desired (though this is a modal)
-      // e.preventDefault(); 
+      // e.preventDefault();
     }
 
     if (e.touches.length === 2 && startPinchDist.current) {
       // Pinch Move
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+        e.touches[0].clientY - e.touches[1].clientY,
       );
       const zoomFactor = dist / startPinchDist.current;
       updateScale(startScale.current * zoomFactor);
@@ -459,9 +458,11 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
             className="md:h-[60vh] h-auto w-auto max-w-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 touch-none"
             style={{
               transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-              cursor: scale > 1 ? 'grab' : 'zoom-in',
-              transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              zIndex: 10
+              cursor: scale > 1 ? "grab" : "zoom-in",
+              transition: isDragging
+                ? "none"
+                : "transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              zIndex: 10,
             }}
             // Handlers
             onWheel={handleWheel}
@@ -480,7 +481,9 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
           onClick={onClose}
           className="fixed top-6 right-6 z-[10010] flex items-center gap-2 text-white/50 hover:text-white transition-colors group/btn"
         >
-          <span className="text-[10px] text-white font-bold uppercase tracking-widest">Close Preview</span>
+          <span className="text-[10px] text-white font-bold uppercase tracking-widest">
+            Close Preview
+          </span>
           <div className="w-10 h-10 flex items-center justify-center bg-white/10 rounded-full border border-white/20 group-hover/btn:bg-white/20 group-hover/btn:scale-110 transition-all backdrop-blur-md">
             <X size={20} />
           </div>
@@ -488,7 +491,9 @@ const FullscreenZoomableImage = ({ image, onClose }) => {
 
         {/* Bottom Caption Area */}
         <div className="mt-6 text-center">
-          <h3 className="text-white font-bold text-2xl uppercase tracking-tight">{image.title}</h3>
+          <h3 className="text-white font-bold text-2xl uppercase tracking-tight">
+            {image.title}
+          </h3>
           <p className="text-zinc-400 text-lg mt-1">{image.tag}</p>
         </div>
       </div>
@@ -503,7 +508,7 @@ const Portfolio = () => {
 
   // --- Responsive Logic ---
   const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1000
+    typeof window !== "undefined" ? window.innerWidth : 1000,
   );
 
   useEffect(() => {
@@ -523,7 +528,7 @@ const Portfolio = () => {
   const visibleContainerWidth = 3 * cubeWidth + 2 * gapWidth;
 
   const len = rawPortfolioData.length;
-  // Start at a large index to allow left scrolling without negative quirks immediately, 
+  // Start at a large index to allow left scrolling without negative quirks immediately,
   // though the logic handles negatives fine.
   const [activeIndex, setActiveIndex] = useState(len * 100);
 
@@ -549,7 +554,7 @@ const Portfolio = () => {
       // The wrapper moves opposite to the index direction
       return visibleContainerWidth / 2 - (index * itemWidth + cubeWidth / 2);
     },
-    [visibleContainerWidth, itemWidth, cubeWidth]
+    [visibleContainerWidth, itemWidth, cubeWidth],
   );
 
   // Generate the window of virtual indices to render
@@ -611,7 +616,7 @@ const Portfolio = () => {
 
     const delta = clientX - startXRef.current;
 
-    // Calculate move count. 
+    // Calculate move count.
     // Dragging left (negative delta) -> move forward (positive index increase)
     let moveCount = Math.round(-delta / itemWidth);
 
@@ -631,18 +636,26 @@ const Portfolio = () => {
     <div className="h-screen w-full flex flex-col overflow-hidden selection:bg-indigo-500/30">
       {/* 1. Header (Top) */}
       <header className="mt-26 md:my-6 text-center px-4 z-20 flex-none">
-        <div className={`
+        <div
+          className={`
           backdrop-blur-sm rounded-4xl inline-block p-4 md:p-6 border 
-          ${theme === 'dark'
-            ? 'bg-black/50 border-white/5'
-            : 'bg-white/50 border-black/5 shadow-xl'}
-        `}>
-          <p className={`
+          ${
+            theme === "dark"
+              ? "bg-black/50 border-white/5"
+              : "bg-white/50 border-black/5 shadow-xl"
+          }
+        `}
+        >
+          <p
+            className={`
             text-8xl md:text-9xl font-black mb-0! tracking-tighter bg-clip-text text-transparent uppercase
-            ${theme === 'dark'
-              ? 'bg-gradient-to-b from-white to-white/50'
-              : 'bg-gradient-to-b from-gray-900 to-gray-500'}
-          `}>
+            ${
+              theme === "dark"
+                ? "bg-gradient-to-b from-white to-white/50"
+                : "bg-gradient-to-b from-gray-900 to-gray-500"
+            }
+          `}
+          >
             Portfolio
           </p>
         </div>

@@ -1,21 +1,52 @@
-import React, { useState } from "react";
-import { Clock, Eye, Heart, ArrowLeft } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  Clock,
+  Eye,
+  Heart,
+  ArrowLeft,
+  MessageCircle,
+  ExternalLink,
+} from "lucide-react";
 import { useTheme } from "./HeaderBackground";
-
-// --- Markdown Imports (Assumed available in the environment) ---
-// Note: Changed import style to resolve module resolution error in the build environment.
-// We assume these are globally available or imported via full URLs if necessary.
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm"; // Keeping this structure but knowing the build environment will resolve it.
+import remarkGfm from "remark-gfm";
 import "./MarkDown.css";
 
-// --- 2. UTILITY FUNCTIONS ---
+// --- COOKIE UTILITIES ---
+const LIKED_POSTS_COOKIE = "likedBlogPosts";
+
+const getLikedPostsFromCookie = () => {
+  const cookies = document.cookie.split(";");
+  const likedCookie = cookies.find((c) =>
+    c.trim().startsWith(`${LIKED_POSTS_COOKIE}=`),
+  );
+  if (likedCookie) {
+    try {
+      const value = likedCookie.split("=")[1];
+      return JSON.parse(decodeURIComponent(value));
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+};
+
+const saveLikedPostsToCookie = (likedPosts) => {
+  const expiryDate = new Date();
+  expiryDate.setFullYear(expiryDate.getFullYear() + 1); // 1 year expiry
+  document.cookie = `${LIKED_POSTS_COOKIE}=${encodeURIComponent(JSON.stringify(likedPosts))}; expires=${expiryDate.toUTCString()}; path=/`;
+};
+
+// --- UTILITY FUNCTIONS ---
 
 const formatViews = (num) => {
-  if (num >= 1000) {
-    return `${(num / 1000).toFixed(1)}k views`;
+  if (num >= 1000000) {
+    return `${(num / 1000000).toFixed(1)}M`;
   }
-  return `${num} views`;
+  if (num >= 1000) {
+    return `${(num / 1000).toFixed(1)}K`;
+  }
+  return num.toString();
 };
 
 const formatDate = (dateString) => {
@@ -26,160 +57,419 @@ const formatDate = (dateString) => {
   });
 };
 
-// --- 3. COMPONENTS ---
+const calculateReadTime = (text) => {
+  const wordsPerMinute = 200;
+  const wordCount = text.trim().split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
+};
 
-// Custom component for the glow aesthetic
+// --- IMAGE GALLERY COMPONENT ---
+
+const ImageGallery = ({ images, theme }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="my-12">
+      <h3
+        className={`text-2xl font-bold mb-6 ${
+          theme === "dark" ? "text-slate-100" : "text-slate-900"
+        }`}
+      >
+        Gallery
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 ${
+              theme === "dark"
+                ? "bg-zinc-900 hover:shadow-2xl hover:shadow-slate-500/20"
+                : "bg-slate-50 hover:shadow-2xl hover:shadow-slate-300/50"
+            }`}
+            onClick={() => setSelectedImage(image)}
+          >
+            <img
+              src={image.url}
+              alt={image.alt}
+              className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div
+              className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end ${
+                theme === "dark"
+                  ? "bg-gradient-to-t from-black/80 to-transparent"
+                  : "bg-gradient-to-t from-white/90 to-transparent"
+              }`}
+            >
+              <p
+                className={`p-4 text-sm font-medium ${
+                  theme === "dark" ? "text-slate-200" : "text-slate-900"
+                }`}
+              >
+                {image.alt}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-5xl max-h-[90vh]">
+            <img
+              src={selectedImage.url}
+              alt={selectedImage.alt}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            <p className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 text-center rounded-b-lg">
+              {selectedImage.alt}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- DETAIL VIEW COMPONENT ---
 
 const DetailView = ({ post, onBack }) => {
-    const { theme } = useTheme();
-  
-  if (!post) return <p className="text-red-400">Post not found.</p>;
-  const [isLiking, setIsLiking] = useState(false);
+  const { theme } = useTheme();
+  const [isLiked, setIsLiked] = useState(false);
 
-  // --- HANDLER: Like Button ---
-  const handleLike = async () => {
-    if (isLiking) return;
-    setIsLiking(true);
-    try {
-      const res = await fetch("/api/increment-like", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: post.id }),
-      });
-      const data = await res.json();
-      onUpdateStat(post.id, "likes", data.likes);
-    } catch (err) {
-      console.error("Like error", err);
-    } finally {
-      setIsLiking(false);
+  // Check if post is liked on mount
+  useEffect(() => {
+    if (post?.id) {
+      const likedPosts = getLikedPostsFromCookie();
+      setIsLiked(likedPosts.includes(post.id));
     }
+  }, [post?.id]);
+
+  // Handle like/unlike
+  const handleLikeToggle = () => {
+    if (!post?.id) return;
+
+    const likedPosts = getLikedPostsFromCookie();
+    let updatedLikedPosts;
+
+    if (isLiked) {
+      // Unlike: remove from array
+      updatedLikedPosts = likedPosts.filter((id) => id !== post.id);
+    } else {
+      // Like: add to array
+      updatedLikedPosts = [...likedPosts, post.id];
+    }
+
+    saveLikedPostsToCookie(updatedLikedPosts);
+    setIsLiked(!isLiked);
   };
 
-  const dateStr = formatDate(post.date);
-  const viewsStr = post.views.toLocaleString();
+  if (!post) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-red-400 text-xl">Post not found.</p>
+      </div>
+    );
+  }
 
-  // Use inline style for dynamic background image
+  // Extract data from JSON structure
+  const authorName = post.author?.name || "Unknown Author";
+  const authorAvatar = post.author?.avatar || null;
+  const authorUrl = post.author?.profileUrl || null;
+
+  const likes = post.metrics?.likes || 0;
+  const comments = post.metrics?.comments || 0;
+  const views = post.metrics?.views || 0;
+  const shares = post.metrics?.shares || 0;
+
+  const excerpt = post.content?.summary || "";
+  const bodyContent = post.content?.markdown || post.content?.raw || "";
+
+  const readTime = calculateReadTime(bodyContent);
+
+  // Hero image is first media item
+  const heroImage =
+    post.media && post.media.length > 0
+      ? post.media[0].url
+      : "https://placehold.co/1200x630/1e293b/60a5fa?text=No+Image";
+
+  // Gallery is remaining media items
+  const galleryImages =
+    post.media && post.media.length > 1 ? post.media.slice(1) : [];
+
+  const dateStr = formatDate(post.date);
+  const viewsStr = formatViews(views);
+
+  // Hero image background
   const heroStyle = {
-    backgroundImage: `url('${post.heroImage}')`,
+    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${heroImage}')`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
 
   return (
     <div className="pb-16" data-theme={theme}>
-  <button
-    onClick={onBack}
-    className={`flex items-center space-x-2 mb-8 transition-all duration-200 active:scale-95 ${
-      theme === 'dark' ? "text-slate-400 hover:text-slate-100" : "text-slate-800 hover:text-slate-900"
-    }`}
-  >
-    <ArrowLeft className="w-5 h-5" /> <span>Back to Blog</span>
-  </button>
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        className={`flex items-center space-x-2 mb-8 transition-all duration-200 active:scale-95 group ${
+          theme === "dark"
+            ? "text-slate-400 hover:text-slate-100"
+            : "text-slate-600 hover:text-slate-900"
+        }`}
+      >
+        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+        <span className="font-medium">Back to Blog</span>
+      </button>
 
-  <div
-    className={`relative min-h-auto rounded-[2rem] overflow-hidden shadow-2xl border pb-2 transition-colors duration-500 ${
-      theme === 'dark' ? "bg-zinc-950 border-zinc-800" : "bg-white border-slate-200"
-    }`}
-    style={heroStyle}
-  >
-    <div
-      className="absolute inset-0 z-10 transition-opacity duration-500"
-      style={{
-        background: theme === 'dark' 
-          ? "linear-gradient(to top, rgba(9, 9, 11, 1) 0%, rgba(9, 9, 11, 0.8) 30%, rgba(0, 0, 0, 0) 100%)"
-          : "linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0) 100%)",
-      }}
-    ></div>
+      {/* Hero Section */}
+      <div
+        className={`relative min-h-[600px] rounded-3xl overflow-hidden shadow-2xl border transition-colors duration-500 ${
+          theme === "dark"
+            ? "bg-zinc-950 border-zinc-800"
+            : "bg-white border-slate-200"
+        }`}
+        style={heroStyle}
+      >
+        {/* Gradient Overlay */}
+        <div
+          className="absolute inset-0 z-10 transition-opacity duration-500"
+          style={{
+            background:
+              theme === "dark"
+                ? "linear-gradient(to top, rgba(9, 9, 11, 1) 0%, rgba(9, 9, 11, 0.85) 40%, rgba(0, 0, 0, 0.4) 100%)"
+                : "linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.85) 40%, rgba(255, 255, 255, 0.3) 100%)",
+          }}
+        ></div>
 
-    <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 pt-24 pb-0 flex flex-col justify-end h-full">
-      <div className="flex space-x-2 mb-6 mt-auto">
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className={`text-sm uppercase tracking-wider font-bold px-3 py-1 rounded-md border transition-colors ${
-              theme === 'dark' 
-                ? "bg-zinc-900 text-slate-300 border-zinc-700" 
-                : "bg-slate-100 text-slate-700 border-slate-200"
+        {/* Content */}
+        <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 pt-32 pb-8 flex flex-col justify-end h-full min-h-[600px]">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {post.tags &&
+              post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={`text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-lg border transition-all hover:scale-105 ${
+                    theme === "dark"
+                      ? "bg-zinc-900/60 text-slate-300 border-zinc-700 backdrop-blur-sm hover:bg-zinc-800"
+                      : "bg-white/60 text-slate-700 border-slate-300 backdrop-blur-sm hover:bg-slate-50"
+                  }`}
+                >
+                  #{tag}
+                </span>
+              ))}
+          </div>
+
+          {/* Title */}
+          <h1
+            className={`text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.95] mb-6 tracking-tighter transition-colors max-w-5xl ${
+              theme === "dark" ? "text-slate-50" : "text-slate-900"
             }`}
           >
-            {tag}
-          </span>
-        ))}
+            {post.title}
+          </h1>
+
+          {/* Excerpt */}
+          {excerpt && (
+            <p
+              className={`text-xl sm:text-2xl mb-10 max-w-3xl leading-relaxed transition-colors ${
+                theme === "dark" ? "text-slate-300" : "text-slate-700"
+              }`}
+            >
+              {excerpt}
+            </p>
+          )}
+
+          {/* Author Info */}
+          <div className="flex items-center space-x-4 mb-8">
+            <img
+              className={`w-16 h-16 rounded-full object-cover ring-4 transition-all ${
+                theme === "dark"
+                  ? "ring-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                  : "ring-slate-200 shadow-xl"
+              }`}
+              src={
+                authorAvatar ||
+                `https://placehold.co/64x64/5d5d5d/ffffff?text=${authorName.charAt(0)}`
+              }
+              alt={`Author ${authorName}`}
+            />
+            <div>
+              <p
+                className={`font-bold text-xl ${theme === "dark" ? "text-slate-100" : "text-slate-900"}`}
+              >
+                {authorName}
+              </p>
+              <p
+                className={`text-sm uppercase tracking-widest font-medium ${
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                }`}
+              >
+                {dateStr}
+              </p>
+            </div>
+          </div>
+
+          {/* Stats Bar */}
+          <div
+            className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 py-6 border-t text-lg transition-colors ${
+              theme === "dark"
+                ? "border-zinc-800 text-slate-400"
+                : "border-slate-200 text-slate-600"
+            }`}
+          >
+            {/* Stats */}
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center space-x-2">
+                <Eye
+                  className={`w-6 h-6 ${theme === "dark" ? "text-slate-500" : "text-slate-400"}`}
+                />
+                <span className="font-medium">{viewsStr} views</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Clock
+                  className={`w-6 h-6 ${theme === "dark" ? "text-slate-500" : "text-slate-400"}`}
+                />
+                <span className="font-medium">{readTime} min read</span>
+              </div>
+              {comments > 0 && (
+                <div className="flex items-center space-x-2">
+                  <MessageCircle
+                    className={`w-6 h-6 ${theme === "dark" ? "text-slate-500" : "text-slate-400"}`}
+                  />
+                  <span className="font-medium">{comments} comments</span>
+                </div>
+              )}
+              {likes > 0 && (
+                <button
+                  onClick={handleLikeToggle}
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-200 active:scale-95 hover:scale-105 group ${
+                    isLiked
+                      ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
+                      : theme === "dark"
+                        ? "bg-zinc-900/50 border-zinc-700 text-slate-300 hover:border-red-500 hover:text-red-400"
+                        : "bg-white/50 border-slate-300 text-slate-700 hover:border-red-500 hover:text-red-500"
+                  }`}
+                >
+                  <Heart
+                    className={`w-5 h-5 transition-all ${
+                      isLiked ? "fill-white" : "group-hover:fill-current"
+                    }`}
+                  />
+                  <span>
+                    {isLiked
+                      ? Number(formatViews(likes)) + 1
+                      : Number(formatViews(likes))}{" "}
+                    {isLiked ? "Liked" : "Like"}
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <p className={`text-5xl sm:text-7xl font-black leading-tight mb-4 tracking-tighter transition-colors ${
-        theme === 'dark' ? "text-slate-50" : "text-slate-900"
-      }`}>
-        {post.title}
-      </p>
-      <p className={`text-xl sm:text-2xl mb-10 max-w-3xl leading-relaxed transition-colors ${
-        theme === 'dark' ? "text-slate-400" : "text-slate-600"
-      }`}>
-        {post.excerpt}
-      </p>
+      {/* Article Content */}
+      <article className="max-w-7xl mx-auto mt-16 px-4 sm:px-0">
+        {/* Original Post Link */}
+        {post.originalUrl && (
+          <div
+            className={`flex justify-start mb-12 pb-8 border-b ${
+              theme === "dark" ? "border-zinc-800" : "border-slate-200"
+            }`}
+          >
+            <a
+              href={post.originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold border transition-all hover:scale-105 ${
+                theme === "dark"
+                  ? "bg-zinc-900 border-zinc-700 text-slate-300 hover:border-slate-500"
+                  : "bg-slate-50 border-slate-300 text-slate-700 hover:border-slate-400"
+              }`}
+            >
+              <ExternalLink className="w-5 h-5" />
+              <span>View Original on LinkedIn</span>
+            </a>
+          </div>
+        )}
 
-      <div className="flex items-center space-x-4 mb-10">
-        <img
-          className={`w-14 h-14 rounded-full object-cover ring-2 transition-all ${
-            theme === 'dark' 
-              ? "ring-slate-700 shadow-[0_0_15px_rgba(255,255,255,0.1)]" 
-              : "ring-slate-200 shadow-lg"
+        {/* Markdown Body */}
+        <div
+          className={`markdownBody prose max-w-none transition-colors duration-500 ${
+            theme === "dark" ? "prose-invert" : "prose-slate"
           }`}
-          src="https://placehold.co/40x40/5d5d5d/ffffff?text=TC"
-          alt={`Author ${post.author}`}
-        />
-        <div>
-          <p className={`font-bold text-xl mb-0 ${theme === 'dark' ? "text-slate-100" : "text-slate-900"}`}>
-            {post.author}
-          </p>
-          <p className="text-md text-slate-500 uppercase tracking-widest font-medium">
-            {dateStr}
-          </p>
-        </div>
-      </div>
-
-      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center py-8 border-t text-lg transition-colors ${
-        theme === 'dark' ? "border-zinc-800 text-slate-400" : "border-slate-100 text-slate-500"
-      }`}>
-        <div className="flex space-x-8 mb-4 sm:mb-0">
-          <div className="flex items-center space-x-2">
-            <Eye className="w-6 h-6 text-slate-500" />
-            <span>{viewsStr} views</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-6 h-6 text-slate-500" />
-            <span>{post.readTime} min read</span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleLike}
-          disabled={isLiking}
-          className={`flex items-center space-x-2 group transition-all active:scale-90 px-6 py-2 rounded-full border ${
-            theme === 'dark'
-              ? "bg-zinc-900 border-zinc-800 hover:border-red-500/50"
-              : "bg-slate-50 border-slate-200 hover:border-red-400"
-          } ${isLiking ? "opacity-50" : ""}`}
         >
-          <Heart className={`w-6 h-6 transition-all duration-300 ${
-            post.likes > 0 ? "fill-red-500 text-red-500 scale-110" : "text-slate-500 group-hover:text-red-500"
-          }`} />
-          <span className={`${post.likes > 0 ? "text-red-500" : "text-slate-500"} font-bold`}>
-            {post.likes.toLocaleString()} likes
-          </span>
-        </button>
-      </div>
-    </div>
-  </div>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {bodyContent}
+          </ReactMarkdown>
+        </div>
 
-  <article className="max-w-4xl mx-auto mt-16 px-4 sm:px-0">
-    <div className={`markdownBody prose max-w-none transition-colors duration-500 ${
-      theme === 'dark' ? "prose-invert" : "prose-slate"
-    }`}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.body}</ReactMarkdown>
+        {/* Image Gallery */}
+        {galleryImages.length > 0 && (
+          <ImageGallery images={galleryImages} theme={theme} />
+        )}
+
+        {/* Author Card */}
+        <div
+          className={`mt-16 p-8 rounded-2xl border transition-colors ${
+            theme === "dark"
+              ? "bg-zinc-900/50 border-zinc-800"
+              : "bg-slate-50 border-slate-200"
+          }`}
+        >
+          <div className="flex items-start space-x-4">
+            <img
+              className="w-20 h-20 rounded-full object-cover ring-2 ring-offset-4 ring-offset-transparent"
+              src={
+                authorAvatar ||
+                `https://placehold.co/80x80/5d5d5d/ffffff?text=${authorName.charAt(0)}`
+              }
+              alt={authorName}
+            />
+            <div className="flex-1">
+              <h3
+                className={`text-2xl font-bold mb-2 ${
+                  theme === "dark" ? "text-slate-100" : "text-slate-900"
+                }`}
+              >
+                {authorName}
+              </h3>
+              <p
+                className={`mb-4 leading-relaxed ${
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                }`}
+              >
+                Developer, writer, and tech enthusiast. Passionate about
+                building great software and sharing knowledge with the
+                community.
+              </p>
+              {authorUrl && (
+                <a
+                  href={authorUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center space-x-2 font-semibold transition-colors ${
+                    theme === "dark"
+                      ? "text-blue-400 hover:text-blue-300"
+                      : "text-blue-600 hover:text-blue-700"
+                  }`}
+                >
+                  <span>Follow on LinkedIn</span>
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
-  </article>
-</div>
   );
 };
 
