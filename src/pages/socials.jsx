@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import BlogHeader from "../components/BlogHeader";
 import FilterSidebar from "../components/FilterSidebar";
 import PostList from "../components/PostList";
@@ -6,6 +12,163 @@ import DetailView from "../components/DetailView";
 import "../styles/main.css";
 import { useTheme } from "../components/HeaderBackground";
 import { NavLink } from "react-router-dom";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import ReactDOM from "react-dom";
+import { ChevronUp, ChevronDown } from "lucide-react";
+
+const ImageGalleryModal = ({ images, onClose, theme = "dark" }) => {
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollContainerRef = useRef(null);
+  const requestRef = useRef(null);
+  const previousTimeRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  // Constants
+  const SCROLL_SPEED = 60; // Pixels per second
+  const RESUME_DELAY = 3000; // 3 seconds of silence before resume
+
+  const animate = (time) => {
+    if (
+      previousTimeRef.current !== undefined &&
+      scrollContainerRef.current &&
+      !isPaused
+    ) {
+      const deltaTime = (time - previousTimeRef.current) / 1000; // Convert to seconds
+      const container = scrollContainerRef.current;
+
+      const { scrollTop, scrollHeight, clientHeight } = container;
+
+      // Calculate next scroll position
+      let nextScroll = scrollTop + SCROLL_SPEED * deltaTime;
+
+      // Seamless loop: if we're at the very bottom (last buffer image), reset to top
+      if (nextScroll + clientHeight >= scrollHeight - 2) {
+        nextScroll = 0;
+      }
+
+      container.scrollTop = nextScroll;
+    }
+    previousTimeRef.current = time;
+    requestRef.current = requestAnimationFrame(animate);
+  };
+
+  const handleManualScroll = () => {
+    // Stop auto-scroll
+    setIsPaused(true);
+
+    // Clear existing timer
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    // Set timer to resume after inactivity
+    timeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, RESUME_DELAY);
+  };
+
+  useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      document.body.style.overflow = "";
+    };
+  }, [isPaused]);
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8"
+      style={{
+        backgroundColor:
+          theme === "dark" ? "rgba(0, 0, 0, 0.95)" : "rgba(15, 23, 42, 0.95)",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header / UI Layer */}
+      <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-50 pointer-events-none">
+        <div className="bg-black/50 backdrop-blur-md px-4 py-2 rounded-full">
+          <p className="text-white text-xs font-medium uppercase tracking-widest">
+            {isPaused ? "Paused" : "Auto-Scrolling"}
+          </p>
+        </div>
+        <button
+          onClick={onClose}
+          className="pointer-events-auto p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md"
+        >
+          <X size={24} />
+        </button>
+      </div>
+
+      {/* Main Slideshow Container */}
+      <div
+        className="w-full max-w-2xl h-full flex flex-col items-center relative group"
+        style={{ maxHeight: "85vh" }}
+      >
+        <div
+          ref={scrollContainerRef}
+          onWheel={handleManualScroll}
+          onTouchMove={handleManualScroll}
+          className="w-full h-full overflow-y-auto no-scrollbar rounded-xl shadow-2xl space-y-1"
+          style={{
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+            scrollBehavior: "auto", // Important: must be auto for smooth manual-to-auto transitions
+          }}
+        >
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className="relative w-full flex-shrink-0 bg-zinc-900 overflow-hidden"
+            >
+              <img
+                src={image.url}
+                alt={image.alt || `Slide ${index + 1}`}
+                className="w-full h-auto object-contain block mx-auto transition-transform duration-700 hover:scale-105"
+                loading="lazy"
+              />
+              {image.alt && (
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-white text-sm md:text-base font-light">
+                    {image.alt}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Loop Buffer for seamlessness */}
+          <div className="relative w-full flex-shrink-0 bg-zinc-900">
+            <img
+              src={images[0].url}
+              alt="buffer"
+              className="w-full h-auto object-contain opacity-50"
+            />
+          </div>
+        </div>
+
+        {/* Scroll Indicators */}
+        <div className="absolute right-[-40px] top-1/2 -translate-y-1/2 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex">
+          <ChevronUp className="text-white/50 animate-bounce" />
+          <ChevronDown className="text-white/50 animate-bounce" />
+        </div>
+      </div>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
+  );
+};
 
 // --- COOKIE UTILITIES ---
 const LIKED_POSTS_COOKIE = "likedBlogPosts";
@@ -32,6 +195,10 @@ const Socials = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [search, setSearch] = useState("");
   const { theme } = useTheme();
+
+  // Gallery Modal State
+  const [galleryImages, setGalleryImages] = useState(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -128,221 +295,35 @@ const Socials = () => {
     [posts, selectedPostId],
   );
 
-  const socialLinks = [
-    {
-      href: "/mail",
-      label: "Email Priyanshu Sah",
-      internal: true,
-      icon: (
-        // Email SVG Icon
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          width="24"
-          height="24"
-        >
-          <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
-          <path d="m22 7-10 6L2 7" />
-        </svg>
-      ),
-    },
-    {
-      href: "/linkedin",
-      label: "LinkedIn profile",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      icon: (
-        // LinkedIn SVG Icon
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-hidden="true"
-        >
-          <path
-            d="M4.75 7.75C4.75 6.09315 6.09315 4.75 7.75 4.75H16.25C17.9069 4.75 19.25 6.09315 19.25 7.75V16.25C19.25 17.9069 17.9069 19.25 16.25 19.25H7.75C6.09315 19.25 4.75 17.9069 4.75 16.25V7.75Z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M10.75 16.25V14C10.75 12.7574 11.7574 11.75 13 11.75C14.2426 11.75 15.25 12.7574 15.25 14V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M10.75 11.75V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M7.75 11.75V16.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-          <path
-            d="M7.75 8.75V9.25"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></path>
-        </svg>
-      ),
-    },
-    {
-      href: "/github",
-      label: "GitHub profile",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      icon: (
-        // GitHub SVG Icon
-        <svg
-          stroke="currentColor"
-          fill="none"
-          strokeWidth="1"
-          viewBox="0 0 24 24"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          height="20"
-          width="20"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-hidden="true"
-        >
-          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-          <path d="M9 18c-4.51 2-5-2-7-2"></path>
-        </svg>
-      ),
-    },
-    {
-      href: "/codolio",
-      label: "Codolio LeetCode profile",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      icon: (
-        // LeetCode SVG Icon
-        <svg
-          role="img"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <title>LeetCode</title>
-          <path
-            d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"
-            fill="currentColor"
-            strokeWidth="1"
-          ></path>
-        </svg>
-      ),
-    },
-    {
-      href: "/resume-global",
-      label: "Download CV",
-      target: "_blank",
-      rel: "noopener noreferrer",
-      icon: (
-        // Resume/CV SVG Icon
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          role="img"
-          aria-hidden="true"
-        >
-          <path d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"></path>
-          <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-          <path d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
-          <path d="M7 16.5 8 22l-3-1-3 1 1-5.5"></path>
-        </svg>
-      ),
-    },
-  ];
+  // Gallery Handlers
+  const handleGalleryOpen = useCallback((images, index) => {
+    setGalleryImages(images);
+    setGalleryIndex(index);
+  }, []);
+
+  const handleGalleryClose = useCallback(() => {
+    setGalleryImages(null);
+    setGalleryIndex(0);
+  }, []);
+
+  const handleGalleryPrev = useCallback(() => {
+    setGalleryIndex((prev) =>
+      prev === 0 ? (galleryImages?.length || 1) - 1 : prev - 1,
+    );
+  }, [galleryImages]);
+
+  const handleGalleryNext = useCallback(() => {
+    setGalleryIndex((prev) =>
+      prev === (galleryImages?.length || 1) - 1 ? 0 : prev + 1,
+    );
+  }, [galleryImages]);
+
+  const handleGallerySelectIndex = useCallback((index) => {
+    setGalleryIndex(index);
+  }, []);
 
   return (
     <div className="page-section" data-theme={theme}>
-      <ul
-        id="socials"
-        aria-label="Social links"
-        className={`socials-container flex items-center justify-evenly list-none m-0 p-0 relative z-10 group transition-all duration-500 border ${
-          theme === "dark"
-            ? "bg-black border-white/10 shadow-2xl shadow-black/50"
-            : "bg-white border-white/90 shadow-lg shadow-gray-200"
-        }`}
-      >
-        <div className="absolute overflow-hidden h-[100%] w-[100%] pointer-events-none ">
-          <div
-            className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
-              theme === "dark" ? "bg-[#000000]" : "bg-slate-50"
-            }`}
-            style={{
-              filter:
-                theme === "dark"
-                  ? "url(#nnnoise-filter)"
-                  : "url(#nnnoise-filter-black)",
-            }}
-          />
-        </div>
-        {socialLinks.map((link, index) => {
-          const commonClasses = `socials-link border border-transparent rounded-full 
-    flex items-center justify-center 
-    h-[3.4rem] w-[3.4rem] z-10
-    transition-all duration-200 ease-in-out 
-    focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white 
-    hover:text-sky-400 transition-transform duration-200
-    ${theme === "dark" ? "text-white" : "text-slate-900"}`;
-
-          return (
-            <li key={index} className="hover:scale-125">
-              {link.internal ? (
-                <NavLink
-                  to={link.href}
-                  aria-label={link.label}
-                  className={commonClasses}
-                >
-                  <span className="h-5 w-5 md:h-8 md:w-8">
-                    <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
-                  </span>
-                </NavLink>
-              ) : (
-                <a
-                  href={link.href}
-                  target={link.target}
-                  rel={link.rel}
-                  aria-label={link.label}
-                  className={commonClasses}
-                >
-                  <span className="h-5 w-5 md:h-8 md:w-8">
-                    <div className="[&>svg]:stroke-[2px]">{link.icon}</div>
-                  </span>
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ul>
       <div
         className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${
           theme === "dark"
@@ -462,9 +443,28 @@ const Socials = () => {
         {/* DETAIL VIEW */}
         {currentPage === "detail" && selectedPost && (
           <div className="animate-in fade-in duration-500">
-            <DetailView post={selectedPost} onBack={handleBack} />
+            <DetailView
+              post={selectedPost}
+              onBack={handleBack}
+              onGalleryImageClick={handleGalleryOpen}
+            />
           </div>
         )}
+
+        {/* IMAGE GALLERY MODAL - Rendered via Portal at document.body level */}
+        {galleryImages &&
+          ReactDOM.createPortal(
+            <ImageGalleryModal
+              images={galleryImages}
+              currentIndex={galleryIndex}
+              onClose={handleGalleryClose}
+              onPrev={handleGalleryPrev}
+              onNext={handleGalleryNext}
+              onSelectIndex={handleGallerySelectIndex}
+              theme={theme}
+            />,
+            document.body,
+          )}
       </div>
       <style>{`.sk-header-button { background-color: #FFFF00 !important}`}</style>
     </div>
