@@ -141,42 +141,86 @@ async function extractPostData(page, post, index) {
         const date = parseRelativeDate(dateText);
 
         // === LIKES (reactions count) ===
-        const likesEl = el.querySelector('.social-details-social-counts__social-proof-fallback-number');
-        const likes = likesEl ? parseInt(likesEl.innerText.replace(/,/g, '')) || 0 : 0;
+        // Try multiple selectors for reactions
+        const likesSelectors = [
+            '.social-details-social-counts__social-proof-fallback-number',
+            '.social-details-social-counts__reactions-count',
+            '.social-details-social-counts__item--reactions .social-details-social-counts__count-value',
+            '.social-details-social-counts__social-proof-content'
+        ];
+
+        let likes = 0;
+        for (const selector of likesSelectors) {
+            const reactionEl = el.querySelector(selector);
+            if (reactionEl) {
+                const text = reactionEl.innerText.replace(/,/g, '').match(/\d+/);
+                if (text) {
+                    likes = parseInt(text[0]);
+                    break;
+                }
+            }
+        }
 
         // === COMMENTS ===
         let comments = 0;
-        const commentBtns = el.querySelectorAll('button[aria-label]');
-        for (const btn of commentBtns) {
-            const label = btn.getAttribute('aria-label') || '';
-            const match = label.match(/(\d+)\s*comments?\s+on/i);
-            if (match) {
-                comments = parseInt(match[1]);
-                break;
+        const commentSelectors = [
+            '.social-details-social-counts__comments .social-details-social-counts__count-value',
+            'button[aria-label*="comment"]',
+            '.social-details-social-counts__item--comments'
+        ];
+
+        for (const selector of commentSelectors) {
+            const itemEls = el.querySelectorAll(selector);
+            for (const itemEl of itemEls) {
+                const label = itemEl.getAttribute('aria-label') || itemEl.innerText || '';
+                const match = label.match(/(\d+)\s*comments?/i);
+                if (match) {
+                    comments = Math.max(comments, parseInt(match[1]));
+                }
             }
         }
 
         // === IMPRESSIONS (views) ===
-        const viewsEl = el.querySelector('.ca-entry-point__num-views');
+        const viewsSelectors = [
+            '.ca-entry-point__num-views',
+            '.analytics-entry-point__num-views',
+            '.social-details-social-counts__item--views'
+        ];
         let views = 0;
-        if (viewsEl) {
-            const viewsText = viewsEl.innerText.trim();
-            const viewsMatch = viewsText.match(/([\d,]+)\s*impressions?/i);
-            views = viewsMatch ? parseInt(viewsMatch[1].replace(/,/g, '')) : 0;
-        }
-
-        // === POST URN (from analytics link) ===
-        let urn = '';
-        let originalUrl = '';
-        const analyticsLink = el.querySelector('a[href*="/analytics/post-summary/"]');
-        if (analyticsLink) {
-            const href = analyticsLink.href;
-            const urnMatch = href.match(/urn:li:activity:(\d+)/);
-            if (urnMatch) {
-                urn = `urn:li:activity:${urnMatch[1]}`;
-                originalUrl = `https://www.linkedin.com/feed/update/${urn}/`;
+        for (const selector of viewsSelectors) {
+            const viewsEl = el.querySelector(selector);
+            if (viewsEl) {
+                const text = viewsEl.innerText.trim();
+                const match = text.replace(/,/g, '').match(/\d+/);
+                if (match) {
+                    views = parseInt(match[0]);
+                    break;
+                }
             }
         }
+
+        // === POST URN (CRITICAL for dedup) ===
+        let urn = el.getAttribute('data-urn') || el.getAttribute('data-id') || '';
+
+        // Fallback to analytics link if data-urn is missing
+        if (!urn) {
+            const analyticsLink = el.querySelector('a[href*="/analytics/post-summary/"]');
+            if (analyticsLink) {
+                const urnMatch = analyticsLink.href.match(/urn:li:activity:(\d+)/);
+                if (urnMatch) urn = `urn:li:activity:${urnMatch[1]}`;
+            }
+        }
+
+        // If still no URN, try finding any activity link
+        if (!urn) {
+            const activityLink = el.querySelector('a[href*="/feed/update/urn:li:activity:"]');
+            if (activityLink) {
+                const urnMatch = activityLink.href.match(/urn:li:activity:(\d+)/);
+                if (urnMatch) urn = `urn:li:activity:${urnMatch[1]}`;
+            }
+        }
+
+        let originalUrl = urn ? `https://www.linkedin.com/feed/update/${urn}/` : '';
 
         // === SHARES/REPOSTS ===
         let shares = 0;
