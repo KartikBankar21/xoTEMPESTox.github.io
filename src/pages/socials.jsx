@@ -212,6 +212,14 @@ const Socials = () => {
   });
 
   const [visibleCount, setVisibleCount] = useState(4);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+
+  // Check screen size for desktop animations
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Fetch blog posts from JSON file
   useEffect(() => {
@@ -437,12 +445,24 @@ const Socials = () => {
                                   setVisibleCount(filteredPosts.length);
                                 }
                               }}
-                              className={`px-10 py-4 rounded-2xl font-bold uppercase tracking-wider transition-all duration-300 transform active:scale-95 shadow-lg border ${theme === "dark"
-                                ? "bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600"
-                                : "bg-white text-slate-900 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+                              className={isDesktop ? "button--bestia group relative" : `px-10 py-4 rounded-2xl font-bold uppercase tracking-wider transition-all duration-300 transform active:scale-95 shadow-lg border backdrop-blur-sm ${theme === "dark"
+                                ? "bg-zinc-900/40 hover:bg-zinc-800/60 border-zinc-800/50 hover:border-zinc-600 text-white"
+                                : "bg-white/10 hover:bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-900 shadow-slate-200/80"
                                 }`}
+                              style={isDesktop ? {
+                                "--btn-bg": theme === "dark" ? "rgba(24, 24, 27, 0.4)" : "rgba(255, 255, 255, 0.4)",
+                                "--btn-fill": theme === "dark" ? "rgba(39, 39, 42, 0.9)" : "#f8fafc",
+                                "--btn-text": "#ffffff",
+                                fontSize: "0.875rem",
+                                fontWeight: "bold",
+                                letterSpacing: "0.05em",
+                                textTransform: "uppercase"
+                              } : {}}
                             >
-                              {visibleCount === 4 ? "Load More Posts" : "Show All Posts"}
+                              {isDesktop && <div className="button__bg" style={{ border: theme === "dark" ? "1px solid rgba(63, 63, 70, 0.4)" : "1px solid #e2e8f0" }}></div>}
+                              <span className={isDesktop ? "" : undefined}>
+                                {visibleCount === 4 ? "Load More Posts" : "Show All Posts"}
+                              </span>
                             </button>
                           </div>
                         )}
