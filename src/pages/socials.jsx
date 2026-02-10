@@ -15,6 +15,7 @@ import { NavLink } from "react-router-dom";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import ReactDOM from "react-dom";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import Fuse from "fuse.js";
 
 const ImageGalleryModal = ({ images, onClose, theme = "dark" }) => {
   const [isPaused, setIsPaused] = useState(false);
@@ -205,6 +206,7 @@ const Socials = () => {
 
   const [filters, setFilters] = useState({
     tags: [],
+    sortBy: "date", // 'date', 'likes', 'views'
     sortDir: "desc",
     showOnlyLiked: false,
   });
@@ -258,23 +260,36 @@ const Socials = () => {
     // 2. Search
     const searchLower = search.toLowerCase().trim();
     if (searchLower) {
-      currentPosts = currentPosts.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchLower) ||
-          post.excerpt.toLowerCase().includes(searchLower) ||
-          post.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
-      );
+      const fuse = new Fuse(currentPosts, {
+        keys: ["title", "excerpt", "tags"],
+        threshold: 0.3, // Adjust this value to control "fuzziness" (0.0 = exact, 1.0 = matches everything)
+        ignoreLocation: true,
+      });
+
+      const results = fuse.search(searchLower);
+      currentPosts = results.map((result) => result.item);
     }
 
     // 3. Sorting
     currentPosts.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      return filters.sortDir === "desc" ? dateB - dateA : dateA - dateB;
+      let valA, valB;
+
+      if (filters.sortBy === "date") {
+        valA = new Date(a.date).getTime();
+        valB = new Date(b.date).getTime();
+      } else if (filters.sortBy === "likes") {
+        valA = a.metrics?.likes || 0;
+        valB = b.metrics?.likes || 0;
+      } else if (filters.sortBy === "views") {
+        valA = a.metrics?.views || 0;
+        valB = b.metrics?.views || 0;
+      }
+
+      return filters.sortDir === "desc" ? valB - valA : valA - valB;
     });
 
     return currentPosts;
-  }, [posts, search, filters.tags, filters.sortDir, filters.showOnlyLiked]);
+  }, [posts, search, filters.tags, filters.sortBy, filters.sortDir, filters.showOnlyLiked]);
 
   // Navigation Handlers
   const handlePostClick = useCallback((postId) => {
@@ -326,33 +341,31 @@ const Socials = () => {
     <div className="page-section" data-theme={theme}>
       <div
         className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${theme === "dark"
-            ? "bg-zinc-950/70 backdrop-blur-sm border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.02)]"
-            : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
+          ? "bg-zinc-950/70 backdrop-blur-sm border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.02)]"
+          : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
           }`}
       >
         {/* Toggle Switch - Only show on list page */}
-        {currentPage === "list" && (
+        {/* {currentPage === "list" && (
           <div className="flex justify-center mb-8">
             <div
               className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
                 }`}
             >
-              {/* Sliding Background Pill */}
               <div
                 className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${theme === "dark" ? "bg-zinc-700" : "bg-white"
                   } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
               />
 
-              {/* Buttons */}
               <button
                 onClick={() => setActiveTab("blogs")}
                 className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "blogs"
-                    ? theme === "dark"
-                      ? "text-white"
-                      : "text-slate-900"
-                    : theme === "dark"
-                      ? "text-zinc-400 hover:text-zinc-200"
-                      : "text-slate-500 hover:text-slate-700"
+                  ? theme === "dark"
+                    ? "text-white"
+                    : "text-slate-900"
+                  : theme === "dark"
+                    ? "text-zinc-400 hover:text-zinc-200"
+                    : "text-slate-500 hover:text-slate-700"
                   }`}
               >
                 Blogs
@@ -360,19 +373,19 @@ const Socials = () => {
               <button
                 onClick={() => setActiveTab("linkedin")}
                 className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "linkedin"
-                    ? theme === "dark"
-                      ? "text-white"
-                      : "text-slate-900"
-                    : theme === "dark"
-                      ? "text-zinc-400 hover:text-zinc-200"
-                      : "text-slate-500 hover:text-slate-700"
+                  ? theme === "dark"
+                    ? "text-white"
+                    : "text-slate-900"
+                  : theme === "dark"
+                    ? "text-zinc-400 hover:text-zinc-200"
+                    : "text-slate-500 hover:text-slate-700"
                   }`}
               >
                 LinkedIn Posts
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* LIST VIEW */}
         {currentPage === "list" && (
@@ -417,7 +430,7 @@ const Socials = () => {
             )}
 
             {/* LINKEDIN TAB CONTENT */}
-            {activeTab === "linkedin" && (
+            {/* {activeTab === "linkedin" && (
               <div className="animate-in fade-in slide-in-from-right-4 duration-300 w-full min-h-[500px] flex justify-center p-8 bg-[#f9fafb] rounded-3xl ">
                 <iframe
                   src="https://widgets.sociablekit.com/linkedin-profile-posts/iframe/25647450"
@@ -431,7 +444,7 @@ const Socials = () => {
                   title="LinkedIn Profile Posts"
                 ></iframe>
               </div>
-            )}
+            )} */}
           </>
         )}
 

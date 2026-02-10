@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { Calendar, ChevronDown, Heart } from "lucide-react";
+import { Calendar, ChevronDown, Heart, BarChart2, Eye } from "lucide-react";
 import { useTheme } from "./HeaderBackground";
 
 // --- COOKIE UTILITIES ---
@@ -62,33 +62,94 @@ const FilterSidebar = ({ filters, setFilters, allTags = [] }) => {
     }));
   }, [setFilters]);
 
-  const { sortDir, tags, showOnlyLiked } = filters;
-  const sortText =
-    sortDir === "desc" ? "Sort by date (Newest)" : "Sort by date (Oldest)";
+  const { sortBy, sortDir, tags, showOnlyLiked } = filters;
+
+  const setSortBy = useCallback(
+    (newSortBy) => {
+      setFilters((prev) => ({
+        ...prev,
+        sortBy: newSortBy,
+        sortDir: "desc", // Default to desc when changing sort field
+      }));
+    },
+    [setFilters],
+  );
+
+  const getSortConfig = () => {
+    switch (sortBy) {
+      case "likes":
+        return {
+          icon: BarChart2,
+          text: `Sort by Likes (${sortDir === "desc" ? "Most" : "Least"})`,
+        };
+      case "views":
+        return {
+          icon: Eye,
+          text: `Sort by Views (${sortDir === "desc" ? "Most" : "Least"})`,
+        };
+      default:
+        return {
+          icon: Calendar,
+          text: `Sort by Date (${sortDir === "desc" ? "Newest" : "Oldest"})`,
+        };
+    }
+  };
+
+  const sortConfig = getSortConfig();
+  const Icon = sortConfig.icon;
   const iconRotation = sortDir === "desc" ? "rotate-0" : "rotate-180";
 
   return (
     <aside className="md:col-span-1 order-1 md:order-none">
-      {/* Sort Button */}
+      {/* Sort Options Label */}
+      <h3 className="text-sm uppercase tracking-[0.2em] font-bold mb-4 text-slate-500">
+        Sort By
+      </h3>
+
+      {/* Sort Field Selection */}
+      <div
+        className={`flex p-1 rounded-xl mb-4 border ${theme === "dark" ? "bg-zinc-950 border-zinc-900" : "bg-white border-slate-100"
+          }`}
+      >
+        {["Date", "Likes", "Views"].map((label) => {
+          const field = label.toLowerCase();
+          return (
+            <button
+              key={field}
+              onClick={() => setSortBy(field)}
+              className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-300 ${sortBy === field
+                ? theme === "dark"
+                  ? "bg-zinc-800 text-white shadow-lg"
+                  : "bg-slate-100 text-slate-900 shadow-md"
+                : theme === "dark"
+                  ? "text-zinc-500 hover:text-zinc-300"
+                  : "text-slate-400 hover:text-slate-600"
+                }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Sort Direction Toggle */}
       <div
         onClick={toggleSortDirection}
-        className={`sort-button w-full cursor-pointer p-4 rounded-xl transition-all duration-300 active:scale-[.98] mb-6 border ${
-          theme === "dark"
-            ? "bg-zinc-950 border-zinc-800 shadow-xl hover:border-slate-500 hover:shadow-white/5"
-            : "bg-white border-slate-200 shadow-lg hover:border-slate-400 hover:shadow-slate-200"
-        }`}
+        className={`sort-button w-full cursor-pointer p-4 rounded-xl transition-all duration-300 active:scale-[.98] mb-6 border ${theme === "dark"
+          ? "bg-zinc-950 border-zinc-800 shadow-xl hover:border-slate-500 hover:shadow-white/5"
+          : "bg-white border-slate-200 shadow-lg hover:border-slate-400 hover:shadow-slate-200"
+          }`}
       >
         <div
-          className={`flex items-center justify-between text-lg font-medium transition-colors ${
-            theme === "dark" ? "text-slate-100" : "text-slate-900"
-          }`}
+          className={`flex items-center justify-between text-lg font-medium transition-colors ${theme === "dark" ? "text-slate-100" : "text-slate-900"
+            }`}
         >
           <div className="flex items-center space-x-3">
-            <Calendar
+            <Icon
               className={`w-6 h-6 ${theme === "dark" ? "text-slate-100" : "text-slate-900"}`}
             />
-            <span id="sort-text" className="tracking-tight">
-              {sortText}
+            <span id="sort-text" className="text-base tracking-tight">
+              {sortConfig.text}
             </span>
           </div>
           <ChevronDown
@@ -100,45 +161,41 @@ const FilterSidebar = ({ filters, setFilters, allTags = [] }) => {
       {/* Liked Posts Filter */}
       <div
         onClick={toggleLikedFilter}
-        className={`w-full cursor-pointer p-4 rounded-xl transition-all duration-300 active:scale-[.98] mb-6 border ${
-          showOnlyLiked
-            ? "bg-red-500 border-red-500 shadow-lg shadow-red-500/30"
-            : theme === "dark"
-              ? "bg-zinc-950 border-zinc-800 shadow-xl hover:border-red-500 hover:shadow-white/5"
-              : "bg-white border-slate-200 shadow-lg hover:border-red-500 hover:shadow-slate-200"
-        }`}
+        className={`w-full cursor-pointer p-4 rounded-xl transition-all duration-300 active:scale-[.98] mb-6 border ${showOnlyLiked
+          ? "bg-red-500 border-red-500 shadow-lg shadow-red-500/30"
+          : theme === "dark"
+            ? "bg-zinc-950 border-zinc-800 shadow-xl hover:border-red-500 hover:shadow-white/5"
+            : "bg-white border-slate-200 shadow-lg hover:border-red-500 hover:shadow-slate-200"
+          }`}
       >
         <div
-          className={`flex items-center justify-between text-lg font-medium transition-colors ${
-            showOnlyLiked
-              ? "text-white"
-              : theme === "dark"
-                ? "text-slate-100"
-                : "text-slate-900"
-          }`}
+          className={`flex items-center justify-between text-lg font-medium transition-colors ${showOnlyLiked
+            ? "text-white"
+            : theme === "dark"
+              ? "text-slate-100"
+              : "text-slate-900"
+            }`}
         >
           <div className="flex items-center space-x-3">
             <Heart
-              className={`w-6 h-6 transition-all ${
-                showOnlyLiked
-                  ? "fill-white"
-                  : theme === "dark"
-                    ? "text-slate-100"
-                    : "text-slate-900"
-              }`}
+              className={`w-6 h-6 transition-all ${showOnlyLiked
+                ? "fill-white"
+                : theme === "dark"
+                  ? "text-slate-100"
+                  : "text-slate-900"
+                }`}
             />
             <span className="tracking-tight">
               {showOnlyLiked ? "Showing Liked" : "Show Liked Only"}
             </span>
           </div>
           <div
-            className={`px-3 py-1 rounded-full text-sm font-bold ${
-              showOnlyLiked
-                ? "bg-white/20"
-                : theme === "dark"
-                  ? "bg-zinc-800 text-slate-400"
-                  : "bg-slate-100 text-slate-600"
-            }`}
+            className={`px-3 py-1 rounded-full text-sm font-bold ${showOnlyLiked
+              ? "bg-white/20"
+              : theme === "dark"
+                ? "bg-zinc-800 text-slate-400"
+                : "bg-slate-100 text-slate-600"
+              }`}
           >
             {likedCount}
           </div>
