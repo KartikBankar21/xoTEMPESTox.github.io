@@ -211,6 +211,8 @@ const Socials = () => {
     showOnlyLiked: false,
   });
 
+  const [visibleCount, setVisibleCount] = useState(4);
+
   // Fetch blog posts from JSON file
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -232,6 +234,11 @@ const Socials = () => {
 
     fetchBlogPosts();
   }, []);
+
+  // Reset pagination when search or filters change
+  useEffect(() => {
+    setVisibleCount(4);
+  }, [search, filters]);
 
   const allTags = useMemo(() => {
     const tags = posts.flatMap((post) => post.tags || []);
@@ -290,6 +297,10 @@ const Socials = () => {
 
     return currentPosts;
   }, [posts, search, filters.tags, filters.sortBy, filters.sortDir, filters.showOnlyLiked]);
+
+  const paginatedPosts = useMemo(() => {
+    return filteredPosts.slice(0, visibleCount);
+  }, [filteredPosts, visibleCount]);
 
   // Navigation Handlers
   const handlePostClick = useCallback((postId) => {
@@ -412,9 +423,29 @@ const Socials = () => {
                     <main className="grid grid-cols-1 lg:grid-cols-3 gap-16 mt-8">
                       <div className="lg:col-span-2">
                         <PostList
-                          filteredPosts={filteredPosts}
+                          filteredPosts={paginatedPosts}
                           onPostClick={handlePostClick}
                         />
+
+                        {visibleCount < filteredPosts.length && (
+                          <div className="flex justify-center mt-12 pb-8">
+                            <button
+                              onClick={() => {
+                                if (visibleCount === 4) {
+                                  setVisibleCount(8);
+                                } else {
+                                  setVisibleCount(filteredPosts.length);
+                                }
+                              }}
+                              className={`px-10 py-4 rounded-2xl font-bold uppercase tracking-wider transition-all duration-300 transform active:scale-95 shadow-lg border ${theme === "dark"
+                                ? "bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600"
+                                : "bg-white text-slate-900 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+                                }`}
+                            >
+                              {visibleCount === 4 ? "Load More Posts" : "Show All Posts"}
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <aside className="lg:col-span-1">
                         <FilterSidebar
