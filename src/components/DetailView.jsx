@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   MessageCircle,
   ExternalLink,
+  Trophy,
 } from "lucide-react";
 import { useTheme } from "./HeaderBackground";
 import ReactMarkdown from "react-markdown";
@@ -48,12 +49,25 @@ const formatViews = (num) => {
   return num.toString();
 };
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+const getRelativeTime = (dateString) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInMs = now - past;
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+  const diffInWeeks = Math.floor(diffInDays / 7);
+  const diffInMonths = Math.floor(diffInDays / 30);
+  const diffInYears = Math.floor(diffInDays / 365);
+
+  if (diffInSeconds < 60) return "just now";
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  if (diffInDays < 7) return `${diffInDays}d ago`;
+  if (diffInWeeks < 4) return `${diffInWeeks}w ago`;
+  if (diffInMonths < 12) return `${diffInMonths} months ago`;
+  return `${diffInYears} years ago`;
 };
 
 const calculateReadTime = (text) => {
@@ -62,47 +76,102 @@ const calculateReadTime = (text) => {
   return Math.ceil(wordCount / wordsPerMinute);
 };
 
-const ImageGalleryGrid = ({ images, theme, onImageClick }) => {
-  if (!images || images.length === 0) return null;
+// --- REUSABLE MEDIA COMPONENT ---
+const MediaItem = ({ item, theme, onImageClick, index, id, originalUrl }) => {
+  const [imgError, setImgError] = useState(false);
 
-  const count = images.length;
-
-  // Single image
-  if (count === 1) {
+  if (item.type === 'video') {
     return (
-      <div
-        onClick={() => onImageClick(0)}
-        className={`relative overflow-hidden rounded-lg cursor-pointer group border ${
-          theme === "dark"
-            ? "bg-zinc-900 border-zinc-800"
-            : "bg-slate-100 border-slate-200"
-        }`}
-        style={{ aspectRatio: "16/10" }}
+      <a
+        href={originalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`relative block w-full rounded-xl overflow-hidden border ${theme === 'dark' ? 'border-zinc-800' : 'border-slate-200'} group`}
+        style={{ aspectRatio: '16/9' }}
       >
         <img
-          src={images[0].url}
-          alt={images[0].alt}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          src={item.url}
+          alt={item.alt || "Video Preview"}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] opacity-90 transition-opacity group-hover:bg-black/50">
+          <div className="p-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 mb-4 scale-100 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+          <span className="px-6 py-2 bg-blue-600 text-white rounded-full font-medium transition-all shadow-lg scale-95 group-hover:scale-100">
+            View on LinkedIn
+          </span>
+        </div>
+      </a>
+    );
+  }
+
+  if (item.type === 'badge') {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 bg-gradient-to-br from-zinc-900 via-black to-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden relative min-h-[400px]">
+        <div className="absolute inset-0 bg-blue-500/5 blur-[100px] pointer-events-none"></div>
+
+        {(!item.url || imgError) ? (
+          <div className="flex flex-col items-center gap-6 animate-pulse-slow">
+            <div className="p-10 rounded-full bg-yellow-500/10 border border-yellow-500/20 shadow-[0_0_50px_rgba(234,179,8,0.1)]">
+              <Trophy size={140} className="text-yellow-500" strokeWidth={1} />
+            </div>
+            <span className="text-zinc-400 font-medium tracking-wider uppercase text-sm">
+              {item.alt || "Career Milestone"}
+            </span>
+          </div>
+        ) : (
+          <img
+            src={item.url}
+            alt={item.alt}
+            className="w-full max-w-md h-auto object-contain animate-pulse-slow drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+            onError={() => setImgError(true)}
+          />
+        )}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-1 rounded-xl overflow-hidden shadow-sm">
-      {/* Featured Large Top Image */}
-      <div
-        onClick={() => onImageClick(0)}
-        className={`relative w-full overflow-hidden cursor-pointer group ${
-          theme === "dark" ? "bg-zinc-900" : "bg-slate-100"
+    <div
+      onClick={() => onImageClick && onImageClick(index)}
+      className={`relative overflow-hidden rounded-lg cursor-pointer group border ${theme === "dark" ? "bg-zinc-900 border-zinc-800" : "bg-slate-100 border-slate-200"
         }`}
-        style={{ aspectRatio: "16/11" }}
-      >
-        <img
-          src={images[0].url}
-          alt={images[0].alt}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+      style={{ aspectRatio: "16/10" }}
+    >
+      <img
+        src={item.url}
+        alt={item.alt}
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+    </div>
+  );
+};
+
+const ImageGalleryGrid = ({ images, theme, onImageClick, id, originalUrl }) => {
+  if (!images || images.length === 0) return null;
+
+  const count = images.length;
+
+  // If only one image/media, show it full width
+  if (count === 1) {
+    return <MediaItem item={images[0]} theme={theme} onImageClick={onImageClick} index={0} id={id} originalUrl={originalUrl} />;
+  }
+
+  return (
+    <div className="flex flex-col gap-1 rounded-xl overflow-hidden shadow-sm">
+      {/* Featured Large Top Media */}
+      <div className={`relative w-full overflow-hidden ${images[0].type !== 'video' ? 'cursor-pointer' : ''} group ${theme === "dark" ? "bg-zinc-900" : "bg-slate-100"}`} style={{ aspectRatio: "16/11" }}>
+        {images[0].type === 'video' ? (
+          <MediaItem item={images[0]} theme={theme} id={id} originalUrl={originalUrl} />
+        ) : (
+          <img
+            src={images[0].url}
+            alt={images[0].alt}
+            onClick={() => onImageClick(0)}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        )}
       </div>
 
       {/* Bottom Thumbnails Grid (3 Columns) */}
@@ -116,18 +185,37 @@ const ImageGalleryGrid = ({ images, theme, onImageClick }) => {
             return (
               <div
                 key={actualIndex}
-                onClick={() => onImageClick(actualIndex)}
-                className={`relative h-full overflow-hidden cursor-pointer group ${
-                  theme === "dark" ? "bg-zinc-900" : "bg-slate-100"
-                }`}
+                onClick={img.type !== 'video' ? () => onImageClick(actualIndex) : undefined}
+                className={`relative h-full overflow-hidden ${img.type !== 'video' ? 'cursor-pointer' : ''} group ${theme === "dark" ? "bg-zinc-900" : "bg-slate-100"
+                  }`}
               >
-                <img
-                  src={img.url}
-                  alt={img.alt}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+                {img.type === 'video' ? (
+                  <div className="relative w-full h-full">
+                    <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <img
+                    src={img.url}
+                    alt={img.alt}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                )}
 
-                {/* +N Overlay as seen in the reference image */}
+                {/* Video Play Icon Overlay for small thumbnails */}
+                {img.type === 'video' && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <div className="p-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </div>
+                  </div>
+                )}
+
+                {/* +N Overlay */}
                 {isLastThumbnail && hasMore && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] text-white">
                     <span className="text-2xl md:text-4xl font-semibold">
@@ -192,16 +280,17 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
   const bodyContent = post.content?.markdown || post.content?.raw || "";
 
   const readTime = calculateReadTime(bodyContent);
+  const firstWord = post.title.replace(/[^\w\s]/g, '').trim().split(/\s+/)[0] || "Post";
 
   const heroImage =
     post.media && post.media.length > 0
       ? post.media[0].url
-      : "https://placehold.co/1200x630/1e293b/60a5fa?text=No+Image";
+      : `https://placehold.co/1200x630/1e293b/60a5fa?text=${firstWord}`;
 
   const galleryImages =
-    post.media && post.media.length > 1 ? post.media.slice(1) : [];
+    post.media && post.media.length > 0 ? post.media : [];
 
-  const dateStr = formatDate(post.date);
+  const dateStr = getRelativeTime(post.date);
   const viewsStr = formatViews(views);
 
   const heroStyle = {
@@ -215,11 +304,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
       {/* Back Button */}
       <button
         onClick={onBack}
-        className={`flex items-center space-x-2 mb-8 transition-all duration-200 active:scale-95 group ${
-          theme === "dark"
-            ? "text-slate-400 hover:text-slate-100"
-            : "text-slate-600 hover:text-slate-900"
-        }`}
+        className={`flex items-center space-x-2 mb-8 transition-all duration-200 active:scale-95 group ${theme === "dark"
+          ? "text-slate-400 hover:text-slate-100"
+          : "text-slate-600 hover:text-slate-900"
+          }`}
       >
         <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
         <span className="font-medium">Back to Blog</span>
@@ -227,11 +315,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
 
       {/* Hero Section */}
       <div
-        className={`relative min-h-[600px] rounded-3xl overflow-hidden shadow-2xl border transition-colors duration-500 ${
-          theme === "dark"
-            ? "bg-zinc-950 border-zinc-800"
-            : "bg-white border-slate-200"
-        }`}
+        className={`relative min-h-[600px] rounded-3xl overflow-hidden shadow-2xl border transition-colors duration-500 ${theme === "dark"
+          ? "bg-zinc-950 border-zinc-800"
+          : "bg-white border-slate-200"
+          }`}
         style={heroStyle}
       >
         <div
@@ -251,11 +338,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
               post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className={`text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-lg border transition-all hover:scale-105 ${
-                    theme === "dark"
-                      ? "bg-zinc-900/60 text-slate-300 border-zinc-700 backdrop-blur-sm hover:bg-zinc-800"
-                      : "bg-white/60 text-slate-700 border-slate-300 backdrop-blur-sm hover:bg-slate-50"
-                  }`}
+                  className={`text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-lg border transition-all hover:scale-105 ${theme === "dark"
+                    ? "bg-zinc-900/60 text-slate-300 border-zinc-700 backdrop-blur-sm hover:bg-zinc-800"
+                    : "bg-white/60 text-slate-700 border-slate-300 backdrop-blur-sm hover:bg-slate-50"
+                    }`}
                 >
                   #{tag}
                 </span>
@@ -264,9 +350,8 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
 
           {/* Title */}
           <h1
-            className={`text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.95] mb-6 tracking-tighter transition-colors max-w-5xl ${
-              theme === "dark" ? "text-slate-50" : "text-slate-900"
-            }`}
+            className={`text-5xl sm:text-7xl lg:text-8xl font-black leading-[0.95] mb-6 tracking-tighter transition-colors max-w-5xl ${theme === "dark" ? "text-slate-50" : "text-slate-900"
+              }`}
           >
             {post.title}
           </h1>
@@ -274,9 +359,8 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
           {/* Excerpt */}
           {excerpt && (
             <p
-              className={`text-xl sm:text-2xl mb-10 max-w-3xl leading-relaxed transition-colors ${
-                theme === "dark" ? "text-slate-300" : "text-slate-700"
-              }`}
+              className={`text-xl sm:text-2xl mb-10 max-w-3xl leading-relaxed transition-colors ${theme === "dark" ? "text-slate-300" : "text-slate-700"
+                }`}
             >
               {excerpt}
             </p>
@@ -285,11 +369,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
           {/* Author Info */}
           <div className="flex items-center space-x-4 mb-8">
             <img
-              className={`w-16 h-16 rounded-full object-cover ring-4 transition-all ${
-                theme === "dark"
-                  ? "ring-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-                  : "ring-slate-200 shadow-xl"
-              }`}
+              className={`w-16 h-16 rounded-full object-cover ring-4 transition-all ${theme === "dark"
+                ? "ring-zinc-800 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                : "ring-slate-200 shadow-xl"
+                }`}
               src={
                 authorAvatar ||
                 `https://placehold.co/64x64/5d5d5d/ffffff?text=${authorName.charAt(0)}`
@@ -303,9 +386,8 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
                 {authorName}
               </p>
               <p
-                className={`text-sm uppercase tracking-widest font-medium ${
-                  theme === "dark" ? "text-slate-400" : "text-slate-600"
-                }`}
+                className={`text-sm uppercase tracking-widest font-medium ${theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  }`}
               >
                 {dateStr}
               </p>
@@ -314,11 +396,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
 
           {/* Stats Bar */}
           <div
-            className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 py-6 border-t text-lg transition-colors ${
-              theme === "dark"
-                ? "border-zinc-800 text-slate-400"
-                : "border-slate-200 text-slate-600"
-            }`}
+            className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 py-6 border-t text-lg transition-colors ${theme === "dark"
+              ? "border-zinc-800 text-slate-400"
+              : "border-slate-200 text-slate-600"
+              }`}
           >
             <div className="flex flex-wrap gap-6">
               <div className="flex items-center space-x-2">
@@ -344,18 +425,16 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
               {likes > 0 && (
                 <button
                   onClick={handleLikeToggle}
-                  className={`flex h-fit items-center space-x-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-200 active:scale-95 hover:scale-105 group ${
-                    isLiked
-                      ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
-                      : theme === "dark"
-                        ? "bg-zinc-900/50 border-zinc-700 text-slate-300 hover:border-red-500 hover:text-red-400"
-                        : "bg-white/50 border-slate-300 text-slate-700 hover:border-red-500 hover:text-red-500"
-                  }`}
+                  className={`flex h-fit items-center space-x-2 px-6 py-3 rounded-xl font-semibold border transition-all duration-200 active:scale-95 hover:scale-105 group ${isLiked
+                    ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30"
+                    : theme === "dark"
+                      ? "bg-zinc-900/50 border-zinc-700 text-slate-300 hover:border-red-500 hover:text-red-400"
+                      : "bg-white/50 border-slate-300 text-slate-700 hover:border-red-500 hover:text-red-500"
+                    }`}
                 >
                   <Heart
-                    className={`w-5 h-5 transition-all ${
-                      isLiked ? "fill-white" : "group-hover:fill-current"
-                    }`}
+                    className={`w-5 h-5 transition-all ${isLiked ? "fill-white" : "group-hover:fill-current"
+                      }`}
                   />
                   <span>
                     {isLiked
@@ -371,11 +450,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
                     href={post.originalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold border transition-all hover:scale-105 ${
-                      theme === "dark"
-                        ? "bg-zinc-900 border-zinc-700 text-slate-300 hover:border-slate-500"
-                        : "bg-slate-50 border-slate-300 text-slate-700 hover:border-slate-400"
-                    }`}
+                    className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-semibold border transition-all hover:scale-105 ${theme === "dark"
+                      ? "bg-zinc-900 border-zinc-700 text-slate-300 hover:border-slate-500"
+                      : "bg-slate-50 border-slate-300 text-slate-700 hover:border-slate-400"
+                      }`}
                   >
                     <ExternalLink className="w-5 h-5" />
                     <span>View Original on LinkedIn</span>
@@ -391,9 +469,8 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
       <article className="max-w-7xl mx-auto mt-16 px-4 sm:px-0">
         {/* Markdown Body */}
         <div
-          className={`markdownBody prose max-w-none transition-colors duration-500 ${
-            theme === "dark" ? "prose-invert" : "prose-slate"
-          }`}
+          className={`markdownBody prose max-w-none transition-colors duration-500 ${theme === "dark" ? "prose-invert" : "prose-slate"
+            }`}
         >
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {bodyContent}
@@ -424,15 +501,16 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
         {galleryImages.length > 0 && (
           <div className="mt-12">
             <h3
-              className={`text-2xl font-bold mb-6 ${
-                theme === "dark" ? "text-slate-100" : "text-slate-900"
-              }`}
+              className={`text-2xl font-bold mb-6 ${theme === "dark" ? "text-slate-100" : "text-slate-900"
+                }`}
             >
               Post Gallery
             </h3>
             <ImageGalleryGrid
               images={galleryImages}
               theme={theme}
+              id={post.id}
+              originalUrl={post.originalUrl}
               onImageClick={(index) =>
                 onGalleryImageClick && onGalleryImageClick(galleryImages, index)
               }
@@ -442,11 +520,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
 
         {/* Author Card */}
         <div
-          className={`mt-16 p-8 rounded-2xl border transition-colors ${
-            theme === "dark"
-              ? "bg-zinc-900/50 border-zinc-800"
-              : "bg-slate-50 border-slate-200"
-          }`}
+          className={`mt-16 p-8 rounded-2xl border transition-colors ${theme === "dark"
+            ? "bg-zinc-900/50 border-zinc-800"
+            : "bg-slate-50 border-slate-200"
+            }`}
         >
           <div className="flex items-start space-x-4">
             <img
@@ -459,16 +536,14 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
             />
             <div className="flex-1">
               <h3
-                className={`text-2xl font-bold mb-2 ${
-                  theme === "dark" ? "text-slate-100" : "text-slate-900"
-                }`}
+                className={`text-2xl font-bold mb-2 ${theme === "dark" ? "text-slate-100" : "text-slate-900"
+                  }`}
               >
                 {authorName}
               </h3>
               <p
-                className={`mb-4 leading-relaxed ${
-                  theme === "dark" ? "text-slate-400" : "text-slate-600"
-                }`}
+                className={`mb-4 leading-relaxed ${theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  }`}
               >
                 Developer, writer, and tech enthusiast. Passionate about
                 building great software and sharing knowledge with the
@@ -479,11 +554,10 @@ const DetailView = ({ post, onBack, onGalleryImageClick }) => {
                   href={authorUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center space-x-2 font-semibold transition-colors ${
-                    theme === "dark"
-                      ? "text-blue-400 hover:text-blue-300"
-                      : "text-blue-600 hover:text-blue-700"
-                  }`}
+                  className={`inline-flex items-center space-x-2 font-semibold transition-colors ${theme === "dark"
+                    ? "text-blue-400 hover:text-blue-300"
+                    : "text-blue-600 hover:text-blue-700"
+                    }`}
                 >
                   <span>Follow on LinkedIn</span>
                   <ExternalLink className="w-4 h-4" />

@@ -7,11 +7,16 @@ import { readFileSync } from 'fs';
 let genAI = null;
 let model = null;
 
+let availableModels = [];
+let currentModelIndex = 0;
+let apiKey = null;
+
 /**
  * Initializes the Gemini client
+ * @param {boolean} force - Whether to force re-initialization (e.g. for model switch)
  */
-async function initGemini() {
-    if (model) return;
+async function initGemini(force = false) {
+    if (model && !force) return;
 
     // Load .env manually (no dotenv dependency needed)
     try {
@@ -26,13 +31,18 @@ async function initGemini() {
             }
         }
 
-        const apiKey = envVars.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
-        const modelName = envVars.GEMINI_MODEL || process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+        apiKey = envVars.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+        const primaryModel = envVars.GEMINI_MODEL || process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+        const altModel = envVars.GEMINI_MODEL_ALT || process.env.GEMINI_MODEL_ALT;
+
+        availableModels = [primaryModel];
+        if (altModel) availableModels.push(altModel);
 
         if (!apiKey || apiKey === 'your_api_key_here') {
             throw new Error('GEMINI_API_KEY not set in .env file');
         }
 
+        const modelName = availableModels[currentModelIndex];
         const { GoogleGenerativeAI } = await import('@google/generative-ai');
         genAI = new GoogleGenerativeAI(apiKey);
         model = genAI.getGenerativeModel({ model: modelName });
@@ -43,6 +53,23 @@ async function initGemini() {
         throw err;
     }
 }
+
+/**
+ * Switches to the next available Gemini model if possible
+ * @returns {boolean} True if switched to a new model, false if no more models
+ */
+export async function switchToNextModel() {
+    if (currentModelIndex + 1 < availableModels.length) {
+        currentModelIndex++;
+        const nextModel = availableModels[currentModelIndex];
+        console.log(`[LLM] Exhausted model. Switching to fallback: ${nextModel}`);
+        await initGemini(true);
+        return true;
+    }
+    console.warn('[LLM] No more fallback models available.');
+    return false;
+}
+
 
 /**
  * Processes a single raw post through Gemini to generate blog content
@@ -90,32 +117,27 @@ RESPOND IN THIS EXACT JSON FORMAT (no markdown code fences):
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }`;
 
-    try {
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text().trim();
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text().trim();
 
-        // Parse JSON from response (handle potential markdown code fences)
-        let jsonStr = responseText;
-        if (jsonStr.startsWith('```')) {
-            jsonStr = jsonStr.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
-        }
-
-        const parsed = JSON.parse(jsonStr);
-
-        // Enforce max 6 tags
-        const tags = (parsed.tags || []).slice(0, 6).map(t => t.toLowerCase().trim());
-
-        return {
-            title: parsed.title || rawPost.text.substring(0, 77) + '...',
-            summary: parsed.summary || rawPost.text.substring(0, 147) + '...',
-            markdown: parsed.markdown || rawPost.text,
-            tags
-        };
-    } catch (err) {
-        console.error(`[LLM] Error processing post: ${err.message}`);
-        // Fallback: return null so basic formatting is used
-        return null;
+    // Parse JSON from response (handle potential markdown code fences)
+    let jsonStr = responseText;
+    if (jsonStr.startsWith('```')) {
+        jsonStr = jsonStr.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
     }
+
+    const parsed = JSON.parse(jsonStr);
+
+    // Enforce max 6 tags
+    const tags = (parsed.tags || []).slice(0, 6).map(t => t.toLowerCase().trim());
+
+    return {
+        title: parsed.title || rawPost.text.substring(0, 77) + '...',
+        summary: parsed.summary || rawPost.text.substring(0, 147) + '...',
+        markdown: parsed.markdown || rawPost.text,
+        tags
+    };
+
 }
 
 /**

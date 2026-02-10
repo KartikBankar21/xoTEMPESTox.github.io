@@ -235,15 +235,54 @@ async function extractPostData(page, post, index) {
             }
         }
 
-        // === MEDIA (images) ===
-        const imageElements = el.querySelectorAll('.update-components-image__image-link img, .feed-shared-celebration-image img');
-        const media = Array.from(imageElements).map((img, idx) => ({
-            type: 'image',
-            url: img.src || img.getAttribute('data-delayed-url') || '',
-            alt: img.alt || `Image ${idx + 1}`,
-            width: img.naturalWidth || 800,
-            height: img.naturalHeight || 800
-        })).filter(m => m.url && !m.url.includes('profile-displayphoto') && !m.url.includes('profile-framedphoto'));
+        // === MEDIA (images, videos, badges) ===
+        const media = [];
+
+        // 1. Check for Videos
+        const videoElements = el.querySelectorAll('video, .video-js img.vjs-poster, .update-components-video img, .feed-shared-video img');
+        videoElements.forEach((vid) => {
+            const poster = vid.poster || vid.src || vid.getAttribute('src') || '';
+            if (poster) {
+                // If it's an img element, use its src
+                const url = vid.tagName === 'IMG' ? (vid.src || vid.getAttribute('data-delayed-url')) : poster;
+                if (url) {
+                    media.push({
+                        type: 'video',
+                        url: url,
+                        videoUrl: vid.tagName === 'VIDEO' ? vid.src : '',
+                        alt: 'Video post'
+                    });
+                }
+            }
+        });
+
+        // 2. Check for Celebration/Badges
+        const celebrationElements = el.querySelectorAll('.feed-shared-celebration-image img');
+        celebrationElements.forEach((img) => {
+            media.push({
+                type: 'badge',
+                url: img.src || img.getAttribute('data-delayed-url') || '',
+                alt: 'Celebration Badge'
+            });
+        });
+
+        // 3. Regular Images (excluding what we already found)
+        const imageElements = el.querySelectorAll('.update-components-image__image-link img');
+        imageElements.forEach((img, idx) => {
+            const url = img.src || img.getAttribute('data-delayed-url') || '';
+            if (url && !url.includes('profile-displayphoto') && !url.includes('profile-framedphoto')) {
+                // Avoid duplicates if already added as video poster
+                if (!media.some(m => m.url === url)) {
+                    media.push({
+                        type: 'image',
+                        url: url,
+                        alt: img.alt || `Image ${idx + 1}`,
+                        width: img.naturalWidth || 800,
+                        height: img.naturalHeight || 800
+                    });
+                }
+            }
+        });
 
         // === HASHTAGS ===
         const hashtagLinks = el.querySelectorAll('a[href*="keywords=%23"]');

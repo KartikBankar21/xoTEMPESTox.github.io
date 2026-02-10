@@ -325,53 +325,48 @@ const Socials = () => {
   return (
     <div className="page-section" data-theme={theme}>
       <div
-        className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${
-          theme === "dark"
+        className={`max-w-[95%] md:max-w-[85%] lg:max-w-[95rem] mx-auto p-6 md:p-12 rounded-[2.5rem] transition-all duration-500 border ${theme === "dark"
             ? "bg-zinc-950/70 backdrop-blur-sm border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(255,255,255,0.02)]"
             : "bg-white/60 backdrop-blur-sm border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05),0_0_20px_rgba(0,0,0,0.02)]"
-        }`}
+          }`}
       >
         {/* Toggle Switch - Only show on list page */}
         {currentPage === "list" && (
           <div className="flex justify-center mb-8">
             <div
-              className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${
-                theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
-              }`}
+              className={`relative flex items-center p-1 rounded-2xl w-[20rem] h-12 ${theme === "dark" ? "bg-zinc-900/50" : "bg-slate-200/50"
+                }`}
             >
               {/* Sliding Background Pill */}
               <div
-                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${
-                  theme === "dark" ? "bg-zinc-700" : "bg-white"
-                } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
+                className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl shadow-sm transition-all duration-300 ease-in-out ${theme === "dark" ? "bg-zinc-700" : "bg-white"
+                  } ${activeTab === "linkedin" ? "translate-x-[100%] left-[2px]" : "translate-x-0 left-1"}`}
               />
 
               {/* Buttons */}
               <button
                 onClick={() => setActiveTab("blogs")}
-                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === "blogs"
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "blogs"
                     ? theme === "dark"
                       ? "text-white"
                       : "text-slate-900"
                     : theme === "dark"
                       ? "text-zinc-400 hover:text-zinc-200"
                       : "text-slate-500 hover:text-slate-700"
-                }`}
+                  }`}
               >
                 Blogs
               </button>
               <button
                 onClick={() => setActiveTab("linkedin")}
-                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${
-                  activeTab === "linkedin"
+                className={`relative z-10 w-1/2 h-full text-sm font-semibold transition-colors duration-200 ${activeTab === "linkedin"
                     ? theme === "dark"
                       ? "text-white"
                       : "text-slate-900"
                     : theme === "dark"
                       ? "text-zinc-400 hover:text-zinc-200"
                       : "text-slate-500 hover:text-slate-700"
-                }`}
+                  }`}
               >
                 LinkedIn Posts
               </button>
@@ -466,7 +461,16 @@ const Socials = () => {
             document.body,
           )}
       </div>
-      <style>{`.sk-header-button { background-color: #FFFF00 !important}`}</style>
+      <style>{`
+        .sk-header-button { background-color: #FFFF00 !important}
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </div>
   );
 };

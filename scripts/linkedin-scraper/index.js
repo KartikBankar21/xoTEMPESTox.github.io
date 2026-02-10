@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 import slugify from 'slugify';
 import config from './config.js';
 import { scrapePosts, log, delay } from './scraper.js';
-import { processPostWithLLM, isGeminiAvailable } from './llm.js';
+import { processPostWithLLM, isGeminiAvailable, switchToNextModel } from './llm.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RAW_POSTS_PATH = resolve(__dirname, 'raw_posts.json');
@@ -159,13 +159,21 @@ async function phaseProcess() {
     for (const raw of rawPosts) {
         const postId = raw.urn || `urn:li:share:${Date.now()}-${rawPosts.indexOf(raw)}`;
         if (existingById.has(postId)) {
-            existingToUpdate.push({ raw, postId });
+            const existing = existingById.get(postId);
+            // Check if it has already been processed by LLM (has markdown content)
+            // or if it's an old post that only needs metrics update
+            if (existing.content?.markdown && existing.title !== 'Untitled Post') {
+                existingToUpdate.push({ raw, postId });
+            } else {
+                // If it exists but wasn't fully processed, treat as new
+                newPosts.push({ raw, postId });
+            }
         } else {
             newPosts.push({ raw, postId });
         }
     }
 
-    log(`New posts: ${newPosts.length}, Existing (metrics update only): ${existingToUpdate.length}`);
+    log(`New posts (to process): ${newPosts.length}, Existing (metrics update only): ${existingToUpdate.length}`);
 
     // Check if Gemini is available for new posts
     const geminiAvailable = newPosts.length > 0 ? await isGeminiAvailable() : false;
@@ -185,24 +193,52 @@ async function phaseProcess() {
 
         if (geminiAvailable) {
             log('  → Running through Gemini LLM...');
-            const llmResult = await processPostWithLLM(raw, existingTags);
-            if (llmResult) {
-                content = {
-                    raw: raw.text,
-                    markdown: llmResult.markdown,
-                    summary: llmResult.summary
-                };
-                tags = llmResult.tags;
+            try {
+                const llmResult = await processPostWithLLM(raw, existingTags);
+                if (llmResult) {
+                    content = {
+                        raw: raw.text,
+                        markdown: llmResult.markdown,
+                        summary: llmResult.summary
+                    };
+                    tags = llmResult.tags;
 
-                const formatted = buildPost(postId, llmResult.title, content, tags, raw);
-                processedNew.push(formatted);
-                log(`  ✓ LLM processed: "${llmResult.title}"`);
+                    const formatted = buildPost(postId, llmResult.title, content, tags, raw);
+                    processedNew.push(formatted);
+                    log(`  ✓ LLM processed: "${llmResult.title}"`);
 
-                // Small delay between LLM calls to avoid rate limits
-                if (i < newPosts.length - 1) await delay(1000);
-                continue;
+                    // Incremental save to preserve progress
+                    saveIncrementally(existingPosts, processedNew, existingToUpdate, existingById);
+
+                    // Rate limiting: 15s delay (4 requests per minute)
+                    if (i < newPosts.length - 1) {
+                        log('  (Rate limiting: waiting 15s before next LLM call...)');
+                        await delay(15000);
+                    }
+                    continue;
+                }
+            } catch (err) {
+                const errMsg = err.message?.toLowerCase() || '';
+                if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('rate limit')) {
+                    log('  ⚠️ Gemini rate limit reached or quota exhausted.');
+                    const switched = await switchToNextModel();
+                    if (switched) {
+                        log('  ↻ Switched model, retrying current post...');
+                        i--; // Retry this post
+                        await delay(2000); // Short buffer before retry
+                        continue;
+                    } else {
+                        log('  ❌ No more fallback models. Switching to basic formatting for remaining posts.');
+                        // Fall through to basic formatting
+                    }
+                } else {
+                    log(`  ❌ Gemini error: ${err.message}`);
+                    log('  → Falling back to basic formatting for this post.');
+                    // Fall through to basic formatting
+                }
             }
         }
+
 
         // Fallback: basic formatting
         const cleaned = cleanText(raw.text);
@@ -269,6 +305,34 @@ async function phaseProcess() {
     }
     console.log('╚═══════════════════════════════════════════════════════════╝');
 }
+
+/**
+ * Saves current progress to the output file to handle long-running backlogs
+ */
+function saveIncrementally(existingPosts, processedNew, existingToUpdate, existingById) {
+    // Current processed IDs
+    const currentProcessedIds = new Set(processedNew.map(p => p.id));
+
+    // Updates for existing posts (metrics etc)
+    const updatedMap = new Map();
+    existingToUpdate.forEach(({ postId }) => {
+        updatedMap.set(postId, existingById.get(postId));
+    });
+
+    // Rebuild the list:
+    // 1. Take existing posts
+    // 2. If an existing post was updated, use the updated version
+    // 3. Filter out any that were just processed as "new" (to avoid dupes if they existed in some form)
+    // 4. Append the actually new processed posts
+    const finalPosts = [
+        ...existingPosts.map(p => updatedMap.has(p.id) ? updatedMap.get(p.id) : p)
+            .filter(p => !currentProcessedIds.has(p.id)),
+        ...processedNew
+    ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    writeFileSync(config.outputPath, JSON.stringify(finalPosts, null, 4), 'utf8');
+}
+
 
 /**
  * Builds a blog post object
