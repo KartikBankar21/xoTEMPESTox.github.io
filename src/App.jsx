@@ -181,6 +181,7 @@ function App() {
   const journey = location.pathname === "/journey";
   const skills = location.pathname === "/skills";
   const about = location.pathname === "/about";
+  const topContentCutOff =  skills || about;
 
   // ... inside your component
   const [isMobileForContent, setIsMobileForContent] = useState(false);
@@ -197,8 +198,8 @@ function App() {
     if (socials) return "calc(100vh - 16rem)";
     if (journey && isMobileForContent) return "calc(100vh - 14rem)";
     if (journey) return "calc(100vh - 8rem)";
-    if (skills && isMobileForContent) return "calc(100vh - 14rem)";
-    if (about && isMobileForContent) return "calc(100vh - 8rem)";
+    if (skills && isMobileForContent) return "calc(100vh - 12rem)";
+    if (about && isMobileForContent) return "calc(100vh - 12rem)";
     return "100vh";
   };
 
@@ -597,7 +598,7 @@ function App() {
                   width: "100%",
                   minHeight: getMinHeight(),
                   zIndex: 10,
-                  top: socials ? "8rem" : "0rem",
+                  top: topContentCutOff ? "4rem" : socials ? "8rem" : "0rem",
                 }}
               >
                 <div
